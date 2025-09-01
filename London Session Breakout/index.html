@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AP London Session Breakout (MT5)</title>
+  <style>
+    :root{--bg:#0e1116;--card:#141922;--text:#e6edf3;--muted:#9ba7b4;--brand:#1f6feb;--ghost:#2d3748;}
+    html,body{background:#0b0f14;color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",Arial;}
+    .wrap{max-width:960px;margin:40px auto;padding:0 20px;}
+    .card{background:var(--card);border:1px solid #223048;border-radius:14px;padding:22px 20px;margin:18px 0;}
+    h1{font-size:28px;margin:0 0 4px}
+    h2{font-size:20px;margin:18px 0 8px}
+    p,li{color:var(--text)}
+    .muted{color:var(--muted)}
+    .tags span{display:inline-block;background:#1a2230;border:1px solid #263243;color:#b8c3cf;border-radius:999px;padding:2px 10px;margin-right:6px;font-size:12px}
+    .btn{display:inline-block;background:var(--brand);color:#fff;text-decoration:none;border-radius:10px;padding:10px 14px;font-weight:600;margin-right:10px}
+    .btn.ghost{background:#1a2330;border:1px solid #2a3a52;color:#cdd9e5}
+    code{background:#111723;border:1px solid #223048;border-radius:6px;padding:2px 6px}
+    ul{margin:8px 0 0 20px}
+    .grid{display:grid;gap:14px}
+    @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>AP London Session Breakout (MT5)</h1>
+    <p class="muted">Time-box breakout for the London open. Clean logic, validator-safe.</p>
+
+    <div class="tags">
+      <span>MT5</span><span>Breakout</span><span>Time-box</span>
+    </div>
+
+    <div class="card">
+      <h2>What it does</h2>
+      <p>Between <code>07:00–08:00</code> server time the EA builds the session box and places a pending
+         <em>Buy Stop</em> / <em>Sell Stop</em> with your buffer. It can put SL on the opposite side of the box,
+         and targets a fixed R-multiple take-profit. Orders auto-expire the same day; the EA arms again next session.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Why traders like it</h2>
+        <ul>
+          <li><strong>Simple, strict rules.</strong> One clear setup per day.</li>
+          <li><strong>Hard SL/TP.</strong> No martingale, no grid, no averaging.</li>
+          <li><strong>Order safety.</strong> Spread &amp; margin checks; opposite pending auto-cleanup on fill.</li>
+          <li><strong>Works across majors.</strong> London’s first burst is what this aims to catch.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Key inputs</h2>
+        <ul>
+          <li><code>SignalTF</code> – timeframe to build the box</li>
+          <li><code>BoxBufferPts</code> – buffer above/below box for entries</li>
+          <li><code>SL_Mode</code> – “OppositeSide” or fixed points</li>
+          <li><code>TP_R_Multiple</code> – target in R</li>
+          <li><code>ExpireSameDay</code> – cancel unfilled pendings before EOD</li>
+          <li><code>Magic</code> – unique ID to avoid clashes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>How to use</h2>
+      <ol>
+        <li>Attach to the symbol you want to trade (one chart per symbol).</li>
+        <li>Set your risk, buffer and SL/TP preferences.</li>
+        <li>Enable algo trading. The EA will arm during the London pre-session.</li>
+      </ol>
+      <p class="muted"><small>Backtests are indicative. Use sensible risk, and test on a demo first.</small></p>
+    </div>
+
+    <p>
+      <a class="btn" href="https://www.mql5.com/en/market/product/148680" target="_blank" rel="noopener">Get on MQL5</a>
+      <a class="btn ghost" href="../">← Back to AP Trading Tools</a>
+    </p>
+  </div>
+</body>
+</html>
