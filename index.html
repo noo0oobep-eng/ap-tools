@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AP Trading Tools – Expert Advisors & Indicators</title>
+  <style>
+    :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    header{padding:40px 20px;text-align:center}
+    h1{margin:0 0 8px;font-size:32px}
+    p.lead{margin:0;color:var(--muted)}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+    .card{background:var(--card);border:1px solid #1d2633;border-radius:14px;padding:18px}
+    .card h3{margin:0 0 6px}
+    .tags{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}
+    .tag{font-size:12px;padding:2px 8px;border:1px solid #243244;border-radius:999px;color:var(--muted)}
+    .btns{display:flex;gap:10px;flex-wrap:wrap}
+    a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
+    a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+    footer{color:var(--muted);text-align:center;padding:40px 20px}
+    .note{background:#0e141d;border:1px dashed #243244;border-radius:12px;padding:14px;margin:18px 0}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AP Trading Tools</h1>
+    <p class="lead">MT5 Expert Advisors & Indicators – clean code, validator-safe, and trader-friendly.</p>
+  </header>
+
+  <div class="wrap">
+    <div class="note">
+      <strong>Launch Promo:</strong> Selected tools are lifetime buy for early adopters, then switch to rent-only. Don’t miss it!
+    </div>
+
+    <h2>Featured EAs</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>AP London Session Breakout (MT5)</h3>
+        <div class="tags">
+          <span class="tag">Breakout</span><span class="tag">Time-box</span><span class="tag">MT5</span>
+        </div>
+        <p>Structured London session range breakouts with session filters, pending-order safety, and validator-clean logic.</p>
+        <div class="btns">
+          <a class="btn" href="#" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./AP_London_Breakout/" >Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP InsideBar Breakout (MT5)</h3>
+        <div class="tags">
+          <span class="tag">Price Action</span><span class="tag">Breakout</span><span class="tag">MT5</span>
+        </div>
+        <p>Inside-bar detection with smart pending placement and automatic opposite-side cleanup after fills.</p>
+        <div class="btns">
+          <a class="btn" href="#" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./AP_InsideBar_Breakout/">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP ATR Trail Manager (PRO)</h3>
+        <div class="tags">
+          <span class="tag">Risk</span><span class="tag">Trade Manager</span><span class="tag">ATR</span>
+        </div>
+        <p>Multi-symbol ATR trailing with partials, daily loss guard, and stealth management for open positions.</p>
+        <div class="btns">
+          <a class="btn" href="#" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./AP_ATR_Trail_Manager_PRO/">Docs</a>
+        </div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:28px">Free Indicators</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>AP Session Boxes</h3>
+        <div class="tags"><span class="tag">Indicator</span><span class="tag">Sessions</span></div>
+        <p>Clean London/NY/Asia session boxes with custom times, opacity, and lookback. Great for screenshots.</p>
+        <div class="btns">
+          <a class="btn" href="./AP_Session_Boxes/">Download</a>
+          <a class="btn ghost" href="./AP_Session_Boxes/">Docs</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Candle Countdown</h3>
+        <div class="tags"><span class="tag">Indicator</span><span class="tag">Utility</span></div>
+        <p>Minimal candle time-left display that respects chart theme and stays light on resources.</p>
+        <div class="btns">
+          <a class="btn" href="./candle_count_down/">Download</a>
+          <a class="btn ghost" href="./candle_count_down/">Docs</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      Want help or custom tweaks? Email <strong>support@yourdomain</strong> or open an issue on GitHub.
+    </div>
+  </div>
+
+  <footer>
+    © AP Trading Tools • Built for MetaTrader 5
+  </footer>
+</body>
+</html>
