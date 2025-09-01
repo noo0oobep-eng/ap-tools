@@ -1,0 +1,5 @@
+Place the following into your MQL5 product page:
+1) Chart with the Asian box + pending lines (labels visible)
+2) Filled trade example with SL/TP
+3) Inputs dialog (collapsed groups)
+4) Equity curve from a recent 6‑month backtest

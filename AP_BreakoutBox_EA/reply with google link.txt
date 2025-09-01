@@ -1,0 +1,50 @@
+Hi ,
+
+Welcome aboard and thank you for renting AP Breakout Box EA (MT5) by AP TRADING TOOLS.
+
+Renter Resource Pack (read-only) — PDF + .set presets:
+https://drive.google.com/drive/folders/1vMvdi-LFXxpIWUqg2wMFkuCWLGxoE7AZ?usp=drive_link
+
+Suggested first run
+
+Preset: Validator_Conservative.set
+
+Lots: 0.01 (increase later)
+
+Session: 00:00–08:00 (server time), Box TF = M5
+
+Keep OneSetPerSession=true and CancelOppOnFill=false for stable behavior
+
+If you need anything, reply here and I’ll help you fast.
+If you like the EA, a positive review really helps us keep improving it.
+— Allan | AP TRADING TOOLS
+
+Русский: Спасибо за аренду AP Breakout Box EA! Пакет арендатора (PDF + пресеты): https://drive.google.com/drive/folders/1vMvdi-LFXxpIWUqg2wMFkuCWLGxoE7AZ?usp=drive_link
+ — вопросы? Пишите сюда. — Allan | AP TRADING TOOLS
+
+简体中文: 感谢租用 AP Breakout Box EA！租户资料包（PDF + 预设）：https://drive.google.com/drive/folders/1vMvdi-LFXxpIWUqg2wMFkuCWLGxoE7AZ?usp=drive_link
+ — 有问题直接回复。— Allan | AP TRADING TOOLS
+
+Español: ¡Gracias por alquilar AP Breakout Box EA! Paquete para arrendatarios (PDF + presets): https://drive.google.com/drive/folders/1vMvdi-LFXxpIWUqg2wMFkuCWLGxoE7AZ?usp=drive_link
+ — dudas, responde aquí. — Allan | AP TRADING TOOLS
+
+Português: Obrigado por alugar AP Breakout Box EA! Pacote do locatário (PDF + presets): https://drive.google.com/drive/folders/1vMvdi-LFXxpIWUqg2wMFkuCWLGxoE7AZ?usp=drive_link
+ — qualquer dúvida, responda aqui. — Allan | AP TRADING TOOLS
+
+日本語: AP Breakout Box EA をご利用ありがとうございます！レンターパック（PDF＋プリセット）：https://drive.google.com/drive/folders/1vMvdi-LFXxpIWUqg2wMFkuCWLGxoE7AZ?usp=drive_link
+ — ご不明点は返信ください。— Allan | AP TRADING TOOLS
+
+Deutsch: Danke für das Mieten von AP Breakout Box EA! Mieter-Pack (PDF + Presets): https://drive.google.com/drive/folders/1vMvdi-LFXxpIWUqg2wMFkuCWLGxoE7AZ?usp=drive_link
+ — Fragen? Hier antworten. — Allan | AP TRADING TOOLS
+
+한국어: AP Breakout Box EA 대여 감사합니다! 렌터 패키지(PDF + 프리셋): https://drive.google.com/drive/folders/1vMvdi-LFXxpIWUqg2wMFkuCWLGxoE7AZ?usp=drive_link
+ — 문의는 답장 주세요. — Allan | AP TRADING TOOLS
+
+Français: Merci d’avoir loué AP Breakout Box EA ! Pack locataire (PDF + presets) : https://drive.google.com/drive/folders/1vMvdi-LFXxpIWUqg2wMFkuCWLGxoE7AZ?usp=drive_link
+ — questions ? Répondez ici. — Allan | AP TRADING TOOLS
+
+Italiano: Grazie per il noleggio di AP Breakout Box EA! Pacchetto per renter (PDF + preset): https://drive.google.com/drive/folders/1vMvdi-LFXxpIWUqg2wMFkuCWLGxoE7AZ?usp=drive_link
+ — per domande rispondi qui. — Allan | AP TRADING TOOLS
+
+Türkçe: AP Breakout Box EA kiraladığınız için teşekkürler! Kiracı paketi (PDF + preset): https://drive.google.com/drive/folders/1vMvdi-LFXxpIWUqg2wMFkuCWLGxoE7AZ?usp=drive_link
+ — sorular için buradan yazın. — Allan | AP TRADING TOOLS
