@@ -26,3 +26,17 @@ MQL5/Tester/*
 # OS noise
 .DS_Store
 Thumbs.db
+# MetaTrader sources — keep these private
+*.mq4
+*.mq5
+# Editor/IDE artifacts
+.vscode/
+.idea/
+*.code-workspace
+
+# Extra OS cruft
+desktop.ini
+ehthumbs.db
+.Spotlight-V100
+.Trashes
+__MACOSX/
