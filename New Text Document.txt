@@ -1,0 +1,26 @@
+:: 1) Identify yourself (pick one: global for all repos, or local for just this repo)
+
+git config --global user.name "Allan Pike"
+git config --global user.email "agp68@protonmail.com"
+
+:: (or local only)
+:: git config user.name "Allan Pike"
+:: git config user.email "agp68@protonmail.com"
+
+:: 2) Stage and commit
+git add .
+git commit -m "Initial commit"
+
+:: 3) Ensure branch is called main
+git branch -M main
+
+:: 4) Set/verify the remote
+git remote -v
+:: If 'origin' is already there and correct, keep it.
+:: If it shows a wrong/empty URL, set it explicitly:
+git remote set-url origin https://github.com/noo0oobep-eng/ap-tools.git
+:: If 'origin' doesn't exist at all, add it instead:
+:: git remote add origin https://github.com/noo0oobep-eng/ap-tools.git
+
+:: 5) Push
+git push -u origin main
