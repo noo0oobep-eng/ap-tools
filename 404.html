@@ -2,21 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Page not found – AP Trading Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Page not found — AP Trading Tools</title>
+  <meta name="robots" content="noindex" />
   <style>
-    body{margin:0;background:#0f1220;color:#e7edf3;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center}
-    .card{max-width:640px;padding:32px 28px;border:1px solid #20253a;border-radius:14px;background:linear-gradient(180deg,#0f1220 0%,#0c0f1a 100%);box-shadow:0 6px 30px rgba(0,0,0,.35)}
-    h1{margin:0 0 10px;font-size:28px}
-    p{opacity:.85;line-height:1.6}
-    a.btn{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:10px;text-decoration:none;background:#2b7fff;color:#fff}
+    :root{
+      --bg:#0f1220;
+      --card:#161a2e;
+      --text:#e6e8f0;
+      --muted:#9aa3b2;
+      --accent:#3b82f6;
+      --accent-2:#2563eb;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; display:grid; place-items:center;
+      background:radial-gradient(1200px 600px at 70% -10%, #1e2444 0%, transparent 60%) , var(--bg);
+      color:var(--text); font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+    .card{
+      width:min(720px, 92vw);
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+      padding:28px 28px 22px;
+      box-shadow:var(--shadow);
+    }
+    h1{font-size:28px; margin:0 0 6px}
+    p{margin:0 0 16px; color:var(--muted)}
+    .row{display:flex; gap:12px; flex-wrap:wrap; margin-top:6px}
+    a.btn{
+      appearance:none; text-decoration:none; color:#fff;
+      background:linear-gradient(180deg, var(--accent), var(--accent-2));
+      padding:11px 16px; border-radius:10px; font-weight:600;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 6px 16px rgba(37, 99, 235, .35);
+    }
+    a.alt{color:var(--muted); text-decoration:underline}
+    code{
+      display:inline-block; padding:2px 6px; border-radius:6px;
+      background:#202643; color:#cbd5e1; border:1px solid rgba(255,255,255,.06);
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>We couldn’t find that page</h1>
-    <p>The link might be old or the URL mistyped.</p>
-    <p><a class="btn" href="/">← Back to AP Trading Tools</a></p>
-  </div>
+  <main class="card" role="main">
+    <h1>404 — Page not found</h1>
+    <p>The URL you tried doesn’t exist. If you typed it, check the address. If you followed a link, it might be outdated.</p>
+    <p><small>Tip: GitHub Pages serves this file whenever a path doesn’t match a real file (e.g. <code>/test?x=1</code>).</small></p>
+    <div class="row">
+      <a class="btn" href="/">⬅ Back to aptradingtools.com</a>
+      <a class="alt" href="https://aptradingtools.com">Open home in a new tab</a>
+    </div>
+  </main>
 </body>
 </html>
