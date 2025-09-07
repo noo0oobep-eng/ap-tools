@@ -1,0 +1,7 @@
+License & Disclaimer
+
+- Personal use under MQL5 Market terms (rental). Redistribution is prohibited.
+- Trading involves risk. This software does not guarantee profits. Use on demo first.
+- You are responsible for settings, broker selection, and compliance.
+
+© AP TRADING TOOLS. All rights reserved.

@@ -1,0 +1,11 @@
+AP TRADING TOOLS — Troubleshooting (fast)
+
+1) **AutoTrading green?** And smiley face on the chart?  
+2) **Times converted to your broker server?** Confirm by candle timestamps.  
+3) **Box draws?** After window completes, did two pending orders appear?  
+4) **Spread OK?** Current spread ≤ `InpMaxSpreadPoints` at placement time.  
+5) **Margin OK?** Account free margin must cover both pending and potential trigger.  
+6) **Filters skipping?** Box too small/large? Trend filter blocking?  
+7) **Logs clean?** See **Experts** and **Journal** for any red lines.  
+8) **VPS migration re‑done after edits?**  
+9) Contact support with: `.set` preset, symbol/TF/broker, logs, screenshot with box + inputs.

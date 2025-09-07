@@ -1,0 +1,8 @@
+London 07:00–08:00 (server) box breakout via pending orders.
+• Buy Stop above high / Sell Stop below low with buffer
+• SL at opposite side (+ extra), TP by R multiple
+• One placement per completed window, same-day expiry
+• Spread/box size guards, optional EMA trend filter
+• Validator-safe logic (no spam cancels, OrderCheck, stops-level & margin gates)
+
+Support via MQL5 messages/comments. No performance promises.

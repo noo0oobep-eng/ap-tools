@@ -1,0 +1,36 @@
+; AP TRADING TOOLS — Preset: Safe
+; Convert session times to your broker server before use!
+InpVersionTag=AP_LBX_v1.000
+InpSessionStartHour=7
+InpSessionStartMinute=0
+InpSessionEndHour=8
+InpSessionEndMinute=0
+InpBoxTF=5
+InpTradeMonday=true
+InpTradeTuesday=true
+InpTradeWednesday=true
+InpTradeThursday=true
+InpTradeFriday=true
+InpPendingExpiryHours=12
+InpCancelOppOnFill=false
+InpOneSetPerSession=true
+InpUseTrendFilter=false
+InpTrendMAPeriod=200
+InpTrendMAMethod=1
+InpTrendTF=15
+InpMaxSpreadPoints=1000
+InpMinBoxPoints=20
+InpMaxBoxPoints=0
+InpMagic=880401
+InpOrderComment=AP_LBX
+InpLogLevel=1
+InpQuickExitEnabled=false
+InpQuickExitMins=15
+InpQuickTP_R=0.5
+InpQuickTP_MinPoints=80
+InpBufferPoints=60
+InpSLExtraPoints=10
+InpTP_R_Multiple=1.2
+InpUseFixedLots=true
+InpFixedLots=0.01
+InpRiskPercent=1.0

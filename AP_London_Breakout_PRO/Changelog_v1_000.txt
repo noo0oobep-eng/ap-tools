@@ -1,0 +1,8 @@
+Changelog — AP London Breakout PRO (MT5)
+
+v1.000 (initial)
+- London 07:00–08:00 server-time box with BuyStop/SellStop placement.
+- SL beyond opposite side (+extra); TP by R multiple.
+- Strict OrderCheck + margin gates; spread/stop-level aware.
+- Optional EMA200 trend filter; min/max box filters; quick-exit module.
+- One set/day logic with pending expiry; calm flow for validator.

@@ -1,0 +1,8 @@
+**Quick Start**
+1) Attach to symbol (M5/M15). **Convert 07:00–08:00 to your broker server time.**
+2) Set `BufferPoints`, `SL extra`, and `TP R multiple` (or load a preset).
+3) Keep `CancelOppOnFill = false` for validator; rely on expiry.
+4) Ensure spread/margin OK at placement.
+
+**Support:** Send preset `.set`, broker/symbol/TF, Experts/Journal, and a screenshot with the box visible.  
+— Allan | AP TRADING TOOLS

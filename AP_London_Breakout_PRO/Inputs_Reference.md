@@ -1,39 +1,45 @@
 # Inputs Reference — AP London Breakout PRO (MT5)
 
-## Session & scanning
-- `InpSessionStartHour/Minute` — start of the London box (server time).
-- `InpSessionEndHour/Minute` — end of the window.
-- `InpBoxTF` — timeframe used to compute the box high/low (default `PERIOD_M5`).
-- `InpOneSetPerSession` — place at most one set per completed window.
+**Version / tag**
+- `InpVersionTag` — internal label printed to Journal.
 
-## Trading days
-- `InpTradeMonday` … `InpTradeFriday` — enable per weekday.
+**London window (server time)**
+- `InpSessionStartHour`, `InpSessionStartMinute` — default 07:00 (server).
+- `InpSessionEndHour`, `InpSessionEndMinute` — default 08:00 (server).
+- `InpBoxTF` — timeframe for measuring box high/low (default M5).
 
-## Placement
-- `InpBufferPoints` — points added to the high/low for entry.
-- `InpSLExtraPoints` — extra points beyond the opposite side for SL.
-- `InpTP_R_Multiple` — TP by R multiple (e.g., `1.5`).
-- `InpPendingExpiryHours` — pending orders expiry (same-day by default).
-- `InpCancelOppOnFill` — remove opposite pending after a fill (OFF for validator).
+**Trading days**
+- `InpTradeMonday` .. `InpTradeFriday` — choose active weekdays.
 
-## Risk / lots
-- `InpUseFixedLots` — true = fixed lots, false = risk%.
-- `InpFixedLots` — lot size when fixed lots is on.
-- `InpRiskPercent` — percent of balance risked when using risk%.
+**Placement**
+- `InpBufferPoints` — entry buffer above/below box (points).
+- `InpSLExtraPoints` — SL extra beyond the opposite side (points).
+- `InpTP_R_Multiple` — TP as R multiple (e.g., 1.5R).
+- `InpPendingExpiryHours` — pending order expiration.
+- `InpCancelOppOnFill` — (default OFF for validator). If ON, removes opposite pending on fill.
+- `InpOneSetPerSession` — only one placement per completed window.
 
-## Filters & guards
-- `InpUseTrendFilter` — enable EMA trend filter.
-- `InpTrendMAPeriod`, `InpTrendMAMethod`, `InpTrendTF` — EMA settings.
-- `InpMaxSpreadPoints` — maximum spread allowed.
-- `InpMinBoxPoints` / `InpMaxBoxPoints` — skip boxes outside this size.
+**Risk / lots**
+- `InpUseFixedLots` + `InpFixedLots` — fixed lot sizing.
+- `InpRiskPercent` — percent risk sizing (used if `InpUseFixedLots=false`).
 
-## Housekeeping
-- `InpMagic` — magic number.
-- `InpOrderComment` — comment tag.
-- `InpLogLevel` — log verbosity.
+**Filters & guards**
+- `InpUseTrendFilter` — EMA200 trend filter on `InpTrendTF` (method `InpTrendMAMethod`, period `InpTrendMAPeriod`).
+- `InpMaxSpreadPoints` — skip if spread too high.
+- `InpMinBoxPoints` / `InpMaxBoxPoints` — optional min/max box size filters (0 = disabled).
 
-## Quick exit (optional)
-- `InpQuickExitEnabled` — enable quick exit.
-- `InpQuickExitMins` — close after N minutes in market.
-- `InpQuickTP_R` — bank at R multiple if SL exists (e.g., `0.5`).
-- `InpQuickTP_MinPoints` — minimum points to bank when using quick TP.
+**Housekeeping**
+- `InpMagic` — magic number for orders.
+- `InpOrderComment` — order comment tag.
+- `InpLogLevel` — 0=quiet, 1=normal, 2=verbose.
+
+**Quick exit (optional)**
+- `InpQuickExitEnabled` — enable time/R‑based early exit.
+- `InpQuickExitMins` — close after N minutes in the market.
+- `InpQuickTP_R` — take profit at R ratio (if SL exists).
+- `InpQuickTP_MinPoints` — minimum TP (points) for quick exit.
+
+Implementation notes:
+- Pending orders: BuyStop above box high + buffer, SellStop below box low + buffer.
+- SL sits beyond the opposite side (+extra); TP = R multiple.
+- Strict `OrderCheck` and `OrderCalcMargin` checks, plus spread and stop‑level handling.
