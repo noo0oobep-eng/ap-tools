@@ -1,0 +1,9 @@
+FREE — AP Round Numbers Grid (MT5)
+
+Draws round-number grid lines by step (points) with optional half/quarter levels.
+• Style controls: color, width, dot/dash; can draw behind candles and be hidden/unselectable
+• Non-trading, validator-safe, very light on resources
+• Use “Step (points)” to match your symbol (e.g., 500 pts ≈ 50 pips on 5-digit FX)
+• Max lines cap included for safety
+
+Support via MQL5 messages/comments only. No external links or profit claims.
