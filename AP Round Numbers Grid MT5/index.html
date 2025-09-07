@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AP Round Numbers Grid (MT5) — Docs</title>
+<style>
+:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.wrap{max-width:900px;margin:0 auto;padding:22px}
+h1{margin:12px 0 6px;font-size:28px}
+.lead{color:var(--muted);margin:0 0 16px}
+.card{background:var(--card);border:1px solid #1d2633;border-radius:14px;padding:18px;margin:16px 0}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
+a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+img{max-width:100%;border-radius:10px;border:1px solid #1d2633}
+ul{margin:8px 0 0 18px}
+small,.muted{color:var(--muted)}
+hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
+code{background:#0e141d;border:1px solid #1d2633;border-radius:6px;padding:1px 4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="ghost btn" href="../">← Back to Home</a>
+  <h1>AP Round Numbers Grid (MT5)</h1>
+  <p class="lead">Draws a round-number grid by step (points), with optional half/quarter levels. Non-trading and validator-safe.</p>
+
+  <div class="btns">
+    <!-- Replace the product ID below with the real one -->
+    <a class="btn" href="https://www.mql5.com/en/market/product/REPLACE_ROUND_GRID_ID" target="_blank" rel="noopener">Get on MQL5</a>
+    <a class="ghost btn" href="Quick_Start.md" target="_blank" rel="noopener">Quick Start</a>
+    <a class="ghost btn" href="Pinned_Comment.txt" target="_blank" rel="noopener">Pinned Comment</a>
+  </div>
+
+  <div class="card">
+    <h3>What it does</h3>
+    <ul>
+      <li>Plots horizontal grid lines every <strong>step (points)</strong> across the visible chart.</li>
+      <li>Optional <strong>half</strong> (step/2) and <strong>quarter</strong> (step/4 and 3×step/4) levels.</li>
+      <li>Style controls: colour, width, line style (dot/dash), draw behind candles, hide/unselectable.</li>
+      <li>Non-trading: purely visual; no orders, no alerts. Very light on resources.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>How to use</h3>
+    <ol>
+      <li>Attach to any chart and set <strong>Step (points)</strong>. On 5-digit FX, <code>500</code> ≈ 50 pips.</li>
+      <li>Toggle <strong>Half</strong> and <strong>Quarter</strong> levels as needed.</li>
+      <li>Adjust colours/width/style and housekeeping (back/hidden/unselectable).</li>
+      <li>Use <strong>Max lines</strong> to keep it safe when zooming far out.</li>
+    </ol>
+    <p class="muted">Tip: Find your symbol’s <em>point</em> size in “Symbol specification” to pick a sensible step.</p>
+  </div>
+
+  <div class="card">
+    <h3>Inputs</h3>
+    <ul>
+      <li><code>Step (points)</code> — distance between main grid lines.</li>
+      <li><code>Show half levels</code> — adds middle line between steps.</li>
+      <li><code>Show quarter levels</code> — adds step/4 and 3×step/4 lines.</li>
+      <li><code>Main/Half/Quarter colors</code>, <code>Main/Minor widths</code>, <code>Style</code>.</li>
+      <li><code>Back</code>, <code>Hidden</code>, <code>Unselectable</code> — tidy UI options.</li>
+      <li><code>Max lines</code> — hard cap for performance safety.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Screenshots</h3>
+    <img src="grid-01.png" alt="Round numbers grid on chart" />
+    <br><br>
+    <img src="grid-02.png" alt="Inputs panel" />
+  </div>
+
+  <div class="card">
+    <h3>Files in this folder</h3>
+    <ul>
+      <li><code>Quick_Start.md</code> — usage & inputs</li>
+      <li><code>Pinned_Comment.txt</code> — short MQL5 pinned comment</li>
+      <li><code>Version.txt</code> — version tag</li>
+      <li><code>AP_Round_Numbers_Grid_Default.set</code> — sample preset</li>
+      <li>PNG screenshots shown above</li>
+    </ul>
+  </div>
+
+  <hr />
+  <p class="muted">Support via MQL5 messages/comments only. No profit promises or external links.</p>
+</div>
+</body>
+</html>
