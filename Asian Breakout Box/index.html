@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AP Asian Breakout Box — Docs</title>
+<style>
+:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.wrap{max-width:900px;margin:0 auto;padding:24px}
+h1{margin:0 0 8px;font-size:28px}.lead{color:var(--muted);margin:0 0 18px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px}
+a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
+a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.card{background:#121822;border:1px solid #1d2633;border-radius:14px;padding:18px;margin:14px 0}
+h2{margin:8px 0 6px} ul,ol{margin:6px 0 0 18px}
+footer{color:var(--muted);text-align:center;padding:28px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>AP Asian Breakout Box (MT5)</h1>
+    <p class="lead">Asian session time-box breakout with configurable hours, buffered pendings, and optional trend filter.</p>
+
+    <div class="btns">
+      <!-- Replace XXXXXX with the actual product ID -->
+      <a class="btn" href="https://www.mql5.com/en/market/product/148555" target="_blank" rel="noopener">Get on MQL5</a>
+      <a class="ghost btn" href="/" rel="noopener">⬅ Back to Home</a>
+    </div>
+
+    <div class="card">
+      <h2>Quick Start</h2>
+      <ol>
+        <li>Set your Asian session start/end (server time).</li>
+        <li>Choose breakout buffer (points) and SL/TP method (ATR or fixed).</li>
+        <li>Enable trend filter if you want only with-trend trades.</li>
+        <li>Keep pending expiry to prevent stale orders.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>Inputs (summary)</h2>
+      <ul>
+        <li><b>SessionStart/End</b> – the time window for the box.</li>
+        <li><b>BufferPoints</b> – distance beyond high/low for pending orders.</li>
+        <li><b>ATRPeriod/Mult</b> or <b>SL/TP Points</b>.</li>
+        <li><b>UseFixedLots / Risk$</b> for sizing.</li>
+      </ul>
+    </div>
+
+    <footer>© AP Trading Tools • Built for MetaTrader 5</footer>
+  </div>
+</body>
+</html>
