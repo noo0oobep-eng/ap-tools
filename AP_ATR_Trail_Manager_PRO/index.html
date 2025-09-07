@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AP ATR Trail Manager PRO — Docs</title>
+<style>
+:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.wrap{max-width:900px;margin:0 auto;padding:24px}
+h1{margin:0 0 8px;font-size:28px}
+.lead{color:var(--muted);margin:0 0 18px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px}
+a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
+a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.card{background:#121822;border:1px solid #1d2633;border-radius:14px;padding:18px;margin:14px 0}
+h2{margin:8px 0 6px}
+ul{margin:6px 0 0 18px}
+footer{color:var(--muted);text-align:center;padding:28px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>AP ATR Trail Manager PRO</h1>
+    <p class="lead">Multi-symbol ATR trailing with partials, daily loss guard, and calm management for open positions.</p>
+
+    <div class="btns">
+      <!-- If you changed the product ID on the homepage, keep this in sync -->
+      <a class="btn" href="https://www.mql5.com/en/market/product/148700" target="_blank" rel="noopener">Get on MQL5</a>
+      <a class="ghost btn" href="/" rel="noopener">⬅ Back to Home</a>
+    </div>
+
+    <div class="card">
+      <h2>Overview</h2>
+      <ul>
+        <li>Trails open positions by an ATR-based stop line (per symbol).</li>
+        <li>Optional partial exits at fixed R or distance steps.</li>
+        <li>Daily loss guard (by % or money) to pause management.</li>
+        <li>Works quietly alongside other EAs; magic/symbol filters prevent conflicts.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Quick Start (MT5)</h2>
+      <ol>
+        <li>Attach to any chart (one chart can manage multiple symbols).</li>
+        <li>Set <b>SymbolsToManage</b> (or keep “current symbol” if applicable).</li>
+        <li>Choose <b>ATRPeriod</b> and <b>ATRMult</b> for the trailing distance.</li>
+        <li>Enable partials if needed (size and trigger distance).</li>
+        <li>Keep daily guard at default or set your own %/money cap.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>Main Inputs (summary)</h2>
+      <ul>
+        <li><b>ATRPeriod / ATRMult</b> – trailing distance.</li>
+        <li><b>TrailMode</b> – e.g., step/candle-close update style.</li>
+        <li><b>Partials</b> – enable, step size, and lot sizes.</li>
+        <li><b>DailyLossGuard%</b> / <b>DailyLossMoney</b> – pause when exceeded.</li>
+        <li><b>Magic/Symbol filters</b> – manage only the intended positions.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Notes</h2>
+      <ul>
+        <li>No martingale/grid. Neutral styling and calm order flow.</li>
+        <li>Support is via MQL5 messages/comments only.</li>
+      </ul>
+    </div>
+
+    <footer>© AP Trading Tools • Built for MetaTrader 5</footer>
+  </div>
+</body>
+</html>
