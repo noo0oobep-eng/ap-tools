@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AP ATR Trail (Indicator) — Docs</title>
+<style>
+:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.wrap{max-width:900px;margin:0 auto;padding:24px}
+h1{margin:0 0 8px;font-size:28px}.lead{color:var(--muted);margin:0 0 18px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px}
+a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
+a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.card{background:#121822;border:1px solid #1d2633;border-radius:14px;padding:18px;margin:14px 0}
+h2{margin:8px 0 6px} ul,ol{margin:6px 0 0 18px}
+footer{color:var(--muted);text-align:center;padding:28px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>AP ATR Trail (Indicator)</h1>
+    <p class="lead">Clean ATR-based trailing line for discretionary trade management and screenshots. Neutral, lightweight.</p>
+
+    <div class="btns">
+      <!-- Replace XXXXXX with the real MQL5 product ID you used on the homepage -->
+      <a class="btn" href="https://www.mql5.com/en/market/product/148873" target="_blank" rel="noopener">Get on MQL5</a>
+      <a class="ghost btn" href="/" rel="noopener">⬅ Back to Home</a>
+    </div>
+
+    <div class="card">
+      <h2>Overview</h2>
+      <ul>
+        <li>Plots a trailing line using ATR distance from price.</li>
+        <li>Useful as a visual stop guide or review overlay.</li>
+        <li>Designed to stay unobtrusive on dark/light themes.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Quick Start</h2>
+      <ol>
+        <li>Attach to any chart and timeframe.</li>
+        <li>Set <b>ATRPeriod</b> and <b>ATRMultiplier</b> for your desired distance.</li>
+        <li>Choose <b>UpdateOnClose</b> if you prefer updates once per bar.</li>
+        <li>Adjust line color/width to your chart style.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>Main Inputs (summary)</h2>
+      <ul>
+        <li><b>ATRPeriod</b> — lookback for ATR.</li>
+        <li><b>ATRMultiplier</b> — distance factor from price.</li>
+        <li><b>UpdateOnClose</b> — true = update only at candle close.</li>
+        <li><b>LineColor / LineWidth / Style</b> — visual settings.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Notes</h2>
+      <ul>
+        <li>No signals or claims; a visual tool only.</li>
+        <li>Support via MQL5 messages/comments.</li>
+      </ul>
+    </div>
+
+    <footer>© AP Trading Tools • Built for MetaTrader 5</footer>
+  </div>
+</body>
+</html>
