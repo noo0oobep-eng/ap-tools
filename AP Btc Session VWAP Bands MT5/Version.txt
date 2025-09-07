@@ -1,0 +1,1 @@
+v1.0 — VWAP core with daily/weekly/anchor modes + 2 bands and alerts.

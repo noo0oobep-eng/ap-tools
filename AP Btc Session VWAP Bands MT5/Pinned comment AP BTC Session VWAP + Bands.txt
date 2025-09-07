@@ -1,0 +1,16 @@
+AP BTC Session VWAP + Bands (MT5) — pinned comment
+
+Plots VWAP with ±K bands in Daily, Weekly, or anchored session mode. Alerts on cross or band touch. Indicator only.
+
+How to use
+
+Choose Mode (Daily / Weekly / AnchorTime).
+
+For AnchorTime, set the session start (hour/minute).
+
+Adjust StdDev1/2 and enable alerts if needed.
+
+Notes
+• Non-trading indicator.
+• No DLLs or WebRequest.
+• English inputs.
