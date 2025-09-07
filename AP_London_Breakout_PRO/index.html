@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AP London Breakout PRO (MT5) — Docs</title>
+<style>
+:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.wrap{max-width:900px;margin:0 auto;padding:22px}
+h1{margin:12px 0 6px;font-size:28px}
+.lead{color:var(--muted);margin:0 0 16px}
+.card{background:var(--card);border:1px solid #1d2633;border-radius:14px;padding:18px;margin:16px 0}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
+a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+img{max-width:100%;border-radius:10px;border:1px solid #1d2633}
+ul{margin:8px 0 0 18px}
+small,.muted{color:var(--muted)}
+hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="ghost btn" href="../">← Back to Home</a>
+  <h1>AP London Breakout PRO (MT5)</h1>
+  <p class="lead">07:00–08:00 (server) session-box breakout with pending orders, SL/TP by R-multiple, strict validator-safe logic.</p>
+
+  <div class="btns">
+    <!-- Replace the product ID with your real one -->
+    <a class="btn" href="https://www.mql5.com/en/market/product/REPLACE_LONDON_BREAKOUT_PRO_ID" target="_blank" rel="noopener">Get on MQL5</a>
+    <a class="ghost btn" href="Quick_Start.md" target="_blank" rel="noopener">Quick Start</a>
+    <a class="ghost btn" href="Inputs_Reference.md" target="_blank" rel="noopener">Inputs</a>
+    <a class="ghost btn" href="AP_LBX_Default.set" target="_blank" rel="noopener">Preset (.set)</a>
+    <a class="ghost btn" href="Version.txt" target="_blank" rel="noopener">Version</a>
+  </div>
+
+  <div class="card">
+    <h3>What it does</h3>
+    <ul>
+      <li>Builds a 07:00–08:00 (server time) box on <strong>M5</strong> (configurable TF for the box scan).</li>
+      <li>Places <strong>Buy Stop</strong> above the box high and <strong>Sell Stop</strong> below the box low with a buffer.</li>
+      <li>SL at opposite side (+ extra), TP by <em>R multiple</em> (e.g., 1.5R).</li>
+      <li>One placement per completed window, same-day pending expiry.</li>
+      <li>Spreads, size filters, trend filter (optional), and margin/stops checks.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>How it trades</h3>
+    <ol>
+      <li>At the end of the 07:00–08:00 window, EA reads the box high/low (M5 by default).</li>
+      <li>Places Buy Stop (high + buffer) and/or Sell Stop (low − buffer), adjusts SL/TP to broker stops level.</li>
+      <li>Opposite pending can be left to expire (validator-clean) or removed on fill if you enable the option.</li>
+      <li>Optional quick-exit: after N minutes or at 0.5R (with a minimum points guard).</li>
+    </ol>
+    <p class="muted">Server time matters—align the window to your broker if needed.</p>
+  </div>
+
+  <div class="card">
+    <h3>Validator & safety notes</h3>
+    <ul>
+      <li>No DLLs. Uses <code>OrderCheck</code>, stops-level and margin gates before sending.</li>
+      <li>Default <strong>Cancel opposite on fill = OFF</strong> for validator friendliness; rely on expiry.</li>
+      <li>Throttle: one attempt per completed session window.</li>
+      <li>Generous spread cap by default (tighten for live).</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Screenshots</h3>
+    <img src="lbx-01.png" alt="London box and pending orders" />
+    <br><br>
+    <img src="lbx-02.png" alt="Inputs panel" />
+  </div>
+
+  <div class="card">
+    <h3>Files in this folder</h3>
+    <ul>
+      <li><code>Quick_Start.md</code> — setup & usage</li>
+      <li><code>Inputs_Reference.md</code> — parameter reference</li>
+      <li><code>AP_LBX_Default.set</code> — sample preset</li>
+      <li><code>Pinned_Comment.txt</code> — short MQL5 pinned comment</li>
+      <li><code>Version.txt</code> — version tag</li>
+      <li>PNG screenshots used above</li>
+    </ul>
+  </div>
+
+  <hr />
+  <p class="muted">Support via MQL5 messages/comments only. No profit promises or external links.</p>
+</div>
+</body>
+</html>
