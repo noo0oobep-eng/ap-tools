@@ -5,56 +5,76 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>AP Btc Session VWAP Bands MT5 — Docs</title>
 <style>
-:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff}
+:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
 *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-.wrap{max-width:900px;margin:0 auto;padding:24px}
-h1{margin:0 0 8px;font-size:28px}.lead{color:var(--muted);margin:0 0 18px}
-.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px}
+.wrap{max-width:900px;margin:0 auto;padding:22px}
+h1{margin:12px 0 6px;font-size:28px}
+.lead{color:var(--muted);margin:0 0 16px}
+.card{background:var(--card);border:1px solid #1d2633;border-radius:14px;padding:18px;margin:16px 0}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
 a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
 a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
-.card{background:#121822;border:1px solid #1d2633;border-radius:14px;padding:18px;margin:14px 0}
-h2{margin:8px 0 6px} ul,ol{margin:6px 0 0 18px}
-footer{color:var(--muted);text-align:center;padding:28px}
+img{max-width:100%;border-radius:10px;border:1px solid #1d2633}
+ul{margin:8px 0 0 18px}
+small, .muted{color:var(--muted)}
+hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>AP Btc Session VWAP Bands MT5</h1>
-    <p class="lead">Session-based BTC VWAP with upper/lower bands for balanced intraday reference.</p>
+<div class="wrap">
+  <a class="ghost btn" href="../">← Back to Home</a>
+  <h1>AP Btc Session VWAP Bands MT5</h1>
+  <p class="lead">Session/anchored VWAP with ±1/±2 bands and clean visuals. English only; support via MQL5 messages/comments.</p>
 
-    <div class="btns">
-      <!-- if published on MQL5, set the correct ID; otherwise delete this line for now -->
-      <a class="btn" href="https://www.mql5.com/en/market/product/149235" target="_blank" rel="noopener">Get on MQL5</a>
-      <a class="btn ghost" href="./AP%20BTC%20Session%20VWAP%20Bands/" target="_blank" rel="noopener">Docs</a>
-    </div>
-
-    <div class="card">
-      <h2>Quick Start</h2>
-      <ol>
-        <li>Attach to chart / pick timeframe.</li>
-        <li>Set the key inputs (list the few that matter).</li>
-        <li>Keep protections on by default.</li>
-      </ol>
-    </div>
-
-    <div class="card">
-      <h2>Main Inputs (summary)</h2>
-      <ul>
-        <li><b>Input A</b> — short description.</li>
-        <li><b>Input B</b> — short description.</li>
-        <li><b>Input C</b> — short description.</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h2>Notes</h2>
-      <ul>
-        <li>No martingale/grid. Calm order flow.</li>
-        <li>Support via MQL5 messages/comments only.</li>
-      </ul>
-    </div>
-
-    <footer>© AP Trading Tools • Built for MetaTrader 5</footer>
+  <div class="btns">
+    <!-- MQL5 product ID (from your screenshot it is 149235) -->
+    <a class="btn" href="https://www.mql5.com/en/market/product/149235" target="_blank" rel="noopener">Get on MQL5</a>
+    <a class="ghost btn" href="README.md" target="_blank" rel="noopener">Quick Start</a>
   </div>
+
+  <div class="card">
+    <h3>What it does</h3>
+    <ul>
+      <li>Plots VWAP calculated from typical price.</li>
+      <li>Session modes: <em>Daily</em>, <em>Weekly</em>, or <em>Anchored</em> (pick your start time/anchor).</li>
+      <li>Optional ±1 and ±2 bands with configurable multipliers.</li>
+      <li>Neutral theme for screenshots; low resource usage.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>How to use</h3>
+    <ol>
+      <li>Drop the indicator on a BTC chart (any TF you prefer).</li>
+      <li>Choose <strong>Mode</strong>: Daily, Weekly, or Anchored. For Anchored, set the start datetime.</li>
+      <li>Toggle/adjust the <strong>Band multipliers</strong> and line styles as needed.</li>
+    </ol>
+    <p class="muted">Tip: For screenshots, set a gentle opacity and slightly thicker line width.</p>
+  </div>
+
+  <div class="card">
+    <h3>Screenshots</h3>
+    <!-- Rename your images to vwap-01.png / vwap-02.png if you can.
+         If not, change src to the exact uploaded filenames (URL-encode spaces). -->
+    <img src="vwap-01.png" alt="VWAP on-chart example" />
+    <br><br>
+    <img src="vwap-02.png" alt="Inputs panel" />
+  </div>
+
+  <div class="card">
+    <h3>Files in this folder</h3>
+    <ul>
+      <li><code>README.md</code> – quick start and input notes</li>
+      <li><code>Pinned comment AP BTC Session VWAP ....txt</code> – short MQL5 pinned comment</li>
+      <li><code>Version.txt</code> – version tag</li>
+      <li><code>VWAP_Anchor_0800_StdBands.set</code> – sample preset</li>
+      <li><code>VWAP_Daily_Default.set</code> – sample preset</li>
+      <li>PNG screenshots for the Market page</li>
+    </ul>
+  </div>
+
+  <hr />
+  <p class="muted">Support via MQL5 messages/comments only. No profit promises or external links.</p>
+</div>
 </body>
 </html>
