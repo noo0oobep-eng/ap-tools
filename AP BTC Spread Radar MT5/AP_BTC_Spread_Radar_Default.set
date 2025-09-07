@@ -1,0 +1,7 @@
+; AP BTC Spread Radar (MT5 Indicator) — Default preset
+MAPeriod=50
+UseEMA=false
+MaxHistory=5000
+ShowComment=true
+CommentEvery=3
+VerboseLog=false

@@ -1,0 +1,5 @@
+AP BTC Spread Radar — Version
+v1.0.0  (2025-09-04)
+- Initial release.
+- Live spread line + spread moving average.
+- Lightweight, validator-safe, neutral defaults.

@@ -1,0 +1,34 @@
+AP BTC Spread Radar (MT5) – Pinned Comment
+Lightweight panel that shows the live spread (points) for the current symbol, plus an optional moving-average baseline so you can see when spread is unusually high or calm. Great for BTC pre-trade checks and screenshots.
+
+How to use
+
+Attach to the symbol you trade (any timeframe).
+
+Set MA_Period for the spread baseline (set to 0 to hide).
+
+Optional: enable ShowComment and choose CommentEvery for how often the HUD updates.
+
+Reading the numbers
+
+The value is in points. On many BTC symbols 10,000 pts ≈ $1 (check your broker).
+
+If current spread >> MA spread, conditions are expensive/illiquid; you may wish to delay entries or reduce size.
+
+Notes
+
+Works on any symbol; designed with BTC in mind.
+
+Very low resource usage; safe to leave running.
+
+If you ever see 0 spread, ensure the market is open and ticks are coming in.
+
+Support / Policy
+
+Support is via MQL5 messages/comments only.
+
+No signals, no external links, no profit promises.
+
+Updates are free for owners; feedback is welcome.
+
+Happy trading and stay spread-aware!
