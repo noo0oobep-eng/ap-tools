@@ -6,11 +6,13 @@
   <title>AP Trading Tools – Expert Advisors & Indicators</title>
   <style>
     :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
     header{padding:40px 20px;text-align:center}
     h1{margin:0 0 8px;font-size:32px}
     p.lead{margin:0;color:var(--muted)}
     .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    h2{margin:28px 0 12px}
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
     .card{background:var(--card);border:1px solid #1d2633;border-radius:14px;padding:18px}
     .card h3{margin:0 0 6px}
@@ -26,16 +28,18 @@
 <body>
   <header>
     <h1>AP Trading Tools</h1>
-    <p class="lead">MT5 Expert Advisors & Indicators – clean code, validator-safe, and trader-friendly.</p>
+    <p class="lead">MT5 Expert Advisors & Indicators – clean code, validator-safe, and trader-friendly. Support via MQL5 messages/comments only.</p>
   </header>
 
   <div class="wrap">
     <div class="note">
-      <strong>Launch Promo:</strong> Selected tools are lifetime buy for early adopters, then switch to rent-only. Don’t miss it!
+      <strong>Launch Promo:</strong> Selected tools are lifetime buy for early adopters, then switch to rent-only.
     </div>
 
+    <!-- ======================= FEATURED EAs ======================= -->
     <h2>Featured EAs</h2>
     <div class="grid">
+      <!-- 1 -->
       <div class="card">
         <h3>AP London Session Breakout (MT5)</h3>
         <div class="tags">
@@ -45,10 +49,10 @@
         <div class="btns">
           <a class="btn" href="https://www.mql5.com/en/market/product/148680" target="_blank" rel="noopener">Get on MQL5</a>
           <a class="btn ghost" href="./London%20Session%20Breakout/" target="_blank" rel="noopener">Docs</a>
-
         </div>
       </div>
 
+      <!-- 2 -->
       <div class="card">
         <h3>AP InsideBar Breakout (MT5)</h3>
         <div class="tags">
@@ -57,47 +61,158 @@
         <p>Inside-bar detection with smart pending placement and automatic opposite-side cleanup after fills.</p>
         <div class="btns">
           <a class="btn" href="https://www.mql5.com/en/market/product/148713" target="_blank" rel="noopener">Get on MQL5</a>
-          <a class="btn ghost" href="./insidebar-breakout/">Docs</a>
+          <a class="btn ghost" href="./insidebar-breakout/" target="_blank" rel="noopener">Docs</a>
         </div>
       </div>
 
+      <!-- 3 -->
       <div class="card">
         <h3>AP ATR Trail Manager (PRO)</h3>
         <div class="tags">
           <span class="tag">Risk</span><span class="tag">Trade Manager</span><span class="tag">ATR</span>
         </div>
-        <p>Multi-symbol ATR trailing with partials, daily loss guard, and stealth management for open positions.</p>
+        <p>Multi-symbol ATR trailing with partials, daily loss guard, and calm management for open positions.</p>
         <div class="btns">
-          <a class="btn" href="#" target="_blank" rel="noopener">Get on MQL5</a>
-          <a class="btn ghost" href="./AP_ATR_Trail_Manager_PRO/">Docs</a>
+          <!-- TODO: replace REPLACE_ATR_MANAGER_ID with your product ID number -->
+          <a class="btn" href="https://www.mql5.com/en/market/product/REPLACE_ATR_MANAGER_ID" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./AP_ATR_Trail_Manager_PRO/" target="_blank" rel="noopener">Docs</a>
         </div>
       </div>
     </div>
 
-    <h2 style="margin-top:28px">Free Indicators</h2>
+    <!-- ======================= MORE EAs ======================= -->
+    <h2>More EAs</h2>
     <div class="grid">
+      <div class="card">
+        <h3>AP Previous Day Breakout (MT5)</h3>
+        <div class="tags"><span class="tag">EA</span><span class="tag">Range</span></div>
+        <p>Previous-day range breakout with buffered pending orders and built-in safety checks.</p>
+        <div class="btns">
+          <!-- TODO: add product ID -->
+          <a class="btn" href="https://www.mql5.com/en/market/product/REPLACE_PREV_DAY_BREAKOUT_ID" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./AP%20Previous%20Day%20Breakout/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP Breakout Box (EA)</h3>
+        <div class="tags"><span class="tag">EA</span><span class="tag">Time-box</span></div>
+        <p>Time-box breakout with fixed/floating buffers and optional trend filter.</p>
+        <div class="btns">
+          <!-- TODO: add product ID -->
+          <a class="btn" href="https://www.mql5.com/en/market/product/REPLACE_BREAKOUT_BOX_ID" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./AP_BreakoutBox_EA/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP Trade Manager (Lite)</h3>
+        <div class="tags"><span class="tag">Utility</span><span class="tag">Manager</span></div>
+        <p>Compact trade manager with break-even, partials, and quick-close actions.</p>
+        <div class="btns">
+          <!-- TODO: add product ID -->
+          <a class="btn" href="https://www.mql5.com/en/market/product/REPLACE_TRADE_MANAGER_ID" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./AP%20Trade%20Manager/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP BTC Breakdown (MT5)</h3>
+        <div class="tags"><span class="tag">EA</span><span class="tag">BTC</span></div>
+        <p>Short-only breakdown with retest entries, volume gate, EMA trend filter, and spread/ATR guards.</p>
+        <div class="btns">
+          <!-- TODO: add product ID when published -->
+          <a class="btn" href="https://www.mql5.com/en/market/product/REPLACE_BTC_BREAKDOWN_ID" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./btc-breakdown.html" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================= FREE INDICATORS ======================= -->
+    <h2>Free Indicators</h2>
+    <div class="grid">
+      <!-- existing two -->
       <div class="card">
         <h3>AP Session Boxes</h3>
         <div class="tags"><span class="tag">Indicator</span><span class="tag">Sessions</span></div>
         <p>Clean London/NY/Asia session boxes with custom times, opacity, and lookback. Great for screenshots.</p>
         <div class="btns">
-          <a class="btn" href="./AP_Session_Boxes/">Download</a>
-          <a class="btn ghost" href="./AP_Session_Boxes/">Docs</a>
+          <a class="btn" href="./AP_Session_Boxes/" target="_blank" rel="noopener">Download</a>
+          <a class="btn ghost" href="./AP_Session_Boxes/" target="_blank" rel="noopener">Docs</a>
         </div>
       </div>
+
       <div class="card">
         <h3>Candle Countdown</h3>
         <div class="tags"><span class="tag">Indicator</span><span class="tag">Utility</span></div>
         <p>Minimal candle time-left display that respects chart theme and stays light on resources.</p>
         <div class="btns">
-          <a class="btn" href="./candle_count_down/">Download</a>
-          <a class="btn ghost" href="./candle_count_down/">Docs</a>
+          <a class="btn" href="./candle_count_down/" target="_blank" rel="noopener">Download</a>
+          <a class="btn ghost" href="./candle_count_down/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <!-- more freebies -->
+      <div class="card">
+        <h3>Daily Open Line</h3>
+        <div class="tags"><span class="tag">Indicator</span><span class="tag">Utility</span></div>
+        <p>Draws the daily open with session-aware styling. Lightweight and neutral.</p>
+        <div class="btns">
+          <!-- If listed on MQL5, add the ID and change to Get on MQL5 -->
+          <a class="btn ghost" href="./Daily%20open%20line/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>MA Cross Alerts</h3>
+        <div class="tags"><span class="tag">Indicator</span><span class="tag">Signals</span></div>
+        <p>Moving-average cross alerts with on-chart labels and optional notifications.</p>
+        <div class="btns">
+          <!-- TODO: add product ID if published -->
+          <a class="btn ghost" href="./MA%20Cross%20Alerts/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================= MORE INDICATORS & UTILITIES ======================= -->
+    <h2>More Indicators & Utilities</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>AP Previous Levels</h3>
+        <div class="tags"><span class="tag">Indicator</span><span class="tag">Levels</span></div>
+        <p>Marks prior session/day/week levels with neutral styling for context.</p>
+        <div class="btns">
+          <!-- TODO: add product ID -->
+          <a class="btn" href="https://www.mql5.com/en/market/product/REPLACE_PREV_LEVELS_ID" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./AP%20Previous%20levels/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>ICT Liquidity Sweep (FVG) MT5</h3>
+        <div class="tags"><span class="tag">Indicator</span><span class="tag">BTC/FX</span></div>
+        <p>Marks prior HI/LO sweeps and fair-value gaps with clean, optional alerts.</p>
+        <div class="btns">
+          <!-- TODO: add product ID -->
+          <a class="btn" href="https://www.mql5.com/en/market/product/REPLACE_LIQ_SWEEP_ID" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./ICT_LiquiditySweep_FVG_MT5/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP ATR Trail (Indicator)</h3>
+        <div class="tags"><span class="tag">Indicator</span><span class="tag">ATR</span></div>
+        <p>Clean ATR trailing line for discretionary exits or screenshots.</p>
+        <div class="btns">
+          <!-- TODO: add product ID -->
+          <a class="btn" href="https://www.mql5.com/en/market/product/REPLACE_ATR_TRAIL_INDICATOR_ID" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./AP%20ATR%20Trail%20(MT5)/" target="_blank" rel="noopener">Docs</a>
         </div>
       </div>
     </div>
 
     <div class="note">
-      Want help or custom tweaks? Email <strong>support@yourdomain</strong> or open an issue on GitHub.
+      Need a preset or quick-start? Send me a message on MQL5. Support is via MQL5 messages/comments only.
     </div>
   </div>
 
@@ -106,3 +221,4 @@
   </footer>
 </body>
 </html>
+
