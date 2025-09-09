@@ -1,0 +1,6 @@
+- Algo Trading enabled?
+- Market is open?
+- Spread under MaxSpread?
+- Session times match broker server time?
+- One set per session already attempted?
+- Journal / Experts tab messages?
