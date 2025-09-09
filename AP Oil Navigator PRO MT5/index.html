@@ -1,1 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AP Oil Navigator PRO (MT5) — Docs</title>
+  <meta name="description" content="Trend+pullback EA for XTIUSD/USOIL on M30. ATR SL/TP, pending expiry, validator-safe.">
+  <link rel="canonical" href="https://aptradingtools.com/AP%20Oil%20Navigator%20PRO%20MT5/">
+</head>
+<body style="max-width:900px;margin:40px auto;padding:0 16px;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#e8eef6;background:#0b0f14">
+  <h1 style="margin:0 0 8px">AP Oil Navigator PRO (MT5)</h1>
+  <p style="color:#9fb0c3">Trend + pullback for XTIUSD/USOIL on M30. ATR-based SL/TP, session/news guards, pending expiry, and validator-safe order flow.</p>
+  <hr style="border:0;border-top:1px solid #1d2633;margin:18px 0">
 
+  <h2>Quick start</h2>
+  <ol>
+    <li>Attach to <strong>XTIUSD</strong> or <strong>USOIL</strong> on <strong>M30</strong>.</li>
+    <li>Defaults are fine; typical: <code>ATR SL=2.0</code>, <code>TP R=1.5</code>, session 13:00–22:59 (server).</li>
+    <li>Set <code>MaxSpreadPoints</code> for your broker; choose fixed lots or % risk.</li>
+  </ol>
+
+  <h2>Screenshots</h2>
+  <p style="color:#9fb0c3">Place your 4 PNGs at <code>/assets/products/oil-navigator/shot-1.png</code> … <code>shot-4.png</code> and they’ll show below.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px">
+    <img src="/assets/products/oil-navigator/shot-1.png" alt="Setup" style="width:100%;border:1px solid #1d2633;border-radius:10px">
+    <img src="/assets/products/oil-navigator/shot-2.png" alt="Inputs" style="width:100%;border:1px solid #1d2633;border-radius:10px">
+    <img src="/assets/products/oil-navigator/shot-3.png" alt="Backtest" style="width:100%;border:1px solid #1d2633;border-radius:10px">
+    <img src="/assets/products/oil-navigator/shot-4.png" alt="Orders" style="width:100%;border:1px solid #1d2633;border-radius:10px">
+  </div>
+
+  <h2>Key inputs</h2>
+  <ul>
+    <li><strong>Trend:</strong> Fast/Slow MA (EMA), ATR period.</li>
+    <li><strong>Entries:</strong> Buffered stop above/below previous bar in trend direction.</li>
+    <li><strong>Stops/TP:</strong> ATR multiples (fallback if ATR unavailable).</li>
+    <li><strong>Protection:</strong> Max spread, per-bar throttle, daily loss guard, one set per bar.</li>
+    <li><strong>Validation:</strong> Live symbol restriction; tester fallbacks/gates.</li>
+  </ul>
+
+  <hr style="border:0;border-top:1px solid #1d2633;margin:24px 0">
+  <p><a href="https://www.mql5.com/en/market/product/148909" target="_blank" rel="noopener" style="color:#58a6ff">Get on MQL5</a></p>
+</body>
+</html>
