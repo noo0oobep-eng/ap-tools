@@ -1,0 +1,5 @@
+v1.000
+- Initial public release
+- 13:30–14:30 NY window, box breakout
+- Stops-level & margin gates, same-day expiry
+- Trend filter & quick-exit options
