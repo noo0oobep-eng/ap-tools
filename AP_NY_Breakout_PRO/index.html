@@ -1,1 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AP NY Breakout PRO (MT5)</title>
+  <meta name="description" content="13:30–14:30 (server) NY session box breakout via pending orders. SL opposite side (+extra), TP by R-multiple. OrderCheck + margin gates, validator-safe." />
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <style>
+    :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;--border:#1d2633}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px}
+    a{color:var(--accent);text-decoration:none}
+    .back{display:inline-block;background:#0e141d;border:1px solid var(--border);color:var(--muted);padding:8px 12px;border-radius:10px}
+    h1{margin:14px 0 10px;font-size:32px}
+    .pillbar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+    .pill{display:inline-block;background:var(--accent);color:#000;padding:8px 12px;border-radius:999px;font-weight:600}
+    .pill.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin:16px 0}
+    h3{margin:0 0 10px;font-size:18px}
+    ul{margin:8px 0 0 18px}
+    ol{margin:8px 0 0 18px}
+    code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+    .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid var(--border);padding:8px 6px;text-align:left;font-size:14px}
+    .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+    .shots img{width:100%;height:auto;border-radius:10px;border:1px solid var(--border);background:#0e141d}
+    .muted{color:var(--muted)}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+    .btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/"><span>←</span> Back to Home</a>
+    <h1>AP NY Breakout PRO (MT5)</h1>
+    <p class="muted">13:30–14:30 (server) session box breakout via pending orders. SL at opposite side (+extra), TP by R-multiple. One set per window, validator-friendly gates.</p>
 
+    <div class="pillbar">
+      <a class="pill" href="https://www.mql5.com/en/market/product/REPLACE_NY_BREAKOUT_ID" target="_blank" rel="noopener">Get on MQL5</a>
+      <a class="pill ghost" href="./Quick%20Start.md" target="_blank" rel="noopener">Quick Start</a>
+      <a class="pill ghost" href="#inputs">Inputs</a>
+      <a class="pill ghost" href="#presets">Preset (.set)</a>
+      <a class="pill ghost" href="#version">Version</a>
+    </div>
+
+    <div class="panel">
+      <h3>What it does</h3>
+      <ul>
+        <li><strong>Window:</strong> 13:30–14:30 (server). Box from <span class="mono">InpBoxTF</span> (default M5).</li>
+        <li><strong>Orders:</strong> Buy Stop above box high (+buffer) / Sell Stop below box low (–buffer).</li>
+        <li><strong>Exits:</strong> SL at opposite side (+extra). TP by <span class="mono">R-multiple</span>.</li>
+        <li><strong>Flow:</strong> One placement per completed window; pendings auto-expire same day.</li>
+        <li><strong>Safety:</strong> <span class="mono">OrderCheck</span>, stops-level & margin gates, generous spread default.</li>
+        <li><strong>Options:</strong> EMA trend filter, tiny/huge box skip, quick-exit.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>How it trades</h3>
+      <ol>
+        <li>After the window ends, EA reads high/low of the box (M5 by default).</li>
+        <li>Places Buy Stop above high (+buffer) and/or Sell Stop below low (–buffer).</li>
+        <li>SL is the opposite side plus <span class="mono">InpSLExtraPoints</span>; TP is by <span class="mono">InpTP_R_Multiple</span>.</li>
+        <li>Only one set is attempted per completed window; pendings expire in <span class="mono">InpPendingExpiryHours</span>.</li>
+        <li>Validator-safe: relies on expiry; opposite-side cancel is OFF by default.</li>
+      </ol>
+    </div>
+
+    <div id="inputs" class="panel">
+      <h3>Inputs (key)</h3>
+      <div class="grid-2">
+        <div>
+          <table>
+            <tr><th>Window & Box</th><th>Default</th></tr>
+            <tr><td>Start → End</td><td class="mono">13:30 → 14:30</td></tr>
+            <tr><td>Box TF (<span class="mono">InpBoxTF</span>)</td><td class="mono">M5</td></tr>
+            <tr><td>Entry buffer (pts)</td><td class="mono">40</td></tr>
+            <tr><td>SL extra (pts)</td><td class="mono">5</td></tr>
+            <tr><td>TP R-multiple</td><td class="mono">1.5</td></tr>
+          </table>
+        </div>
+        <div>
+          <table>
+            <tr><th>Risk & Guards</th><th>Default</th></tr>
+            <tr><td>Fixed lots / % risk</td><td class="mono">0.01 or 1%</td></tr>
+            <tr><td>Max spread (pts)</td><td class="mono">1000</td></tr>
+            <tr><td>Min / Max box (pts)</td><td class="mono">20 / 0 (off)</td></tr>
+            <tr><td>Quick-exit</td><td class="mono">Off (15m/0.5R/80pts)</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="presets" class="panel">
+      <h3>Presets</h3>
+      <div class="btns">
+        <a class="btn ghost" href="./presets/AP_NY_Breakout_PRO__Balanced.set" download>Balanced (.set)</a>
+        <a class="btn ghost" href="./presets/AP_NY_Breakout_PRO__Safe.set" download>Safe (.set)</a>
+        <a class="btn ghost" href="./presets/AP_NY_Breakout_PRO__Aggressive.set" download>Aggressive (.set)</a>
+      </div>
+      <p class="muted">Right-click → Save link as… if your browser tries to open the file.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Screenshots</h3>
+      <div class="shots">
+        <img src="./shot-1.png" alt="Equity / report">
+        <img src="./shot-2.png" alt="Trade list">
+        <img src="./shot-3.png" alt="Box view">
+        <img src="./shot-4.png" alt="Inputs A">
+        <img src="./shot-5.png" alt="Inputs B">
+        <img src="./shot-6.png" alt="Journal / placements">
+      </div>
+    </div>
+
+    <div id="version" class="panel">
+      <h3>Version</h3>
+      <p><strong>v1.000</strong> — initial public release.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Files in this folder</h3>
+      <ul>
+        <li><a href="./Quick%20Start.md" target="_blank" rel="noopener">Quick Start.md</a></li>
+        <li><a href="./Inputs_Reference.md" target="_blank" rel="noopener">Inputs_Reference.md</a></li>
+        <li><a href="./Installation_and_Activation.md" target="_blank" rel="noopener">Installation_and_Activation.md</a></li>
+        <li><a href="./VPS_Setup_Guide_MT5.md" target="_blank" rel="noopener">VPS_Setup_Guide_MT5.md</a></li>
+        <li><a href="./Support_and_Warranty.md" target="_blank" rel="noopener">Support_and_Warranty.md</a></li>
+        <li><a href="./FAQ.md" target="_blank" rel="noopener">FAQ.md</a></li>
+        <li><a href="./Trade_Journal_Template.csv" download>Trade_Journal_Template.csv</a></li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
