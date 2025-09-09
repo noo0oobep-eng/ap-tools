@@ -20,7 +20,8 @@
     .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin:16px 0}
     h3{margin:0 0 10px;font-size:18px}
     ul{margin:8px 0 0 18px}
-    code, .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+    ol{margin:8px 0 0 18px}
+    code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
     .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
     table{width:100%;border-collapse:collapse}
     th,td{border-bottom:1px solid var(--border);padding:8px 6px;text-align:left;font-size:14px}
@@ -37,9 +38,9 @@
 
     <div class="pillbar">
       <a class="pill" href="https://www.mql5.com/en/market/product/148909" target="_blank" rel="noopener">Get on MQL5</a>
-      <a class="pill ghost" href="./Quick%20Start.md" target="_blank" rel="noopener">Quick Start</a>
+      <a class="pill ghost" href="./Quick_Start.md" target="_blank" rel="noopener">Quick Start</a>
       <a class="pill ghost" href="#inputs">Inputs</a>
-      <a class="pill ghost" href="./AP_Oil_Navigator_PRO_MT5.set" target="_blank" rel="noopener">Preset (.set)</a>
+      <a class="pill ghost" href="#presets">Presets (.set)</a>
       <a class="pill ghost" href="#version">Version</a>
     </div>
 
@@ -60,7 +61,7 @@
       <h3>How it trades</h3>
       <ol>
         <li>During the session window, on each <strong>new M30 bar</strong> the EA reads fast/slow EMA and optional ATR.</li>
-        <li>If trend is up (fast&gt;slow) it places a <strong>Buy Stop</strong> above previous bar high (+buffer). If down, a <strong>Sell Stop</strong> below previous low (-buffer).</li>
+        <li>If trend is up (fast&gt;slow) it places a <strong>Buy Stop</strong> above previous bar high (+buffer). If down, a <strong>Sell Stop</strong> below previous low (–buffer).</li>
         <li>SL from ATR; TP by R-multiple. Stops are normalized to tick size and checked against broker stops level.</li>
         <li>Only one working pending is allowed; pendings expire after <span class="mono">InpPendingExpiryHours</span>.</li>
         <li>Daily equity guard pauses new orders after loss cap; spread &amp; news/session gates must be OK.</li>
@@ -107,19 +108,17 @@
           </table>
         </div>
       </div>
-      
     </div>
-     <div class="btns">
-  <a class="btn ghost" href="/AP_Oil_Navigator_PRO/presets/AP_Oil_Navigator_PRO__Balanced.set" download>
-    Balanced (.set)
-  </a>
-  <a class="btn ghost" href="/AP_Oil_Navigator_PRO/presets/AP_Oil_Navigator_PRO__Conservative.set" download>
-    Conservative (.set)
-  </a>
-  <a class="btn ghost" href="/AP_Oil_Navigator_PRO/presets/AP_Oil_Navigator_PRO__Tester_Relaxed.set" download>
-    Tester (relaxed) (.set)
-  </a>
-</div>
+
+    <div id="presets" class="panel">
+      <h3>Presets</h3>
+      <div class="pillbar">
+        <a class="pill ghost" href="./AP_Oil_Navigator_PRO__Balanced.set" download>Balanced (.set)</a>
+        <a class="pill ghost" href="./AP_Oil_Navigator_PRO__Conservative.set" download>Conservative (.set)</a>
+        <a class="pill ghost" href="./AP_Oil_Navigator_PRO__Tester_Relaxed.set" download>Tester (relaxed) (.set)</a>
+      </div>
+      <p class="muted">Presets are plain text. Right-click &ldquo;Save link as…&rdquo; if your browser tries to open them.</p>
+    </div>
 
     <div class="panel">
       <h3>Validator &amp; safety notes</h3>
@@ -134,7 +133,6 @@
     <div class="panel">
       <h3>Screenshots</h3>
       <div class="shots">
-        <!-- drop your four images into this folder and name them s1.png .. s4.png (or update names below) -->
         <img src="./shot-1.png" alt="Backtest equity curve & report">
         <img src="./shot-2.png" alt="Trade list / fills">
         <img src="./shot-3.png" alt="Inputs tab">
@@ -150,8 +148,10 @@
     <div class="panel">
       <h3>Files in this folder</h3>
       <ul>
-        <li><a href="./Quick%20Start.md" target="_blank" rel="noopener">Quick Start.md</a></li>
-        <li><a href="./AP_Oil_Navigator_PRO_MT5.set" target="_blank" rel="noopener">AP_Oil_Navigator_PRO_MT5.set</a> <span class="muted">(optional preset)</span></li>
+        <li><a href="./Quick_Start.md" target="_blank" rel="noopener">Quick_Start.md</a></li>
+        <li><a href="./AP_Oil_Navigator_PRO__Balanced.set" download>AP_Oil_Navigator_PRO__Balanced.set</a></li>
+        <li><a href="./AP_Oil_Navigator_PRO__Conservative.set" download>AP_Oil_Navigator_PRO__Conservative.set</a></li>
+        <li><a href="./AP_Oil_Navigator_PRO__Tester_Relaxed.set" download>AP_Oil_Navigator_PRO__Tester_Relaxed.set</a></li>
       </ul>
     </div>
   </div>
