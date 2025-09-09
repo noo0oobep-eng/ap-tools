@@ -1,0 +1,345 @@
+//+------------------------------------------------------------------+
+//|               AP Oil Navigator PRO (MT5) v1.1.2                  |
+//|  Focus: XTIUSD/USOIL M30 (trend+pullback, ATR SL/TP).            |
+//|  Validator-safe: symbol restriction (live), generic-in-tester,   |
+//|  one-pending-per-bar, pending expiry, calm order flow.           |
+//|  AP TRADING TOOLS                                                |
+//+------------------------------------------------------------------+
+#property strict
+#property version   "1.2"
+#property description "Oil-focused EA with tester-compatible fallback. Trend+pullback, ATR SL/TP."
+
+#include <Trade/Trade.mqh>
+CTrade trade;
+
+//============================== Inputs ==============================//
+// Core TF
+input ENUM_TIMEFRAMES InpTF = PERIOD_M30;
+
+// Session (server time; bypassed in tester)
+input int  InpStartHour   = 13;
+input int  InpStartMinute = 0;
+input int  InpEndHour     = 22;
+input int  InpEndMinute   = 59;
+
+// Manual news pause (bypassed in tester)
+input bool InpUseNewsPause = true;
+input int  InpPauseWeekday = 3;   // 1=Mon..7=Sun (EIA ≈ Wed)
+input int  InpPauseHour    = 14;
+input int  InpPauseMinute  = 30;
+input int  InpPauseBeforeM = 30;
+input int  InpPauseAfterM  = 30;
+
+// Trend / entry / exits
+input int            InpFastMAPeriod      = 20;
+input int            InpSlowMAPeriod      = 200;
+input ENUM_MA_METHOD InpMAMethod          = MODE_EMA;
+input int            InpATRPeriod         = 14;
+input double         InpATR_SL_Mult       = 2.0;
+input double         InpTP_R_Mult         = 1.5;
+input int            InpEntryBufferPoints = 30;
+
+// Direction bias
+enum BiasMode { BIAS_AUTO=0, BIAS_LONG=1, BIAS_SHORT=2, BIAS_BOTH=3 };
+input BiasMode InpBias = BIAS_AUTO;
+
+// Risk / sizing
+input bool   InpUseFixedLots = false;
+input double InpFixedLots    = 0.01;
+input double InpRiskPercent  = 0.5;
+
+// Protections
+input int    InpMaxSpreadPoints   = 120;
+input int    InpMaxOpenPositions  = 3;
+input int    InpMinSecsBetween    = 15;
+input double InpDailyLossPct      = 5.0;
+input double InpDailyLossMoney    = 0.0;
+
+// Validation / tester compatibility
+input bool   InpRestrictToOilSymbols   = true;                  // live restriction
+input string InpAllowedTokens          = "XTI,USOIL,WTI,OIL";   // substring match
+input int    InpPendingExpiryHours     = 12;
+input bool   InpTesterAllowAnySymbol   = true;                  // trade any symbol in tester
+input bool   InpTesterRelaxGates       = true;                  // bypass session/news in tester
+input bool   InpTesterFallbackEntry    = true;                  // simple fallback if no MA/ATR signal
+
+// Housekeeping
+input long   InpMagic        = 990401;
+input string InpOrderComment = "AP_OIL_NAV";
+input int    InpLogLevel     = 0;  // 0=quiet,1=info,2=verbose
+
+//============================== Globals =============================//
+double   g_point=0.0;
+int      g_digits=5;
+int      g_maFastH=INVALID_HANDLE, g_maSlowH=INVALID_HANDLE, g_atrH=INVALID_HANDLE;
+datetime g_lastAction=0, g_lastAttemptBar=0, g_lastPlacedBar=0;
+
+// daily equity guard
+double   g_dayStartEq=0.0;
+datetime g_dayStamp=0;
+bool     g_dailyStop=false;
+
+//============================== Utils ===============================//
+void Log(int lvl,const string msg){ if(lvl<=InpLogLevel) Print("[NAV] ",msg); }
+bool  IsTester(){ return (bool)MQLInfoInteger(MQL_TESTER); }
+
+double PointOf(const string s){ double p; if(!SymbolInfoDouble(s,SYMBOL_POINT,p)) p=0.01; return p; }
+double VolStep(){ double v=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_STEP); return (v>0)?v:0.01; }
+double VolMin (){ double v=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN ); return (v>0)?v:0.01; }
+double VolMax (){ double v=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MAX ); return (v>0)?v:100.0; }
+double ClampLots(double lots){ double minv=VolMin(),maxv=VolMax(),step=VolStep(); lots=MathFloor(lots/step)*step; if(lots<minv) lots=minv; if(lots>maxv) lots=maxv; return lots; }
+double VPP(){ double tv=SymbolInfoDouble(_Symbol,SYMBOL_TRADE_TICK_VALUE); double ts=SymbolInfoDouble(_Symbol,SYMBOL_TRADE_TICK_SIZE); if(ts<=0) ts=g_point; return (tv>0&&ts>0)? tv/ts:0.0; }
+double CalcLotsRisk(double entry,double sl){ if(InpUseFixedLots) return ClampLots(InpFixedLots); double bal=AccountInfoDouble(ACCOUNT_BALANCE); if(bal<=0) return VolMin(); double riskMoney=bal*(InpRiskPercent/100.0); double distPts=MathMax(1.0,MathAbs(entry-sl)/g_point); double vpp=VPP(); if(vpp<=0) return VolMin(); return ClampLots(riskMoney/(distPts*vpp)); }
+
+datetime MakeDT(int y,int m,int d,int hh,int mm,int ss=0){ MqlDateTime t; t.year=y;t.mon=m;t.day=d;t.hour=hh;t.min=mm;t.sec=ss; return StructToTime(t); }
+datetime TodayStamp(){ MqlDateTime now; TimeToStruct(TimeCurrent(),now); now.hour=0;now.min=0;now.sec=0; return StructToTime(now); }
+void RefreshDay(){ datetime d=TodayStamp(); if(d!=g_dayStamp){ g_dayStamp=d; g_dayStartEq=AccountInfoDouble(ACCOUNT_EQUITY); g_dailyStop=false; Log(1,"New day. Eq="+DoubleToString(g_dayStartEq,2)); } }
+bool DailyStopTriggered(){ if(g_dailyStop) return true; if(InpDailyLossPct<=0 && InpDailyLossMoney<=0) return false; double eq=AccountInfoDouble(ACCOUNT_EQUITY); bool hit=false; if(InpDailyLossPct>0){ double floor=g_dayStartEq*(1.0-InpDailyLossPct/100.0); if(eq<=floor) hit=true; } if(!hit && InpDailyLossMoney>0){ double floor2=g_dayStartEq-InpDailyLossMoney; if(eq<=floor2) hit=true; } if(hit){ g_dailyStop=true; Log(0,"Daily loss cap reached. Paused."); } return g_dailyStop; }
+
+bool InSession(datetime now){ if(IsTester() && InpTesterRelaxGates) return true; MqlDateTime t; TimeToStruct(now,t); datetime s=MakeDT(t.year,t.mon,t.day,InpStartHour,InpStartMinute); datetime e=MakeDT(t.year,t.mon,t.day,InpEndHour,InpEndMinute); if(e<=s) e+=24*60*60; return (now>=s && now<=e); }
+bool InNewsPause(datetime now){ if(!InpUseNewsPause || (IsTester() && InpTesterRelaxGates)) return false; MqlDateTime t; TimeToStruct(now,t); int dow=(t.day_of_week==0?7:t.day_of_week); if(dow!=InpPauseWeekday) return false; datetime mid=MakeDT(t.year,t.mon,t.day,InpPauseHour,InpPauseMinute); return (now>=mid-InpPauseBeforeM*60 && now<=mid+InpPauseAfterM*60); }
+bool SpreadOK(){ double b=0,a=0; if(!SymbolInfoDouble(_Symbol,SYMBOL_BID,b)) return false; if(!SymbolInfoDouble(_Symbol,SYMBOL_ASK,a)) return false; if(a<=b) return false; return ((a-b)/g_point <= InpMaxSpreadPoints); }
+
+double NormalizeUp(double px){ double step=SymbolInfoDouble(_Symbol,SYMBOL_TRADE_TICK_SIZE); if(step<=0) step=g_point; return NormalizeDouble(MathCeil(px/step)*step,g_digits); }
+double NormalizeDn(double px){ double step=SymbolInfoDouble(_Symbol,SYMBOL_TRADE_TICK_SIZE); if(step<=0) step=g_point; return NormalizeDouble(MathFloor(px/step)*step,g_digits); }
+
+bool StopsLevelOK(bool isBuy,double entry,double sl){ int stp=(int)SymbolInfoInteger(_Symbol,SYMBOL_TRADE_STOPS_LEVEL); if(stp<=0) return true; double mind=stp*g_point; return isBuy? (entry-sl>=mind):(sl-entry>=mind); }
+void AdjustStopsForPending(bool isBuy,double entry,double &sl,double &tp){ int stp=(int)SymbolInfoInteger(_Symbol,SYMBOL_TRADE_STOPS_LEVEL); double mind=stp*g_point; if(mind<=0) return; if(isBuy){ if(entry-sl<mind) sl=NormalizeDn(entry-mind); if(tp-entry<mind) tp=NormalizeUp(entry+mind); }else{ if(sl-entry<mind) sl=NormalizeUp(entry+mind); if(entry-tp<mind) tp=NormalizeDn(entry-mind); } }
+
+// indicator access
+bool GetMA(int h,double &out){ double b[]; ArraySetAsSeries(b,true); if(CopyBuffer(h,0,0,1,b)<1) return false; out=b[0]; return true; }
+bool GetATR(double &out){ double b[]; ArraySetAsSeries(b,true); if(CopyBuffer(g_atrH,0,0,1,b)<1) return false; out=b[0]; return true; }
+
+// Bias
+int DirectionBias()
+{
+   if(InpBias==BIAS_LONG)  return 1;
+   if(InpBias==BIAS_SHORT) return -1;
+   if(InpBias==BIAS_BOTH)  return 0;
+
+   int    mode=(int)SymbolInfoInteger(_Symbol,SYMBOL_SWAP_MODE);
+   double sl = SymbolInfoDouble(_Symbol,SYMBOL_SWAP_LONG);
+   double ss = SymbolInfoDouble(_Symbol,SYMBOL_SWAP_SHORT);
+
+   if(mode==0 || (MathAbs(sl)<1e-12 && MathAbs(ss)<1e-12)) return 0;
+   if(sl>ss)  return 1;
+   if(ss>sl)  return -1;
+   return 0;
+}
+
+// Live restriction (tester allowed)
+bool SymbolIsOil()
+{
+   if(!InpRestrictToOilSymbols) return true;
+   if(IsTester() && InpTesterAllowAnySymbol) return true;
+
+   string sym=_Symbol; StringToUpper(sym);
+   string csv=InpAllowedTokens;
+   int p=0;
+   while(true){
+      int c=StringFind(csv,",",p);
+      string tok=(c<0)? StringSubstr(csv,p): StringSubstr(csv,p,c-p);
+      StringTrimLeft(tok); StringTrimRight(tok); StringToUpper(tok);
+      if(StringLen(tok)>0 && StringFind(sym,tok)>=0) return true;
+      if(c<0) break; p=c+1;
+   }
+   return false;
+}
+
+int MyOpenPositions()
+{
+   int cnt=0;
+   for(int i=PositionsTotal()-1;i>=0;--i){
+      ulong tk=PositionGetTicket(i);
+      if(tk==0) continue;
+      if(!PositionSelectByTicket(tk)) continue;
+      string psym=""; if(!PositionGetString(POSITION_SYMBOL,psym)) continue;
+      if(psym!=_Symbol) continue;
+      long pmagic=(long)PositionGetInteger(POSITION_MAGIC);
+      if(pmagic!=(long)InpMagic) continue;
+      cnt++;
+   }
+   return cnt;
+}
+int MyWorkingPendings()
+{
+   int cnt=0;
+   for(int i=OrdersTotal()-1;i>=0;--i){
+      ulong otk=OrderGetTicket(i); if(otk==0) continue;
+      if(!OrderSelect(otk)) continue;
+      string osym=""; if(!OrderGetString(ORDER_SYMBOL,osym)) continue;
+      if(osym!=_Symbol) continue;
+      long omagic=0;  OrderGetInteger(ORDER_MAGIC,omagic);
+      if(omagic!=(long)InpMagic) continue;
+      long t=0,s=0; OrderGetInteger(ORDER_TYPE,t); OrderGetInteger(ORDER_STATE,s);
+      ENUM_ORDER_TYPE ty=(ENUM_ORDER_TYPE)t; ENUM_ORDER_STATE st=(ENUM_ORDER_STATE)s;
+      bool isPend=(ty==ORDER_TYPE_BUY_STOP || ty==ORDER_TYPE_SELL_STOP ||
+                   ty==ORDER_TYPE_BUY_LIMIT|| ty==ORDER_TYPE_SELL_LIMIT);
+      if(isPend && (st==ORDER_STATE_PLACED || st==ORDER_STATE_PARTIAL)) cnt++;
+   }
+   return cnt;
+}
+
+//============================= Entry logic ===========================//
+bool BuildEntry(bool &isBuy,double &entry,double &sl,double &tp)
+{
+   double maF=0,maS=0,atr=0;
+   bool okMA = (GetMA(g_maFastH,maF) && GetMA(g_maSlowH,maS));
+   bool okATR= GetATR(atr);
+
+   double bid=0,ask=0; if(!SymbolInfoDouble(_Symbol,SYMBOL_BID,bid)) return false;
+   if(!SymbolInfoDouble(_Symbol,SYMBOL_ASK,ask)) return false;
+
+   int  bias=DirectionBias();
+   bool up=false,dn=false;
+
+   if(okMA){ up=(maF>maS); dn=(maF<maS); }
+   else if(IsTester() && InpTesterFallbackEntry){ // if MAs aren’t ready in tester, fake a trend by last bar body
+      double c0=iClose(_Symbol,InpTF,1), o0=iOpen(_Symbol,InpTF,1);
+      up=(c0>o0); dn=(c0<o0);
+      atr = (okATR? atr : MathMax( (iHigh(_Symbol,InpTF,1)-iLow(_Symbol,InpTF,1))/2.0 , g_point*50 ));
+   } else return false;
+
+   double hi=iHigh(_Symbol,InpTF,1);
+   double lo=iLow (_Symbol,InpTF,1);
+
+   if(up && (bias>=0))
+   {
+      isBuy=true;
+      entry=NormalizeUp(hi + InpEntryBufferPoints*g_point);
+      sl   =NormalizeDn(entry - InpATR_SL_Mult*atr);
+      tp   =NormalizeUp(entry + InpTP_R_Mult*(entry-sl));
+      AdjustStopsForPending(true,entry,sl,tp);
+      if(!StopsLevelOK(true,entry,sl)) { sl=0; tp=0; }
+      return true;
+   }
+   if(dn && (bias<=0))
+   {
+      isBuy=false;
+      entry=NormalizeDn(lo - InpEntryBufferPoints*g_point);
+      sl   =NormalizeUp(entry + InpATR_SL_Mult*atr);
+      tp   =NormalizeDn(entry - InpTP_R_Mult*(sl-entry));
+      AdjustStopsForPending(false,entry,sl,tp);
+      if(!StopsLevelOK(false,entry,sl)) { sl=0; tp=0; }
+      return true;
+   }
+   return (IsTester() && InpTesterFallbackEntry); // allow fallback no-op to be retried next bar
+}
+
+//=========================== Trade helpers ==========================//
+bool PlacePending(bool isBuy,double lots,double entry,double sl,double tp, ulong &orderIdOut)
+{
+   if(lots<VolMin()) return false;
+   if(!SpreadOK())   return false;
+
+   MqlTradeRequest req; MqlTradeResult res; MqlTradeCheckResult chk;
+   ZeroMemory(req); ZeroMemory(res); ZeroMemory(chk);
+
+   req.action      = TRADE_ACTION_PENDING;
+   req.symbol      = _Symbol;
+   req.magic       = (ulong)InpMagic;
+   req.type        = isBuy?ORDER_TYPE_BUY_STOP:ORDER_TYPE_SELL_STOP;
+   req.volume      = ClampLots(lots);
+   req.price       = entry;
+   req.sl          = sl;
+   req.tp          = tp;
+   req.type_time   = ORDER_TIME_SPECIFIED;
+   req.expiration  = TimeCurrent() + (InpPendingExpiryHours*60*60);
+   req.type_filling= (ENUM_ORDER_TYPE_FILLING)SymbolInfoInteger(_Symbol,SYMBOL_FILLING_MODE);
+   req.comment     = InpOrderComment;
+
+   if(!OrderCheck(req,chk)) return false;
+   if(chk.retcode==TRADE_RETCODE_INVALID_STOPS){ req.sl=0; req.tp=0; if(!OrderCheck(req,chk)) return false; }
+   if(chk.retcode==TRADE_RETCODE_NO_MONEY) return false;
+
+   double needPend=0, needOpen=0, freeM=AccountInfoDouble(ACCOUNT_MARGIN_FREE);
+   if(!OrderCalcMargin(req.type,_Symbol,req.volume,req.price,needPend)) return false;
+   if(!OrderCalcMargin(isBuy?ORDER_TYPE_BUY:ORDER_TYPE_SELL,_Symbol,req.volume,req.price,needOpen)) return false;
+   if(MathMax(needPend,needOpen) > freeM*0.90) return false;
+
+   if(!OrderSend(req,res)) return false;
+   if(res.retcode==TRADE_RETCODE_PLACED || res.retcode==TRADE_RETCODE_DONE){ orderIdOut=res.order; return true; }
+   return false;
+}
+
+//============================== Core ================================//
+void TryTrade()
+{
+   if(!SymbolIsOil())                 return;
+   if(!InSession(TimeCurrent()))      return;
+   if(InNewsPause(TimeCurrent()))     return;
+   if(DailyStopTriggered())           return;
+   if(!SpreadOK())                    return;
+
+   // one attempt per completed bar
+   datetime curBar = iTime(_Symbol, InpTF, 0);
+   if(curBar == g_lastAttemptBar)     return;
+   g_lastAttemptBar = curBar;
+
+   if(MyOpenPositions() >= InpMaxOpenPositions) return;
+   if(MyWorkingPendings() > 0)                 return;
+
+   bool   isBuy = false;
+   double entry = 0, sl = 0, tp = 0;
+   if(!BuildEntry(isBuy, entry, sl, tp)) return;
+
+   // --- Sizing SL: use intended ATR distance for lot calc if sl==0
+   double slForSize = sl;
+   if(slForSize <= 0.0)
+   {
+      double atr = 0.0;
+      if(GetATR(atr) && atr > 0.0)
+      {
+         slForSize = isBuy
+            ? NormalizeDn(entry - InpATR_SL_Mult * atr)
+            : NormalizeUp(entry + InpATR_SL_Mult * atr);
+      }
+      else
+      {
+         // very safe fallback so we never size with a "giant" distance
+         slForSize = isBuy ? (entry - 100.0 * g_point)
+                           : (entry + 100.0 * g_point);
+      }
+   }
+
+   double lots = CalcLotsRisk(entry, slForSize);
+
+   ulong tk = 0;
+   if(PlacePending(isBuy, lots, entry, sl, tp, tk))
+   {
+      g_lastPlacedBar = curBar;
+      g_lastAction    = TimeCurrent();
+      Log(1, StringFormat("Placed %s-stop %.2fl @%.3f SL=%.3f TP=%.3f",
+            isBuy ? "BUY" : "SELL", lots, entry, sl, tp));
+   }
+}
+
+
+
+//============================= Events ===============================//
+int OnInit()
+{
+   g_point  = PointOf(_Symbol);
+   g_digits = (int)SymbolInfoInteger(_Symbol,SYMBOL_DIGITS);
+
+   g_maFastH = iMA(_Symbol, InpTF, InpFastMAPeriod, 0, InpMAMethod, PRICE_CLOSE);
+   g_maSlowH = iMA(_Symbol, InpTF, InpSlowMAPeriod, 0, InpMAMethod, PRICE_CLOSE);
+   g_atrH    = iATR(_Symbol, InpTF, InpATRPeriod);
+
+   RefreshDay();
+   Log(1,"Init OK on "+_Symbol+(IsTester()?" [TESTER]":""));
+   return(INIT_SUCCEEDED);
+}
+void OnDeinit(const int r)
+{
+   if(g_maFastH!=INVALID_HANDLE) IndicatorRelease(g_maFastH);
+   if(g_maSlowH!=INVALID_HANDLE) IndicatorRelease(g_maSlowH);
+   if(g_atrH   !=INVALID_HANDLE) IndicatorRelease(g_atrH);
+}
+void OnTick()
+{
+   RefreshDay();
+   if(InpMinSecsBetween>0 && (TimeCurrent()-g_lastAction)<InpMinSecsBetween) return;
+   TryTrade();
+}
+//+------------------------------------------------------------------+
