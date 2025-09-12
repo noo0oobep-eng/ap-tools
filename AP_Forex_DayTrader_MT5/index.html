@@ -4,100 +4,67 @@
   <meta charset="utf-8" />
   <title>AP Forex DayTrader (MT5)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Intraday day-trading EA for major FX pairs. Clean, validator-safe logic with clear risk management." />
-  <!-- Use your site stylesheet if present -->
+  <meta name="description" content="AP Forex DayTrader — intraday EA for major FX pairs. Validator-safe with clear risk controls." />
   <link rel="stylesheet" href="/assets/site.css" />
   <style>
-    /* Fallback styles (safe if /assets/site.css is different/missing) */
-    :root{--bg:#0b1220;--card:#111827;--muted:#94a3b8;--border:#283146;--pill:#1f2937;--accent:#2563EB}
-    *{box-sizing:border-box}
-    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:#e5e7eb;margin:0}
+    /* fallback styles if your site CSS differs */
+    :root{--bg:#0b1220;--card:#111827;--border:#283146;--accent:#2563EB;--muted:#94a3b8}
+    body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:#e5e7eb}
     a{color:#93c5fd;text-decoration:none}
-    .container{max-width:980px;margin:48px auto;padding:0 16px}
-    .crumbs{opacity:.7;margin-bottom:16px}
+    .wrap{max-width:980px;margin:48px auto;padding:0 16px}
     .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px}
-    .row{display:flex;gap:16px;flex-wrap:wrap}
-    .col{flex:1 1 320px}
-    h1{margin:0 0 10px}
-    p{line-height:1.6}
-    .tag{display:inline-block;background:var(--pill);border-radius:999px;padding:4px 10px;font-size:12px;margin-right:6px}
-    .btn{display:inline-block;padding:10px 14px;border:1px solid var(--accent);border-radius:10px;margin-right:8px}
-    .btn.primary{background:var(--accent);color:#fff}
     .muted{color:var(--muted)}
-    ul{margin:0 0 0 18px}
+    .tags{margin:0 0 14px 0}
+    .tag{display:inline-block;background:#1f2937;border-radius:999px;padding:4px 10px;font-size:12px;margin-right:6px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid var(--accent);margin-right:8px}
+    .btn.primary{background:var(--accent);color:#fff}
     hr{border:none;border-top:1px solid var(--border);margin:24px 0}
-    code{background:#0f172a;padding:2px 6px;border-radius:6px}
+    ul{margin:0 0 0 18px}
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="crumbs"><a href="/">← Back to AP Trading Tools</a></div>
+  <div class="wrap">
+    <p><a href="/">← Back</a></p>
 
     <h1>AP Forex DayTrader (MT5)</h1>
-    <p class="muted">Intraday day-trading EA for major FX pairs. Clean, validator-safe logic with clear risk management.</p>
+    <p class="muted">Intraday day-trading EA for major FX pairs. Validator-safe with clear risk controls.</p>
 
     <div class="card">
-      <p>
+      <p class="tags">
         <span class="tag">EA</span>
         <span class="tag">MT5</span>
         <span class="tag">Forex</span>
         <span class="tag">Intraday</span>
       </p>
 
-      <!-- TODO: replace PRODUCT_ID with your real MQL5 product id -->
+      <!-- replace PRODUCT_ID with your real MQL5 product id -->
       <p>
-        <a class="btn primary" href="https://www.mql5.com/en/market/product/149584?" target="_blank" rel="noopener">Get on MQL5</a>
+        <a class="btn primary" href="https://www.mql5.com/en/market/product/149584" target="_blank" rel="noopener">Buy on MQL5</a>
         <a class="btn" href="../presets/AP_Forex_DayTrader_MT5/" target="_blank" rel="noopener">Presets</a>
-        <a class="btn" href="./docs/" target="_blank" rel="noopener">Docs</a>
       </p>
 
       <hr/>
 
-      <div class="row">
-        <div class="col">
-          <h3>Overview</h3>
-          <p>
-            Designed for liquid FX pairs (EURUSD, GBPUSD, USDJPY, etc.), AP Forex DayTrader focuses on
-            structured intraday entries with strict risk controls and validator-clean order handling.
-          </p>
+      <h3>Docs</h3>
+      <p>
+        Designed for liquid FX pairs (EURUSD, GBPUSD, USDJPY). Uses session filters and strict order/stop checks.
+        Start with the presets above, then adjust risk and sessions to your broker.
+      </p>
 
-          <h3>Honest expectations</h3>
-          <ul>
-            <li>No promises, no martingale/grid.</li>
-            <li>Meant for thoughtful testing and sensible risk.</li>
-            <li>Presets are starting points — always forward-test first.</li>
-          </ul>
-        </div>
-
-        <div class="col">
-          <h3>Highlights</h3>
-          <ul>
-            <li>Session filters (London/NY) and daily trade guard.</li>
-            <li>Clean pending/market order logic with spread/stop checks.</li>
-            <li>Fixed-lots or money-risk sizing.</li>
-            <li>Readable on-chart labels and logs.</li>
-          </ul>
-
-          <h3>Compatibility</h3>
-          <ul>
-            <li>Platform: MetaTrader 5</li>
-            <li>Symbols: Major FX pairs</li>
-            <li>Timeframes: M5–H1 (presets provided)</li>
-          </ul>
-        </div>
-      </div>
-
-      <hr/>
-
-      <h3>Quick start</h3>
+      <h4>Quick start</h4>
       <ol>
-        <li>Download a <strong>Preset</strong> (see button above) and load it via <em>Inputs → Load</em>.</li>
-        <li>Attach to your chosen FX chart and timeframe.</li>
-        <li>Check <em>Experts</em> tab for any broker-specific warnings (stops/spread).</li>
-        <li>Forward-test on demo before considering live use.</li>
+        <li>Download a preset and load via <em>Inputs → Load</em>.</li>
+        <li>Attach to your FX chart (M5–H1).</li>
+        <li>Confirm spread/stop warnings in the <em>Experts</em> tab.</li>
+        <li>Forward-test on demo first.</li>
       </ol>
 
-      <p class="muted">Note: The Presets and Docs links will show 404 until you add those folders/files.</p>
+      <h4>Compatibility</h4>
+      <ul>
+        <li>Platform: MetaTrader 5</li>
+        <li>Pairs: Major FX</li>
+        <li>Timeframes: M5–H1</li>
+      </ul>
     </div>
   </div>
 </body>
