@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AP Metals London Breakout PRO (MT5)</title>
+<style>
+:root{--bg:#0e1013;--fg:#e6e8ec;--muted:#9aa3b2;--pill:#1b2330;--pill2:#1f2b3a;}
+*{box-sizing:border-box} html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial}
+.container{max-width:900px;margin:0 auto;padding:32px 20px}
+h1{font-size:28px;margin:0 0 10px}
+h2{font-size:20px;margin:28px 0 10px;color:var(--fg)}
+p{color:var(--muted)}
+.pills{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 22px}
+a.pill{display:inline-block;padding:10px 14px;border-radius:999px;text-decoration:none;background:var(--pill);color:var(--fg);border:1px solid #263244}
+a.pill:hover{background:var(--pill2)}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;background:#0b0d10;border:1px solid #1d2633;border-radius:10px;padding:14px;color:#bcd0ee;overflow:auto}
+.small{font-size:13px;color:var(--muted)}
+footer{margin-top:32px;border-top:1px solid #1d2633;padding-top:16px}
+ul{margin:0 0 0 18px}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>AP Metals London Breakout PRO (MT5)</h1>
+  <p>Asian-session box breakout for metals (XAU/XAG/XPT/XPD). Per-metal presets, ATR-adaptive distances, Stops/Freeze auto-fit, lot rounding & margin down-stepping. Validator-safe (no DLL/WebRequest/File I/O).</p>
+  <div class="pills">
+    <a class="pill" href="./Quick%20Start.md">Quick Start</a>
+    <a class="pill" href="./Inputs.md">Inputs</a>
+    <a class="pill" href="./presets/">Presets (.set)</a>
+    <a class="pill" href="./Changelog.md">Version / Changelog</a>
+    <a class="pill" href="#" title="Add the MQL5 link here">Get on MQL5</a>
+  </div>
+
+  <h2>Launch offer</h2>
+  <div class="code">$39.99 for the first 100 buyers → then rent only $30/month.</div>
+
+  <h2>What it does</h2>
+  <ul>
+    <li>Builds the Asian box (00:00–07:00 server) then places BUY/SELL STOP with buffers.</li>
+    <li>Auto-fits entry/SL/TP to meet broker Stops/Freeze (with cushion), snaps to tick grid.</li>
+    <li>Lot rounding to min/step/max + margin down-stepping; cancels opposite pending on fill.</li>
+    <li>Optional BE & trailing, time stop, equity guard; one set/day, cooldown, session cutoff.</li>
+  </ul>
+
+  <footer class="small">
+    <p><strong>Files in this folder</strong></p>
+    <ul>
+      <li><code>./Quick Start.md</code></li>
+      <li><code>./Inputs.md</code></li>
+      <li><code>./Changelog.md</code></li>
+      <li><code>./presets/</code></li>
+    </ul>
+    <p>Use relative links so GitHub Pages works without 404s.</p>
+  </footer>
+</div>
+</body>
+</html>
