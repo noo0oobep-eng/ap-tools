@@ -1,0 +1,82 @@
+; AP BTC Breakdown EA (v5.2) — Balanced preset
+; Load this in MT5: EA Inputs → Load…
+; Safer testing default: fixed 0.01 lots, keep all guards on.
+
+InpVersionTag=BRKD_v1.3.5
+
+; --- Core (signals) ---
+InpBreakdownLevel=118000.0
+InpTFMinutes=5
+InpVolLookback=20
+InpVolMultiplier=1.30
+
+; --- Retest / expiry ---
+InpMinOffsetPts=2500
+InpPendingExpireBars=2
+
+; --- Sizing ---
+InpUseFixedLots=true
+InpFixedLots=0.01
+InpRiskMoney=10.0
+
+; --- SL/TP (points) ---
+InpSL_Points=50000
+InpTP_Points=100000
+
+; --- Behavior / safety ---
+InpMagicNumber=8691122
+InpSkipIfSellOpen=true
+InpObserveSymbolWide=true
+InpUseGlobalLock=true
+InpPrintDebug=true
+
+; --- Status pulse (live only) ---
+InpStatusPulseMinutes=15
+
+; --- Reclaim cancel (close back above level) ---
+InpCancelOnReclaim=true
+InpReclaimBufferPoints=150
+
+; --- Spread/ATR-aware offset guards ---
+InpUseSpreadAwareOffset=true
+InpSpreadBufferPoints=200
+InpUseATROffset=true
+InpATRPeriod=14
+InpATROffsetMult=0.25
+
+; --- Trend filter (short only) ---
+InpUseTrendFilter=true
+InpEMAFast=21
+InpEMASlow=50
+InpEMA200=200
+
+; --- Auto-Level Manager ---
+InpAutoLevelEnabled=true
+InpAutoTFMinutes=15
+InpAutoLookback=60
+InpAutoMinTouches=3
+InpAutoClusterTolPts=500
+InpAutoMinDistATR=0.30
+InpAutoMaxDistATR=0.70
+InpAutoRoundStepUSD=10
+InpPointsPerDollar=10000
+
+; handle bias + must-beat
+InpHandleBiasPoints=300
+InpMustBeatHandlePts=12500
+
+; auto-level change gate
+InpAutoMinChangePts=1500
+InpAutoCooldownBars=6
+InpRequireRebaseAfterClose=true
+
+; --- Validator shim (tester on non-BTC symbols) ---
+InpEnableValidatorShim=true
+InpShimLots=0.01
+InpShimBarsCooldown=0
+InpShimMaxTradesPerDay=1
+InpShimMaxSpreadPoints=0
+InpShimMaxMarginFraction=0.50
+InpShimATRPeriod=14
+InpShimATRMult=0.25
+InpShimExtraPts=10
