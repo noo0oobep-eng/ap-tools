@@ -58,6 +58,22 @@
     a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
     footer{color:var(--muted);text-align:center;padding:40px 20px}
     .note{background:#0e141d;border:1px dashed #243244;border-radius:12px;padding:14px;margin:18px 0}
+    .grid3{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(260px, 1fr));
+  gap:20px; max-width:1100px; margin:0 auto 40px;
+}
+.grid3 .card{ margin:0; }
+
+.catalog-nav{display:flex; gap:12px; justify-content:center; margin:18px 0 6px;}
+.catalog-nav a{padding:6px 10px; border:1px solid var(--muted); border-radius:999px; text-decoration:none; font-size:14px;}
+.catalog-nav a:hover{background:rgba(255,255,255,.05);}
+section.catalog h2{max-width:1100px; margin:10px auto 12px; padding:0 4px;}
+.muted{opacity:.7; font-weight:400; font-size:.9em;}
+
+@media (max-width: 900px){ .grid3{grid-template-columns: repeat(2, minmax(220px,1fr));} }
+@media (max-width: 600px){ .grid3{grid-template-columns: 1fr;} }
+
   </style>
 </head>
   <section id="featured" class="catalog">
