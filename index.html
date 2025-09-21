@@ -44,6 +44,35 @@
 <meta name="description" content="MT5 Expert Advisors & Indicators — clean code, validator-safe, trader-friendly.">
 
   <style>
+    /* Full-page fixed background image behind everything */
+html, body { min-height: 100%; }
+body { background: #0b0f14; } /* fallback color */
+
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: url("/assets/bg.jpg") center / cover no-repeat;
+}
+
+/* Optional: subtle dark overlay for readability on top of the photo */
+body::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(rgba(10,12,16,.45), rgba(10,12,16,.55));
+}
+
+/* Make cards float nicely over the image */
+.card{
+  background: rgba(20,24,30,.82);
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow: 0 6px 22px rgba(0,0,0,.35);
+  backdrop-filter: saturate(120%) blur(2px); /* graceful no-op where unsupported */
+}
+
     .hero{max-width:1100px;margin:26px auto 10px;text-align:center;}
 .hero h1{font-size:32px;line-height:1.15;margin:0 0 6px;}
 .hero .subtitle{opacity:.8;margin:0;}
