@@ -2,6 +2,7 @@
 title: Support
 layout: default
 ---
+<p class="crumb"><a href="/">← Back to AP Trading Tools</a></p>
 
 # Support
 
