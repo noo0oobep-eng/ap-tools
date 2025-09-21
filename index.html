@@ -532,5 +532,16 @@ section.catalog h2{max-width:1100px; margin:10px auto 12px; padding:0 4px;}
     </nav>
   </div>
 </footer>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const v = document.querySelector('.bg-video');
+  if(!v) return;
+  v.muted = true; // ensure autoplay policy is satisfied
+  const nudge = () => v.play().catch(()=>{});
+  v.addEventListener('ended', nudge);
+  v.addEventListener('pause', nudge);
+  nudge();
+});
+</script>
 </body>
 </html>
