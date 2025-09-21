@@ -44,6 +44,47 @@
 <meta name="description" content="MT5 Expert Advisors & Indicators — clean code, validator-safe, trader-friendly.">
 
   <style>
+    /* 1) Slightly stronger top overlay for readability */
+body::after{
+  /* darker at top → fades down the page */
+  background: linear-gradient(to bottom,
+              rgba(8,10,14,.62) 0%,
+              rgba(8,10,14,.34) 320px,
+              rgba(8,10,14,.24) 100%);
+}
+
+/* 2) Headings readable over busy areas */
+.hero h1,
+section.catalog h2{
+  color:#eaf2ff;
+  text-shadow: 0 2px 12px rgba(0,0,0,.45);
+}
+.hero .subtitle{ opacity:.9; text-shadow:0 1px 10px rgba(0,0,0,.45); }
+
+/* 3) Cards: a hair darker + crisper edges */
+.card{
+  color:#e8eef6;
+  background: rgba(16,20,26,.86);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 10px 28px rgba(0,0,0,.45);
+  backdrop-filter: saturate(120%) blur(3px);
+}
+
+/* 4) Category pills: brighter text and edge */
+.catalog-nav a{
+  color:#d9e7ff;
+  background: rgba(0,0,0,.28);
+  border-color: rgba(255,255,255,.12);
+}
+.catalog-nav a:hover{ background: rgba(255,255,255,.08); }
+
+/* 5) Little lift for the small tags on cards */
+.tag{
+  color:#dbe4f0;
+  background: rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+}
+
     /* Full-page fixed background image behind everything */
 html, body { min-height: 100%; }
 body { background: #0b0f14; } /* fallback color */
