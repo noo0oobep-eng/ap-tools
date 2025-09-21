@@ -21,9 +21,18 @@
 <link rel="shortcut icon" href="/assets/favicon.png?v=1" type="image/png">
 <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
 <body>
-  <video class="bg-video" autoplay muted playsinline loop poster="/assets/bg.webp" preload="metadata">
+  <video
+  class="bg-video"
+  autoplay
+  muted
+  playsinline
+  loop
+  preload="auto"         <!-- was metadata -->
+  disablepictureinpicture
+>
+  <!-- Put MP4 first (better fallback behavior on some browsers), WebM second -->
+  <source src="/assets/video/bg.mp4"  type="video/mp4" />
   <source src="/assets/video/bg.webm" type="video/webm" />
-  <source src="/assets/video/bg.mp4"  type="video/mp4"  />
 </video>
   <header>
     <h1>AP Trading Tools</h1>
