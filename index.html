@@ -58,16 +58,17 @@
 
   <style>
     .bg-video{
-  position: fixed; inset: 0; z-index: -3;
-  width: 100%; height: 100%; object-fit: cover;
-  filter: contrast(105%) saturate(110%);
-  pointer-events: none; /* never block clicks */
+  position:fixed; inset:0;
+  width:100vw; height:100vh;
+  object-fit:cover;
+  z-index:-1;                 /* -1 is enough; no need for -3 */
+  filter: contrast(105%) saturate(118%);
 }
-/* keep your existing body::after overlay—it improves readability */
 
-/* Accessibility / bandwidth */
+/* Optional accessibility rules are fine to keep if you want */
 @media (prefers-reduced-motion: reduce){ .bg-video{ display:none; } }
-@media (max-width: 600px){ .bg-video{ display:none; } } /* optional: hide on small screens */
+@media (max-width: 600px){ .bg-video{ display:none; } }
+
 
     .crumb{max-width:1100px; margin:10px auto 0; padding:0 6px;}
 .crumb a{
