@@ -75,9 +75,8 @@ a.gumroad-button {
   transition: background 0.2s ease, transform 0.1s ease !important;
 }
 
-a.gumroad-button:hover {
-  background: #0056b3 !important;   /* darker blue hover */
-  transform: translateY(-1px) !important;
+a.gumroad-button::after {
+  content: "" !important;   /* remove the 'Gumroad' text */
 }
 
     .bg-video{
