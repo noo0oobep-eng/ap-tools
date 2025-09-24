@@ -86,6 +86,12 @@ a.gumroad-button::after {
   z-index:-1;                 /* -1 is enough; no need for -3 */
   filter: contrast(105%) saturate(118%);
 }
+    
+/* invisible button that preserves width/height so spacing matches exactly */
+.btn-placeholder{
+  visibility: hidden;       /* hides text & border but keeps space */
+  pointer-events: none;     /* not clickable */
+}
 
 /* Optional accessibility rules are fine to keep if you want */
 @media (prefers-reduced-motion: reduce){ .bg-video{ display:none; } }
