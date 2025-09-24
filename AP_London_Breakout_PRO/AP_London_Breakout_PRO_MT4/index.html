@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AP London Breakout PRO (MT4) — Docs</title>
+<style>
+:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.wrap{max-width:900px;margin:0 auto;padding:22px}
+h1{margin:12px 0 6px;font-size:28px}
+.lead{color:var(--muted);margin:0 0 16px}
+.card{background:var(--card);border:1px solid #1d2633;border-radius:14px;padding:18px;margin:16px 0}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
+a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+img{max-width:100%;border-radius:10px;border:1px solid #1d2633}
+ul{margin:8px 0 0 18px}
+small,.muted{color:var(--muted)}
+hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="ghost btn" href="../">← Back to Home</a>
+  <h1>AP London Breakout PRO (MT4)</h1>
+  <p class="lead">London session box breakout for MetaTrader 4. Pending orders, validator-friendly gates, ATR-based SL/TP.</p>
+
+  <div class="btns">
+    <a class="btn" href="https://aptradingtools.gumroad.com/l/htmxm" target="_blank" rel="noopener">Buy on Gumroad (MT4)</a>
+    <a class="ghost btn" href="Quick_Start_MT4.md" target="_blank" rel="noopener">Quick Start</a>
+    <a class="ghost btn" href="Inputs_Reference_MT4.md" target="_blank" rel="noopener">Inputs</a>
+    <a class="ghost btn" href="Version.txt" target="_blank" rel="noopener">Version</a>
+  </div>
+
+  <!-- Optional: add presets later by uncommenting this block and adding .set files
+  <h3>Presets (.set)</h3>
+  <p class="muted">Example presets (IC Markets demo). Adjust session, spread, and risk for your broker before live.</p>
+  <ul>
+    <li><a href="Safe.set" download>Safe</a></li>
+    <li><a href="Balanced.set" download>Balanced</a></li>
+    <li><a href="Aggressive.set" download>Aggressive</a></li>
+  </ul>
+  -->
+
+  <div class="card">
+    <h3>What’s different vs MT5</h3>
+    <ul>
+      <li>Same trading logic; MT4 order/SL/TP handling uses MQL4 calls.</li>
+      <li>Match the 07:00–08:00 (server) window to your broker’s server time.</li>
+      <li>Check minimum stop levels and spread guard in your broker.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Files</h3>
+    <ul>
+      <li><code>Quick_Start_MT4.md</code> — setup & usage</li>
+      <li><code>Inputs_Reference_MT4.md</code> — parameter reference</li>
+      <li><code>Version.txt</code> — current build tag</li>
+    </ul>
+  </div>
+
+  <hr />
+  <p class="muted">Support via MQL5 messages/comments only. No profit promises or external links.</p>
+</div>
+</body>
+</html>
