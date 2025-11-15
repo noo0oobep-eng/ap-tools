@@ -104,6 +104,8 @@
         <button type="submit" class="btn">Get free download</button>
       </form>
 
+      <p id="atr-form-status" class="muted small" style="margin-top:4px;"></p>
+
       <p id="atr-download-link"
          class="muted small"
          style="display:none;margin-top:8px;">
@@ -215,22 +217,59 @@
     <footer>© AP Trading Tools • Built for MetaTrader 5</footer>
   </div>
 
-  <!-- Simple front-end gate: no POST, no 405 -->
+  <!-- Email capture via Formspree; download link shows on success -->
   <script>
     (function(){
-      var form  = document.getElementById('atr-download-form');
-      var linkP = document.getElementById('atr-download-link');
-      if(!form || !linkP) return;
+      var form   = document.getElementById('atr-download-form');
+      var linkP  = document.getElementById('atr-download-link');
+      var status = document.getElementById('atr-form-status');
+
+      // REPLACE this with your real Formspree endpoint URL
+      var endpoint = 'https://formspree.io/f/xkgkrzye';
+
+      if (!form || !linkP) return;
 
       form.addEventListener('submit', function(e){
         e.preventDefault();
         var input = form.querySelector('input[type="email"]');
-        if(!input) return;
-        var v = (input.value || '').trim();
-        if(!v) return; // require something in the email box
-        linkP.style.display = 'block';
+        if (!input) return;
+
+        var email = (input.value || '').trim();
+        if (!email) {
+          if (status) status.textContent = 'Please enter an email address.';
+          return;
+        }
+
+        if (status) status.textContent = 'Sending...';
+
+        fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: email })
+        })
+        .then(function(response){
+          if (response.ok) {
+            if (status) status.textContent = 'Thanks — your download is unlocked below.';
+            linkP.style.display = 'block';
+            input.disabled = true;
+            var btn = form.querySelector('button[type="submit"]');
+            if (btn) {
+              btn.disabled = true;
+              btn.textContent = 'Done';
+            }
+          } else {
+            if (status) status.textContent = 'Something went wrong. Please try again.';
+          }
+        })
+        .catch(function(){
+          if (status) status.textContent = 'Network error — please try again.';
+        });
       });
     })();
   </script>
 </body>
 </html>
+
