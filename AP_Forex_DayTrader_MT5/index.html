@@ -4,17 +4,59 @@
   <meta charset="utf-8" />
   <title>AP Forex DayTrader (MT5)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+        content="AP Forex DayTrader (MT5) — intraday EA combining Momentum Pullback and London session breakout, with clear risk controls." />
   <link rel="stylesheet" href="/assets/site.css" />
   <style>
-    /* fallback only */
-    body{margin:0;background:#0b1220;color:#e5e7eb;font-family:system-ui,Segoe UI,Roboto,Arial}
+    :root{
+      --bg:#0b1220;
+      --card:#111827;
+      --border:#283146;
+      --accent:#2563EB;
+      --muted:#94a3b8;
+    }
+    body{
+      margin:0;
+      font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg);
+      color:#e5e7eb;
+    }
+    a{color:#93c5fd;text-decoration:none}
     .wrap{max-width:980px;margin:48px auto;padding:0 16px}
-    .card{background:#111827;border:1px solid #283146;border-radius:16px;padding:24px}
-    .tag{display:inline-block;background:#1f2937;border-radius:999px;padding:4px 10px;font-size:12px;margin-right:6px}
-    .btn{display:inline-block;padding:10px 14px;border:1px solid #2563EB;border-radius:10px;margin-right:8px;color:#93c5fd;text-decoration:none}
-    .btn.primary{background:#2563EB;color:#fff}
-    hr{border:none;border-top:1px solid #283146;margin:24px 0}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:24px;
+    }
+    .muted{color:var(--muted)}
+    .tags{margin:0 0 14px 0}
+    .tag{
+      display:inline-block;
+      background:#1f2937;
+      border-radius:999px;
+      padding:4px 10px;
+      font-size:12px;
+      margin-right:6px;
+    }
+    .btn{
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:10px;
+      border:1px solid var(--accent);
+      margin-right:8px;
+    }
+    .btn.primary{background:var(--accent);color:#fff}
+    hr{border:none;border-top:1px solid var(--border);margin:24px 0}
     ul{margin:0 0 0 18px}
+    ol{margin:0 0 0 18px}
+    img.shot{
+      max-width:100%;
+      border-radius:12px;
+      border:1px solid var(--border);
+      margin-bottom:12px;
+      display:block;
+    }
   </style>
 </head>
 <body>
@@ -22,47 +64,68 @@
     <p><a href="/">← Back</a></p>
 
     <h1>AP Forex DayTrader (MT5)</h1>
+    <p class="muted">
+      Intraday MT5 EA for major FX pairs. Combines a Momentum Pullback engine on M15 with a London session breakout box on M5.
+      Validator-safe with clear risk controls.
+    </p>
+
     <div class="card">
-      <p>
+      <p class="tags">
         <span class="tag">EA</span>
-        <span class="tag">Forex</span>
         <span class="tag">MT5</span>
+        <span class="tag">Forex</span>
+        <span class="tag">Intraday</span>
       </p>
 
-           <p>
+      <p>
         <a class="btn primary"
            href="https://buy.stripe.com/dRmbJ3aicdET3abd63djO02"
            target="_blank" rel="noopener">
           Buy Now (MT5)
         </a>
-        <a class="btn" href="#presets">Presets (.set)</a>
+        <a class="btn" href="#downloads">Presets (.set)</a>
       </p>
-
 
       <hr/>
 
-      <h3 id="presets">Downloads (.set)</h3>
-<ul>
-  <li><a href="./AP_DayTrader_Balanced_Server0700-0900.set" download>AP_DayTrader_Balanced_Server0700-0900.set</a></li>
-  <li><a href="./AP_DayTrader_Balanced_LocalDK0700-0900_ServerPlus1.set" download>AP_DayTrader_Balanced_LocalDK0700-0900_ServerPlus1.set</a></li>
+      <h3>Overview</h3>
+      <ul>
+        <li><strong>Momentum Pullback:</strong> fast/slow MAs + RSI on M15 to find pullback entries with trend.</li>
+        <li><strong>London Breakout Box:</strong> session box on M5 with buffered breakout entries.</li>
+        <li><strong>Risk controls:</strong> % risk or fixed lots, ATR or fixed SL/TP, daily loss guard, max trades per day.</li>
+        <li><strong>Execution:</strong> margin checks, fill-mode fallback, strict magic/comment filtering.</li>
+        <li>No martingale. No grid. No DLL/WebRequest.</li>
+      </ul>
 
-  <li><a href="./AP_DayTrader_Momentum_Conservative.set" download>AP_DayTrader_Momentum_Conservative.set</a></li>
-  <li><a href="./AP_DayTrader_Breakout_Session_London.set" download>AP_DayTrader_Breakout_Session_London.set</a></li>
-  <li><a href="./AP_DayTrader_Balanced_Tighter.set" download>AP_DayTrader_Balanced_Tighter.set</a></li>
-  <li><a href="./AP_DayTrader_Balanced_DK_plus1h.set" download>AP_DayTrader_Balanced_DK_plus1h.set</a></li>
-</ul>
+      <h4>Quick start</h4>
+      <ol>
+        <li>Place the EA in <code>MQL5\Experts\</code> and restart MT5.</li>
+        <li>Attach AP Forex DayTrader (MT5) to a major FX pair (e.g. EURUSD) on M15.</li>
+        <li>Click <strong>Inputs → Load</strong> and load one of the presets below.</li>
+        <li>Enable Algo Trading and watch the <em>Experts</em> tab for any warnings.</li>
+      </ol>
 
-<hr/>
-<h3>Screenshots</h3>
-<p>
-  <img src="./img/shot-1.png" alt="DayTrader on-chart"
-     style="max-width:100%;border-radius:12px;border:1px solid #283146;margin-bottom:12px;">
-<img src="./img/shot-2.png" alt="Inputs"
-     style="max-width:100%;border-radius:12px;border:1px solid #283146;">
+      <hr/>
 
-</p>
+      <h3 id="downloads">Downloads (.set)</h3>
+      <ul>
+        <li><a href="./presets/AP_DayTrader_Balanced_Server0700-0900.set" download>AP_DayTrader_Balanced_Server0700-0900.set</a></li>
+        <li><a href="./presets/AP_DayTrader_Balanced_LocalDK0700-0900_ServerPlus1.set" download>AP_DayTrader_Balanced_LocalDK0700-0900_ServerPlus1.set</a></li>
+        <li><a href="./presets/AP_DayTrader_Momentum_Conservative.set" download>AP_DayTrader_Momentum_Conservative.set</a></li>
+        <li><a href="./presets/AP_DayTrader_Breakout_Session_London.set" download>AP_DayTrader_Breakout_Session_London.set</a></li>
+        <li><a href="./presets/AP_DayTrader_Balanced_Tighter.set" download>AP_DayTrader_Balanced_Tighter.set</a></li>
+        <li><a href="./presets/AP_DayTrader_Balanced_DK_plus1h.set" download>AP_DayTrader_Balanced_DK_plus1h.set</a></li>
+      </ul>
 
+      <hr/>
+
+      <h3>Screenshots</h3>
+      <p>
+        <img class="shot" src="./img/shot-1.png" alt="AP Forex DayTrader on chart">
+        <img class="shot" src="./img/shot-2.png" alt="AP Forex DayTrader inputs">
+      </p>
     </div>
   </div>
 </body>
 </html>
+
