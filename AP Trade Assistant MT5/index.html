@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AP Trade Assistant (MT5) – Trade Manager</title>
+  <meta name="description" content="AP Trade Assistant (MT5) — compact broker-safe trade workstation for MT5 with one-tap entries, Lines mode, partials, BE+, OCO/Bracket, trailing, tools and journaling." />
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <style>
+    :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;--border:#1d2633}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px}
+    a{color:var(--accent);text-decoration:none}
+    .back{display:inline-block;background:#0e141d;border:1px solid var(--border);color:var(--muted);padding:8px 12px;border-radius:10px}
+    h1{margin:14px 0 10px;font-size:32px}
+    .pillbar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+    .pill{display:inline-block;background:var(--accent);color:#000;padding:8px 12px;border-radius:999px;font-weight:600}
+    .pill.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin:16px 0}
+    h3{margin:0 0 10px;font-size:18px}
+    ul{margin:8px 0 0 18px}
+    ol{margin:8px 0 0 18px}
+    code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+    .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid var(--border);padding:8px 6px;text-align:left;font-size:14px}
+    .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+    .shots img{width:100%;height:auto;border-radius:10px;border:1px solid var(--border);background:#0e141d}
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/"><span>←</span> Back to Home</a>
+    <h1>AP Trade Assistant (MT5)</h1>
+    <p class="muted">
+      AP Trade Assistant is a compact, broker-safe MT5 utility that turns your chart into a fast, disciplined trade workstation.
+      It handles entries, exits, partials, breakeven+, OCO/Bracket logic, trailing stops and scheduled-style actions from a clean dockable panel.
+      Pure MQL5 (no DLL/WebRequest), validator-friendly, and designed for live charts (not Strategy Tester).
+    </p>
+
+    <div class="pillbar">
+      <a class="pill" href="https://buy.stripe.com/cNifZj9e8bwL6mn4zxdjO01" target="_blank" rel="noopener">Buy on Stripe</a>
+      <a class="pill ghost" href="./Quick%20Start.md" target="_blank" rel="noopener">Quick Start</a>
+      <a class="pill ghost" href="#inputs">Inputs</a>
+      <a class="pill ghost" href="#version">Version</a>
+    </div>
+
+    <div class="panel">
+      <h3>What it does</h3>
+      <ul>
+        <li><strong>One-tap execution:</strong> Buy/Sell market plus all four pending types (Buy/Sell Stop, Buy/Sell Limit) from the panel, auto-sized by fixed lots or % balance risk.</li>
+        <li><strong>Lines Mode trading:</strong> toggle Lines, drag Entry/SL/TP on chart, snap to grid/ATR steps, then press PLACE. The EA chooses market vs pending, applies clamps, tags orders and can pair them as OCO/Bracket.</li>
+        <li><strong>Protection suite:</strong> breakeven+ with offset, unified trailing (Fixed, ATR, MA, SAR, Fractal, Prev-Bar) with hard ratchet, plus optional Virtual Stops with server SL/TP fallback.</li>
+        <li><strong>Position control:</strong> partial closes (25/50/75 or custom), Close Buys/Sells/All, Delete Pendings and safe Reverse with spread/freeze guards.</li>
+        <li><strong>OCO / Bracket:</strong> paired pendings automatically cancel the sibling on fill; market fills can auto-attach TP/SL as a bracket.</li>
+        <li><strong>Manage workbench:</strong> side drawer listing live tickets (Ticket | Side | Lots | Entry | SL | TP | P/L | Trail | Age). Click a row to drive partials/BE/Trail from the main panel.</li>
+        <li><strong>Main Display Box (MDB):</strong> spread, server/local times, symbol P/L, margin badge and mode badges (Lines, OCO, Trail, Virtual, etc.).</li>
+        <li><strong>News glance:</strong> minimal upcoming news panel with impact color and countdown (informational only; never blocks trading).</li>
+        <li><strong>Tools &amp; overlays:</strong> drawing mode (trendline/channel/triangle), candle countdown, session boxes, multi-range, MA cross, Supertrend, hover volume tooltips, screenshot button.</li>
+        <li><strong>Hindsight &amp; presets:</strong> one-click trade snapshots and CSV journal export, plus settings export/import (JSON) for panel geometry and per-symbol/TF presets.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>How you use it</h3>
+      <ol>
+        <li>Install and attach AP Trade Assistant to a live or demo MT5 chart (M1–D1) with Algo Trading enabled, then place the panel where you like.</li>
+        <li>Choose your risk mode on the trade strip: <strong>%</strong> for percent-risk sizing or <strong>Lot</strong> for fixed lots. MDB shows spread, times, P/L and margin badge.</li>
+        <li>For quick entries, use the trade strip buttons for market orders or pending types. The EA runs <span class="mono">OrderCheck</span> &amp; margin checks and floors lots to broker step.</li>
+        <li>For line-based execution, enable <strong>Lines Mode</strong>, drag Entry/SL/TP, then press PLACE. Optionally toggle OCO and Bracket for paired pendings / auto TP/SL.</li>
+        <li>Turn on <strong>BE+</strong> and a trailing mode to protect trades automatically. Use partial buttons or the Manage drawer to scale out and adjust individual positions.</li>
+        <li>Use Tools/Info drawers for overlays, news glance, screenshots, hindsight cards and preset import/export.</li>
+      </ol>
+      <p class="muted">
+        The utility sends orders and modifications in response to your panel actions. It is <strong>not</strong> a fully automatic strategy and does <strong>not</strong> run in the Strategy Tester.
+        Tester cannot drive the UI or multi-ticket book, so use a live or demo chart only.
+      </p>
+    </div>
+
+    <div id="inputs" class="panel">
+      <h3>Inputs (key groups)</h3>
+      <div class="grid-2">
+        <div>
+          <table>
+            <tr><th>Core &amp; routing</th><th>Example</th></tr>
+            <tr><td>Symbols / magic / comments to manage</td><td class="mono">current symbol, magic=0</td></tr>
+            <tr><td>Risk mode</td><td class="mono">% balance or fixed lot</td></tr>
+            <tr><td>Default risk percent</td><td class="mono">0.5–1.0%</td></tr>
+            <tr><td>Default lot size</td><td class="mono">0.10</td></tr>
+            <tr><td>Max slippage / deviation policy</td><td class="mono">soft retry</td></tr>
+          </table>
+        </div>
+        <div>
+          <table>
+            <tr><th>Protection</th><th>Example</th></tr>
+            <tr><td>Breakeven trigger &amp; offset</td><td class="mono">+1R, +10 pts</td></tr>
+            <tr><td>Trailing mode</td><td class="mono">Fixed / ATR / MA / SAR / Fractal / Prev-bar</td></tr>
+            <tr><td>Trail start / step</td><td class="mono">start 1R, step 0.5R</td></tr>
+            <tr><td>Virtual Stops enabled</td><td class="mono">true/false</td></tr>
+            <tr><td>Daily loss / equity lock</td><td class="mono">-5% equity</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <table>
+            <tr><th>Partials &amp; panels</th><th>Example</th></tr>
+            <tr><td>Preset partial buttons</td><td class="mono">25/50/75%</td></tr>
+            <tr><td>Custom partial size</td><td class="mono">e.g. 33%</td></tr>
+            <tr><td>Manage drawer filters</td><td class="mono">symbol / magic / all</td></tr>
+            <tr><td>Show overlays (sessions, MA, Supertrend…)</td><td class="mono">on/off per tool</td></tr>
+          </table>
+        </div>
+        <div>
+          <table>
+            <tr><th>Misc &amp; journal</th><th>Example</th></tr>
+            <tr><td>Theme / panel corner</td><td class="mono">dark / bottom-right</td></tr>
+            <tr><td>Enable screenshots &amp; journal</td><td class="mono">true</td></tr>
+            <tr><td>Settings export/import</td><td class="mono">per symbol/TF JSON</td></tr>
+            <tr><td>News glance source / refresh</td><td class="mono">built-in, 60s</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <p class="muted">
+        Parameter names and exact defaults are documented in the Quick Start and inline tooltips inside MT5. 
+        This table is a high-level map of where the main behaviours live when you build your own presets.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Validator &amp; safety notes</h3>
+      <ul>
+        <li>No DLL/WebRequest. All logic is pure MQL5 with <span class="mono">OrderCheck</span> and <span class="mono">OrderCalcMargin</span> run before every send.</li>
+        <li>Lots are floored to broker minimum and step; SL/TP and price adjustments respect stop/freeze levels.</li>
+        <li>Timer and logging are throttled to stay Strategy-Tester and validation friendly, though the panel is intended for live/demo charts.</li>
+        <li>Virtual Stops are local: the EA sends market exits at your thresholds. For critical risk, pair them with server-side SL/TP via Bracket mode.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>Screenshots</h3>
+      <div class="shots">
+        <img src="./shot-1.png" alt="AP Trade Assistant – main panel and MDB">
+        <img src="./shot-2.png" alt="AP Trade Assistant – Lines Mode and OCO/Bracket">
+        <img src="./shot-3.png" alt="AP Trade Assistant – Manage drawer and partials">
+        <img src="./shot-4.png" alt="AP Trade Assistant – overlays and countdown tools">
+      </div>
+    </div>
+
+    <div id="version" class="panel">
+      <h3>Version</h3>
+      <p><strong>v1.0</strong> — initial public release.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Files in this folder</h3>
+      <ul>
+        <li><a href="./Quick%20Start.md" target="_blank" rel="noopener">Quick Start.md</a></li>
+        <!-- add presets or extra docs here when you create them -->
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
