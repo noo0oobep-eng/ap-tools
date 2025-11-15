@@ -1,67 +1,213 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AP ATR Trail (Indicator) — Docs</title>
-<style>
-:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-.wrap{max-width:900px;margin:0 auto;padding:24px}
-h1{margin:0 0 8px;font-size:28px}.lead{color:var(--muted);margin:0 0 18px}
-.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px}
-a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
-a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
-.card{background:#121822;border:1px solid #1d2633;border-radius:14px;padding:18px;margin:14px 0}
-h2{margin:8px 0 6px} ul,ol{margin:6px 0 0 18px}
-footer{color:var(--muted);text-align:center;padding:28px}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AP ATR Trail (Indicator) — Docs</title>
+  <meta name="description" content="AP ATR Trail (MT5) — ATR-based trailing stop and bias line with flip/retouch alerts for discretionary trade management." />
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <style>
+    :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;--border:#1d2633}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    }
+    .wrap{max-width:900px;margin:0 auto;padding:24px}
+    h1{margin:0 0 8px;font-size:28px}
+    .lead{color:var(--muted);margin:0 0 18px}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px}
+    a.btn{
+      display:inline-block;
+      text-decoration:none;
+      color:#000;
+      background:var(--accent);
+      padding:8px 12px;
+      border-radius:10px;
+      font-weight:600;
+    }
+    a.ghost{
+      background:transparent;
+      color:var(--accent);
+      border:1px solid var(--accent);
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:18px;
+      margin:14px 0;
+    }
+    h2{margin:8px 0 6px}
+    ul,ol{margin:6px 0 0 18px}
+    footer{color:var(--muted);text-align:center;padding:28px}
+    .muted{color:var(--muted)}
+    /* email form */
+    .dl-form{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:10px 0 4px;
+    }
+    .dl-form input[type="email"]{
+      flex:1 1 190px;
+      min-width:0;
+      padding:8px 10px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      background:#0e141d;
+      color:var(--text);
+    }
+    .dl-form button{
+      border:none;
+      cursor:pointer;
+    }
+    .small{font-size:13px}
+    .sr-only{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+  </style>
 </head>
 <body>
   <div class="wrap">
     <h1>AP ATR Trail (Indicator)</h1>
-    <p class="lead">Clean ATR-based trailing line for discretionary trade management and screenshots. Neutral, lightweight.</p>
+    <p class="lead">
+      ATR-based trailing stop and bias line for MT5. Plots a single active trail (up or down) and can alert on flips and retouches.
+      Lightweight and neutral for discretionary trade management and screenshots.
+    </p>
+
+    <div class="card">
+      <h2>Get AP ATR Trail (free)</h2>
+      <p>
+        Enter your email to receive the download link and occasional updates about new tools.
+        You can unsubscribe at any time.
+      </p>
+
+      <form class="dl-form" method="post" action="#">
+        <!-- TODO: replace action with your real form endpoint -->
+        <label for="email" class="sr-only">Email</label>
+        <input type="email"
+               id="email"
+               name="email"
+               required
+               placeholder="you@example.com">
+        <button type="submit" class="btn">Get free download</button>
+      </form>
+
+      <p class="muted small">
+        Direct download (for now): 
+        <a href="./AP_ATR_Trail_MT5.zip" download>AP_ATR_Trail_MT5.zip</a>
+      </p>
+    </div>
 
     <div class="btns">
-      <!-- Replace XXXXXX with the real MQL5 product ID you used on the homepage -->
-      <a class="btn" href="https://www.mql5.com/en/market/product/148873" target="_blank" rel="noopener">Get on MQL5</a>
       <a class="ghost btn" href="/" rel="noopener">⬅ Back to Home</a>
     </div>
 
     <div class="card">
       <h2>Overview</h2>
       <ul>
-        <li>Plots a trailing line using ATR distance from price.</li>
-        <li>Useful as a visual stop guide or review overlay.</li>
-        <li>Designed to stay unobtrusive on dark/light themes.</li>
+        <li>Indicator for an ATR-based trailing stop and bias line.</li>
+        <li>Plots a single active trail (uptrend or downtrend) to keep charts clean.</li>
+        <li>Optional alerts when the trail flips or when price retouches the active trail.</li>
+        <li>No external resources or DLLs.</li>
       </ul>
     </div>
 
     <div class="card">
-      <h2>Quick Start</h2>
-      <ol>
-        <li>Attach to any chart and timeframe.</li>
-        <li>Set <b>ATRPeriod</b> and <b>ATRMultiplier</b> for your desired distance.</li>
-        <li>Choose <b>UpdateOnClose</b> if you prefer updates once per bar.</li>
-        <li>Adjust line color/width to your chart style.</li>
-      </ol>
-    </div>
-
-    <div class="card">
-      <h2>Main Inputs (summary)</h2>
+      <h2>How it works</h2>
       <ul>
-        <li><b>ATRPeriod</b> — lookback for ATR.</li>
-        <li><b>ATRMultiplier</b> — distance factor from price.</li>
-        <li><b>UpdateOnClose</b> — true = update only at candle close.</li>
-        <li><b>LineColor / LineWidth / Style</b> — visual settings.</li>
+        <li>Calculates an ATR-based trail on the selected timeframe.</li>
+        <li>Uptrend: trail is plotted below price. Downtrend: trail is plotted above price.</li>
+        <li>When closing price moves through the trail, the state flips and the opposite trail becomes active.</li>
+        <li>Optional retouch alert notifies when price touches the active trail without a confirmed flip.</li>
       </ul>
     </div>
 
     <div class="card">
-      <h2>Notes</h2>
+      <h2>What is drawn</h2>
       <ul>
-        <li>No signals or claims; a visual tool only.</li>
-        <li>Support via MQL5 messages/comments.</li>
+        <li>Two internal buffers: <b>UpTrail</b> (active in uptrend) and <b>DnTrail</b> (active in downtrend).</li>
+        <li>Only the active side is shown; the inactive side stays hidden for clarity.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Alerts</h2>
+      <ul>
+        <li><b>Flip</b> — state changes after a bar close (trail switches side).</li>
+        <li><b>Retouch</b> — intra-bar touch of the active trail (no state change).</li>
+        <li>Delivery options: popup, sound and push notifications.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Main inputs</h2>
+      <h3>Trail &amp; distance</h3>
+      <ul>
+        <li><b>ATR_Period</b> — ATR lookback (default 14).</li>
+        <li><b>ATR_Multiplier</b> — distance from reference (default 3.0).</li>
+        <li><b>Use_HL_Extremes</b> — use recent highs/lows (Chandelier-style) as the reference; off = pure ATR offset.</li>
+      </ul>
+
+      <h3>Notifications</h3>
+      <ul>
+        <li><b>Show_Retouch_Alerts</b> — enable/disable retouch alerts.</li>
+        <li><b>Alerts</b> — choose Popup / Sound / Push.</li>
+        <li><b>SoundFile</b> — custom sound file (optional).</li>
+      </ul>
+
+      <h3>Style</h3>
+      <ul>
+        <li>Line colors and width for Up/Down trails.</li>
+        <li>Choose colors that match your template (dark/light).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Suggested starting points</h2>
+      <ul>
+        <li><b>Swing:</b> H1–H4, ATR 14, Multiplier 3.0–4.0.</li>
+        <li><b>Intraday:</b> M5–M15, ATR 10–14, Multiplier 2.2–2.5.</li>
+        <li><b>Higher volatility symbols:</b> consider a larger period or multiplier.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>How to use</h2>
+      <ul>
+        <li>Add the indicator to a chart and set <b>ATR_Period</b> and <b>ATR_Multiplier</b>.</li>
+        <li>Enable Flip and/or Retouch alerts as needed.</li>
+        <li>Use the trail as a dynamic stop or as a directional filter alongside your entry method.</li>
+        <li>(Optional) Read the trail value from the buffer in your own EA/manager.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Notes &amp; support</h2>
+      <ul>
+        <li>Indicator only (no auto-trading).</li>
+        <li>Flip is confirmed on bar close; retouch checks intra-bar ticks.</li>
+        <li>No DLLs and no external links. Tested on FX, indices, metals and crypto.</li>
+        <li>Requires current MT5 build or newer.</li>
+        <li>Support: use the contact options on <a href="https://aptradingtools.com/support/" target="_blank" rel="noopener">AP Trading Tools support</a> if you need help or presets.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Changelog</h2>
+      <ul>
+        <li><b>v1.0</b> — Initial release (ATR trail with Flip/Retouch alerts; optional highs/lows reference; popup/sound/push options).</li>
       </ul>
     </div>
 
@@ -69,3 +215,4 @@ footer{color:var(--muted);text-align:center;padding:28px}
   </div>
 </body>
 </html>
+
