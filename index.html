@@ -4,6 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AP Trading Tools – Expert Advisors & Indicators</title>
+
+  <!-- Canonical URL (homepage) -->
+  <link rel="canonical" href="https://aptradingtools.com/">
+
+  <!-- SEO description -->
+  <meta name="description" content="MT5 Expert Advisors & Indicators — clean code, validator-safe, trader-friendly.">
+
   <!-- Social share previews (Open Graph + Twitter) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AP Trading Tools">
@@ -16,362 +23,392 @@
   <meta name="twitter:title" content="AP Trading Tools — MT5 EAs & Indicators">
   <meta name="twitter:description" content="Clean code, validator-safe, trader-friendly tools for MT5.">
   <meta name="twitter:image" content="https://aptradingtools.com/assets/og-card.png">
-  <!-- Favicons -->
-<link rel="icon" href="/assets/favicon.png?v=1" type="image/png">
-<link rel="shortcut icon" href="/assets/favicon.png?v=1" type="image/png">
-<body>
-  <video
-  class="bg-video"
-  autoplay
-  muted
-  playsinline
-  loop
-  preload="auto"
-  poster="/assets/bg.webp"
-  aria-hidden="true"
-  tabindex="-1"
-  disablepictureinpicture
->
-  <source src="/assets/video/bg.mp4?v=7"  type="video/mp4" />
-  <source src="/assets/video/bg.webm?v=7" type="video/webm" />
-</video>
-  <header>
-    <h1>AP Trading Tools</h1>
-    <p class="lead">MT5 Expert Advisors & Indicators – clean code, and trader-friendly Support. </p>
-  </header>
-<!-- Canonical URL (homepage) -->
-<link rel="canonical" href="https://aptradingtools.com/">
-<nav class="catalog-nav">
-  <a href="#featured">Featured</a>
-  <a href="#sessions-london">London</a>
-  <a href="#sessions-ny">New York</a>
-  <a href="#sessions-asian">Asian</a>
-  <a href="#forex">Forex</a>
-  <a href="#crypto">Crypto</a>
-  <a href="#metals">Metals &amp; Commodities</a>
-  <a href="#indicators">Indicators</a>
-  <a href="#utilities">Utilities &amp; Risk</a>
-  <a href="#levels">Levels &amp; Context</a>
-</nav>
 
-<!-- SEO description -->
-<meta name="description" content="MT5 Expert Advisors & Indicators — clean code, validator-safe, trader-friendly.">
+  <!-- Favicons -->
+  <link rel="icon" href="/assets/favicon.png?v=1" type="image/png">
+  <link rel="shortcut icon" href="/assets/favicon.png?v=1" type="image/png">
 
   <style>
-    /* Force override Gumroad injected styles */
-a.gumroad-button {
-  display: inline-block !important;
-  padding: 10px 18px !important;
-  border-radius: 6px !important;
-  background: #007bff !important;   /* blue */
-  color: #fff !important;
-  font-weight: 600 !important;
-  text-decoration: none !important;
-  border: none !important;
-  opacity: 1 !important;
-  filter: none !important;
-  box-shadow: none !important;
-  transition: background 0.2s ease, transform 0.1s ease !important;
-}
-
-a.gumroad-button::after {
-  content: "" !important;   /* remove the 'Gumroad' text */
-}
-
-    .bg-video{
-  position:fixed; inset:0;
-  width:100vw; height:100vh;
-  object-fit:cover;
-  z-index:-1;                 /* -1 is enough; no need for -3 */
-  filter: contrast(105%) saturate(118%);
-}
-    
-/* invisible button that preserves width/height so spacing matches exactly */
-.btn-placeholder{
-  visibility: hidden;       /* hides text & border but keeps space */
-  pointer-events: none;     /* not clickable */
-}
-
-/* Optional accessibility rules are fine to keep if you want */
-@media (prefers-reduced-motion: reduce){ .bg-video{ display:none; } }
-@media (max-width: 600px){ .bg-video{ display:none; } }
-
-/* push items after the spacer to the right */
-.btns .spacer { flex: 1; }
-
-    .crumb{max-width:1100px; margin:10px auto 0; padding:0 6px;}
-.crumb a{
-  display:inline-block; padding:6px 10px;
-  border:1px solid rgba(255,255,255,.2); border-radius:999px;
-  text-decoration:none; color:#9ec5ff;
-}
-.crumb a:hover{background:rgba(255,255,255,.08);}
-
-    .site-footer{
-  border-top:1px solid rgba(255,255,255,.08);
-  background:rgba(10,12,16,.50);
-  backdrop-filter:saturate(120%) blur(4px);
-  padding:18px 0; margin-top:48px;
-}
-.site-footer .wrap{
-  max-width:1100px; margin:0 auto;
-  display:flex; justify-content:space-between; align-items:center;
-  gap:12px; padding:0 6px; font-size:14px; color:#cfe0ff;
-}
-.site-footer a{color:#9ec5ff; text-decoration:none; padding:4px 8px; border-radius:6px;}
-.site-footer a:hover{background:rgba(255,255,255,.08);}
-
-    /* 1) Slightly stronger top overlay for readability */
-body::after{
-  /* darker at top → fades down the page */
-  background: linear-gradient(to bottom,
-              rgba(8,10,14,.68) 0%,
-              rgba(8,10,14,.34) 320px,
-              rgba(8,10,14,.24) 100%);
-}
-
-/* 2) Headings readable over busy areas */
-.hero h1,
-section.catalog h2{
-  color:#eaf2ff;
-  text-shadow: 0 2px 12px rgba(0,0,0,.45);
-}
-.hero .subtitle{ opacity:.9; text-shadow:0 1px 10px rgba(0,0,0,.45); }
-
-/* 3) Cards: a hair darker + crisper edges */
-.card{
-  color:#e8eef6;
-  background: rgba(16,20,26,.86);
-  border: 1px solid rgba(255,255,255,.08);
-  box-shadow: 0 10px 28px rgba(0,0,0,.45);
-  backdrop-filter: saturate(120%) blur(3px);
-}
-
-/* 4) Category pills: brighter text and edge */
-.catalog-nav a{
-  color:#d9e7ff;
-  background: rgba(0,0,0,.28);
-  border-color: rgba(255,255,255,.12);
-}
-.catalog-nav a:hover{ background: rgba(255,255,255,.08); }
-
-/* 5) Little lift for the small tags on cards */
-.tag{
-  color:#dbe4f0;
-  background: rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.12);
-}
-
-    /* Full-page fixed background image behind everything */
-html, body { min-height: 100%; }
-body { background: #0b0f14; } /* fallback color */
-
-body::before{
-  content:"";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background: url("/assets/bg.webp") center / cover no-repeat;
-}
-
-/* Optional: subtle dark overlay for readability on top of the photo */
-body::after{
-  content:"";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(rgba(10,12,16,.45), rgba(10,12,16,.55));
-}
-
-/* Make cards float nicely over the image */
-.card{
-  background: rgba(20,24,30,.82);
-  border: 1px solid rgba(255,255,255,.06);
-  box-shadow: 0 6px 22px rgba(0,0,0,.35);
-  backdrop-filter: saturate(120%) blur(2px); /* graceful no-op where unsupported */
-}
-
-    .hero{max-width:1100px;margin:26px auto 10px;text-align:center;}
-.hero h1{font-size:32px;line-height:1.15;margin:0 0 6px;}
-.hero .subtitle{opacity:.8;margin:0;}
-    :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
+    :root{
+      --bg:#0b0f14;
+      --card:#121822;
+      --text:#e8eef6;
+      --muted:#9fb0c3;
+      --accent:#58a6ff;
+    }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    header{padding:40px 20px;text-align:center}
-    h1{margin:0 0 8px;font-size:32px}
-    p.lead{margin:0;color:var(--muted)}
-    .wrap{max-width:1100px;margin:0 auto;padding:20px}
-    h2{margin:28px 0 12px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-    .card{background:var(--card);border:1px solid #1d2633;border-radius:14px;padding:18px}
-    .card h3{margin:0 0 6px}
-    .tags{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}
-    .tag{font-size:12px;padding:2px 8px;border:1px solid #243244;border-radius:999px;color:var(--muted)}
-    .btns{display:flex;gap:10px;flex-wrap:wrap}
-    a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
-    a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
-    footer{color:var(--muted);text-align:center;padding:40px 20px}
-    .note{background:#0e141d;border:1px dashed #243244;border-radius:12px;padding:14px;margin:18px 0}
+
+    html, body{min-height:100%;}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    }
+
+    /* Background image + dark overlay */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      background:url("/assets/bg.webp") center/cover no-repeat;
+    }
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      background:linear-gradient(to bottom,
+        rgba(8,10,14,.68) 0%,
+        rgba(8,10,14,.34) 320px,
+        rgba(8,10,14,.24) 100%);
+    }
+
+    /* Background video */
+    .bg-video{
+      position:fixed;
+      inset:0;
+      width:100vw;
+      height:100vh;
+      object-fit:cover;
+      z-index:-3;
+      filter:contrast(105%) saturate(118%);
+    }
+    @media (prefers-reduced-motion: reduce){
+      .bg-video{display:none;}
+    }
+    @media (max-width:600px){
+      .bg-video{display:none;}
+    }
+
+    /* Gumroad button override */
+    a.gumroad-button{
+      display:inline-block !important;
+      padding:10px 18px !important;
+      border-radius:6px !important;
+      background:#007bff !important;
+      color:#fff !important;
+      font-weight:600 !important;
+      text-decoration:none !important;
+      border:none !important;
+      opacity:1 !important;
+      filter:none !important;
+      box-shadow:none !important;
+      transition:background .2s ease, transform .1s ease !important;
+    }
+    a.gumroad-button::after{
+      content:"" !important;
+    }
+
+    /* Layout */
+    header.hero{
+      padding:40px 20px 20px;
+      text-align:center;
+      max-width:1100px;
+      margin:0 auto;
+    }
+    header.hero h1{
+      margin:0 0 8px;
+      font-size:32px;
+      line-height:1.15;
+      color:#eaf2ff;
+      text-shadow:0 2px 12px rgba(0,0,0,.45);
+    }
+    header.hero p.lead{
+      margin:0;
+      color:var(--muted);
+      opacity:.9;
+      text-shadow:0 1px 10px rgba(0,0,0,.45);
+    }
+
+    .catalog-nav{
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      margin:10px 0 6px;
+      flex-wrap:wrap;
+    }
+    .catalog-nav a{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      text-decoration:none;
+      font-size:14px;
+      color:#d9e7ff;
+      background:rgba(0,0,0,.28);
+    }
+    .catalog-nav a:hover{
+      background:rgba(255,255,255,.08);
+    }
+
+    section.catalog h2{
+      max-width:1100px;
+      margin:18px auto 12px;
+      padding:0 4px;
+      color:#eaf2ff;
+      text-shadow:0 2px 12px rgba(0,0,0,.45);
+    }
+    .muted{
+      opacity:.7;
+      font-weight:400;
+      font-size:.9em;
+    }
+
     .grid3{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(260px, 1fr));
-  gap:20px; max-width:1100px; margin:0 auto 40px;
-}
-.grid3 .card{ margin:0; }
+      display:grid;
+      grid-template-columns:repeat(3,minmax(260px,1fr));
+      gap:20px;
+      max-width:1100px;
+      margin:0 auto 40px;
+    }
+    @media (max-width:900px){
+      .grid3{grid-template-columns:repeat(2,minmax(220px,1fr));}
+    }
+    @media (max-width:600px){
+      .grid3{grid-template-columns:1fr;}
+    }
 
-.catalog-nav{display:flex; gap:12px; justify-content:center; margin:18px 0 6px;}
-.catalog-nav a{padding:6px 10px; border:1px solid var(--muted); border-radius:999px; text-decoration:none; font-size:14px;}
-.catalog-nav a:hover{background:rgba(255,255,255,.05);}
-section.catalog h2{max-width:1100px; margin:10px auto 12px; padding:0 4px;}
-.muted{opacity:.7; font-weight:400; font-size:.9em;}
+    .card{
+      background:rgba(16,20,26,.86);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:18px;
+      box-shadow:0 10px 28px rgba(0,0,0,.45);
+      backdrop-filter:saturate(120%) blur(3px);
+    }
+    .card h3{margin:0 0 6px;}
+    .card p{margin:0 0 8px;}
 
-@media (max-width: 900px){ .grid3{grid-template-columns: repeat(2, minmax(220px,1fr));} }
-@media (max-width: 600px){ .grid3{grid-template-columns: 1fr;} }
-/* keep rows tight but consistent with the rest of the site */
-.btns { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
-.btns.btns--docs { margin-top:6px; }
+    .tags{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      margin:8px 0 12px;
+    }
+    .tag{
+      font-size:12px;
+      padding:2px 8px;
+      border-radius:999px;
+      color:#dbe4f0;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+    }
 
-/* ensure ghost buttons look exactly like the other “Docs” buttons */
-.btn.btn-ghost {
-  background:transparent;
-  border:1px solid rgba(255,255,255,0.2);
-  color:#cfe3ff;
-}
-.btn.btn-ghost:hover {
-  border-color: rgba(255,255,255,0.35);
-  color:#ffffff;
-}
+    .btns{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+    a.btn{
+      display:inline-block;
+      text-decoration:none;
+      color:#000;
+      background:var(--accent);
+      padding:8px 12px;
+      border-radius:10px;
+      font-weight:600;
+    }
+    a.btn-primary{background:var(--accent);}
+    a.btn-ghost,
+    a.btn.ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,.2);
+      color:#cfe3ff;
+    }
+    a.btn-ghost:hover,
+    a.btn.ghost:hover{
+      border-color:rgba(255,255,255,.35);
+      color:#fff;
+    }
 
+    /* invisible placeholder button to preserve layout when needed */
+    .btn-placeholder{
+      visibility:hidden;
+      pointer-events:none;
+    }
+
+    /* Footer */
+    .site-footer{
+      border-top:1px solid rgba(255,255,255,.08);
+      background:rgba(10,12,16,.50);
+      backdrop-filter:saturate(120%) blur(4px);
+      padding:18px 0;
+      margin-top:48px;
+    }
+    .site-footer .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:0 6px;
+      font-size:14px;
+      color:#cfe0ff;
+    }
+    .site-footer a{
+      color:#9ec5ff;
+      text-decoration:none;
+      padding:4px 8px;
+      border-radius:6px;
+    }
+    .site-footer a:hover{
+      background:rgba(255,255,255,.08);
+    }
   </style>
 </head>
+
+<body>
+  <!-- background video -->
+  <video
+    class="bg-video"
+    autoplay
+    muted
+    playsinline
+    loop
+    preload="auto"
+    poster="/assets/bg.webp"
+    aria-hidden="true"
+    tabindex="-1"
+    disablepictureinpicture>
+    <source src="/assets/video/bg.mp4?v=7" type="video/mp4" />
+    <source src="/assets/video/bg.webm?v=7" type="video/webm" />
+  </video>
+
+  <header class="hero">
+    <h1>AP Trading Tools</h1>
+    <p class="lead">MT5 Expert Advisors &amp; Indicators – clean code, and trader-friendly Support.</p>
+  </header>
+
+  <nav class="catalog-nav">
+    <a href="#featured">Featured</a>
+    <a href="#sessions-london">London</a>
+    <a href="#sessions-ny">New York</a>
+    <a href="#sessions-asian">Asian</a>
+    <a href="#forex">Forex</a>
+    <a href="#crypto">Crypto</a>
+    <a href="#metals">Metals &amp; Commodities</a>
+    <a href="#indicators">Indicators</a>
+    <a href="#utilities">Utilities &amp; Risk</a>
+    <a href="#levels">Levels &amp; Context</a>
+  </nav>
+
+  <!-- Featured -->
   <section id="featured" class="catalog">
-  <h2>Featured EAs</h2>
-  <div class="grid3">
-    <div class="card">
-  <h3>AP London Session Breakout (MT5)</h3>
-  <div class="tags">
-    <span class="tag">Breakout</span><span class="tag">Time-box</span><span class="tag">MT5</span>
-  </div>
-  <p>Structured London session range breakouts with session filters, pending-order safety, and validator-clean logic.</p>
-
-  <div class="btns">
-    <!-- Buy on Gumroad -->
-    <a class="btn btn-primary"
-       href="https://aptradingtools.gumroad.com/l/azgph"
-       target="_blank" rel="noopener">
-      Buy Now (MT5)
-    </a>
-
-    <!-- Docs (fixed path + class) -->
-    <a class="btn btn-ghost" href="/London%20Session%20Breakout/" target="_blank" rel="noopener">
-      Docs
-    </a>
-  </div>
-</div>
-
-    <div class="card">
-  <h3>AP InsideBar Breakout (MT5)</h3>
-  <div class="tags">
-    <span class="tag">Price Action</span><span class="tag">Breakout</span><span class="tag">MT5</span>
-  </div>
-  <p>Inside-bar detection with smart pending placement and automatic opposite-side cleanup after fills.</p>
-
-  <div class="btns">
-    <a class="btn btn-primary"
-       href="https://aptradingtools.gumroad.com/l/qtcoqn"
-       target="_blank" rel="noopener">
-      Buy Now (MT5)
-    </a>
-  </div>
-</div>
-    
-   <div class="card">
-  <h3>AP DayTrader Impulse Box (MT5)</h3>
-  <div class="tags">
-    <span class="tag">Momentum</span><span class="tag">Breakout</span><span class="tag">MT5</span>
-  </div>
-  <p>
-    Two engines: Momentum Pullback (EMA/RSI) + Session Breakout (M5 box).
-    ATR stops, BE & trailing, spread/stop guards.
-  </p>
-  <div class="btns">
-    <a class="btn"
-       href="https://buy.stripe.com/14A00l1LG44jcKLaXVdjO08"
-       target="_blank" rel="noopener">
-      Buy Now (MT5)
-    </a>
-    <a class="btn ghost"
-       href="./AP_DayTrader_Impulse_Box/"
-       target="_blank" rel="noopener">
-      Docs
-    </a>
-  </div>
-</div>
-</section>
-
-  <section id="sessions-london" class="catalog">
-  <h2>London EAs</h2>
-  <div class="grid3">
-    <div class="card">
-      <h3>AP London Breakout PRO</h3>
-      <div class="tags">
-        <span class="tag">Breakout</span><span class="tag">London</span>
-        <span class="tag">MT4</span><span class="tag">MT5</span>
+    <h2>Featured EAs</h2>
+    <div class="grid3">
+      <div class="card">
+        <h3>AP London Session Breakout (MT5)</h3>
+        <div class="tags">
+          <span class="tag">Breakout</span><span class="tag">Time-box</span><span class="tag">MT5</span>
+        </div>
+        <p>Structured London session range breakouts with session filters, pending-order safety, and validator-clean logic.</p>
+        <div class="btns">
+          <a class="btn btn-primary"
+             href="https://aptradingtools.gumroad.com/l/azgph"
+             target="_blank" rel="noopener">
+            Buy Now (MT5)
+          </a>
+          <a class="btn btn-ghost" href="/London%20Session%20Breakout/" target="_blank" rel="noopener">
+            Docs
+          </a>
+        </div>
       </div>
-      <p>
-        07:00–08:00 (server) box breakout via pending orders. SL at opposite side (+extra),
-        TP by R-multiple. One set per window, validator-safe gates.
-      </p>
 
-      <div class="btns">
-        <!-- Buy buttons (left) -->
-        <a class="btn btn-primary"
-           href="https://buy.stripe.com/dRm5kF9e858n4efgifdjO06"
-           target="_blank" rel="noopener">
-          Buy Now (MT5)
-        </a>
+      <div class="card">
+        <h3>AP InsideBar Breakout (MT5)</h3>
+        <div class="tags">
+          <span class="tag">Price Action</span><span class="tag">Breakout</span><span class="tag">MT5</span>
+        </div>
+        <p>Inside-bar detection with smart pending placement and automatic opposite-side cleanup after fills.</p>
+        <div class="btns">
+          <a class="btn btn-primary"
+             href="https://aptradingtools.gumroad.com/l/qtcoqn"
+             target="_blank" rel="noopener">
+            Buy Now (MT5)
+          </a>
+        </div>
+      </div>
 
-        <a class="btn btn-primary"
-           href="https://buy.stripe.com/eVq6oJ7607gvh11gifdjO07"
-           target="_blank" rel="noopener">
-          Buy Now (MT4)
-        </a>
-
-        <!-- Docs buttons (right) -->
-        <a class="btn btn-ghost"
-           href="/AP_London_Breakout_PRO/"
-           target="_blank" rel="noopener">
-          Docs
-        </a>
-
-        <!-- placeholders to keep layout aligned -->
-        <span class="btn btn-ghost btn-placeholder" aria-hidden="true">__</span>
-        <span class="btn btn-ghost btn-placeholder" aria-hidden="true">__</span>
-        <span class="btn btn-ghost btn-placeholder" aria-hidden="true">__</span>
-        <span class="btn btn-ghost btn-placeholder" aria-hidden="true">__</span>
-        <span class="btn btn-ghost btn-placeholder" aria-hidden="true">__</span>
-        <span class="btn btn-ghost btn-placeholder" aria-hidden="true">__</span>
-
-        <span class="btn btn-ghost btn-placeholder" aria-hidden="true"></span>
-        <a class="btn btn-ghost"
-           href="/AP_London_Breakout_PRO/AP_London_Breakout_PRO_MT4/"
-           target="_blank" rel="noopener">
-          Docs MT4
-        </a>
+      <div class="card">
+        <h3>AP DayTrader Impulse Box (MT5)</h3>
+        <div class="tags">
+          <span class="tag">Momentum</span><span class="tag">Breakout</span><span class="tag">MT5</span>
+        </div>
+        <p>
+          Two engines: Momentum Pullback (EMA/RSI) + Session Breakout (M5 box).
+          ATR stops, BE &amp; trailing, spread/stop guards.
+        </p>
+        <div class="btns">
+          <a class="btn"
+             href="https://buy.stripe.com/14A00l1LG44jcKLaXVdjO08"
+             target="_blank" rel="noopener">
+            Buy Now (MT5)
+          </a>
+          <a class="btn ghost"
+             href="./AP_DayTrader_Impulse_Box/"
+             target="_blank" rel="noopener">
+            Docs
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="sessions-ny" class="catalog">
-  <h2>New York EAs</h2>
-  <div class="grid3">
-  <div class="card">
+  <!-- London -->
+  <section id="sessions-london" class="catalog">
+    <h2>London EAs</h2>
+    <div class="grid3">
+      <div class="card">
+        <h3>AP London Breakout PRO</h3>
+        <div class="tags">
+          <span class="tag">Breakout</span><span class="tag">London</span>
+          <span class="tag">MT4</span><span class="tag">MT5</span>
+        </div>
+        <p>
+          07:00–08:00 (server) box breakout via pending orders. SL at opposite side (+extra),
+          TP by R-multiple. One set per window, validator-safe gates.
+        </p>
+        <div class="btns">
+          <a class="btn btn-primary"
+             href="https://buy.stripe.com/dRm5kF9e858n4efgifdjO06"
+             target="_blank" rel="noopener">
+            Buy Now (MT5)
+          </a>
+          <a class="btn btn-primary"
+             href="https://buy.stripe.com/eVq6oJ7607gvh11gifdjO07"
+             target="_blank" rel="noopener">
+            Buy Now (MT4)
+          </a>
+          <a class="btn btn-ghost"
+             href="/AP_London_Breakout_PRO/"
+             target="_blank" rel="noopener">
+            Docs
+          </a>
+          <!-- spacer to keep Docs MT4 on its own line if needed -->
+          <span class="btn btn-ghost btn-placeholder" aria-hidden="true">__</span>
+          <a class="btn btn-ghost"
+             href="/AP_London_Breakout_PRO/AP_London_Breakout_PRO_MT4/"
+             target="_blank" rel="noopener">
+            Docs MT4
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- New York -->
+  <section id="sessions-ny" class="catalog">
+    <h2>New York EAs</h2>
+    <div class="grid3">
+      <div class="card">
         <h3>AP NY Breakout PRO (MT5)</h3>
         <div class="tags">
-        <span class="tag">Breakout</span>
-        <span class="tag">NY</span>
-        <span class="tag">MT5</span>
+          <span class="tag">Breakout</span>
+          <span class="tag">NY</span>
+          <span class="tag">MT5</span>
         </div>
         <p>13:30–14:30 (server) box breakout via pending orders. SL at opposite side (+extra), TP by R-multiple. One set per window, validator-safe gates.</p>
         <div class="btns">
@@ -379,12 +416,14 @@ section.catalog h2{max-width:1100px; margin:10px auto 12px; padding:0 4px;}
           <a class="btn ghost" href="./AP_NY_Breakout_PRO/" target="_blank" rel="noopener">Docs</a>
         </div>
       </div>
-</section>
+    </div>
+  </section>
 
-<section id="sessions-asian" class="catalog">
-  <h2>Asian EAs</h2>
-  <div class="grid3">
-  <div class="card">
+  <!-- Asian -->
+  <section id="sessions-asian" class="catalog">
+    <h2>Asian EAs</h2>
+    <div class="grid3">
+      <div class="card">
         <h3>AP Asian Breakout Box (MT5)</h3>
         <div class="tags"><span class="tag">EA</span><span class="tag">Time-box</span></div>
         <p>Asian session time-box breakout with configurable hours, buffered pending orders, and optional trend filter.</p>
@@ -393,342 +432,332 @@ section.catalog h2{max-width:1100px; margin:10px auto 12px; padding:0 4px;}
           <a class="btn ghost" href="./Asian%20Breakout%20Box/" target="_blank" rel="noopener">Docs</a>
         </div>
       </div>
-</section>
+    </div>
+  </section>
 
-<section id="forex" class="catalog">
-  <h2>Forex EAs <span class="muted">(Majors / Minors / Exotics)</span></h2>
-
-  <div class="grid3">
-    <div class="card">
-      <h3>AP Forex DayTrader (MT5)</h3>
-      <div class="tags">
-        <span class="tag">EA</span>
-        <span class="tag">Forex</span>
-        <span class="tag">MT5</span>
-        <span class="tag">Intraday</span>
-      </div>
-      <p>
-        Momentum pullback + London session breakout for major FX pairs,
-        with ATR-based SL/TP, breakeven, trailing, and validator-safe guards.
-      </p>
-
-      <div class="btns">
-        <a class="btn btn-primary"
-           href="https://buy.stripe.com/bJe00lduogR5267d63djO04"
-           target="_blank" rel="noopener">
-          Buy Now (MT5)
-        </a>
-        <a class="btn ghost"
-           href="./AP_Forex_DayTrader_MT5/"
-           target="_blank" rel="noopener">
-          Docs
-        </a>
+  <!-- Forex -->
+  <section id="forex" class="catalog">
+    <h2>Forex EAs <span class="muted">(Majors / Minors / Exotics)</span></h2>
+    <div class="grid3">
+      <div class="card">
+        <h3>AP Forex DayTrader (MT5)</h3>
+        <div class="tags">
+          <span class="tag">EA</span>
+          <span class="tag">Forex</span>
+          <span class="tag">MT5</span>
+          <span class="tag">Intraday</span>
+        </div>
+        <p>
+          Momentum pullback + London session breakout for major FX pairs,
+          with ATR-based SL/TP, breakeven, trailing, and validator-safe guards.
+        </p>
+        <div class="btns">
+          <a class="btn btn-primary"
+             href="https://buy.stripe.com/bJe00lduogR5267d63djO04"
+             target="_blank" rel="noopener">
+            Buy Now (MT5)
+          </a>
+          <a class="btn ghost"
+             href="./AP_Forex_DayTrader_MT5/"
+             target="_blank" rel="noopener">
+            Docs
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="crypto" class="catalog">
-  <h2>Crypto EAs</h2>
-  <div class="grid3">  
-  <div class="card">
+  <!-- Crypto -->
+  <section id="crypto" class="catalog">
+    <h2>Crypto EAs</h2>
+    <div class="grid3">
+      <div class="card">
         <h3>AP BTC Breakdown (MT5)</h3>
         <div class="tags"><span class="tag">EA</span><span class="tag">BTC</span></div>
         <p>Short-only breakdown with retest entries, volume gate, EMA trend filter, and spread/ATR guards.</p>
         <div class="btns">
-          <!-- leave placeholder until published -->
           <a class="btn" href="https://www.mql5.com/en/market/product/148490" target="_blank" rel="noopener">Get on MQL5</a>
           <a class="btn ghost" href="./btc-breakdown.html" target="_blank" rel="noopener">Docs</a>
         </div>
       </div>
-    
-    <div class="card">
-  <h3>AP BTC Spread Radar MT5</h3>
-  <div class="tags"><span class="tag">Indicator</span><span class="tag">BTC</span><span class="tag">Spread</span></div>
-  <p>Shows live spread (pts) with an MA baseline — quick broker/volatility check before trading.</p>
-  <div class="btns">
-    <a class="btn"
-       href="./AP%20BTC%20Spread%20Radar%20MT5/"
-       target="_blank" rel="noopener">
-      Download Free (MT5)
-    </a>
-  </div>
-</div>
 
-</section>
+      <div class="card">
+        <h3>AP BTC Spread Radar MT5</h3>
+        <div class="tags"><span class="tag">Indicator</span><span class="tag">BTC</span><span class="tag">Spread</span></div>
+        <p>Shows live spread (pts) with an MA baseline — quick broker/volatility check before trading.</p>
+        <div class="btns">
+          <a class="btn"
+             href="./AP%20BTC%20Spread%20Radar%20MT5/"
+             target="_blank" rel="noopener">
+            Download Free (MT5)
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section id="metals" class="catalog">
-  <h2>Metals &amp; Commodities <span class="muted">(Metals / Energies)</span></h2>
-  <div class="grid3">
-  <div class="card">
+  <!-- Metals & Commodities -->
+  <section id="metals" class="catalog">
+    <h2>Metals &amp; Commodities <span class="muted">(Metals / Energies)</span></h2>
+    <div class="grid3">
+      <div class="card">
         <h3>AP Metals London Breakout PRO (MT5)</h3>
         <div class="tags">
-        <span class="tag">Breakout</span>
-        <span class="tag">London</span>
-        <span class="tag">Metals</span>
-        <span class="tag">MT5</span>
+          <span class="tag">Breakout</span>
+          <span class="tag">London</span>
+          <span class="tag">Metals</span>
+          <span class="tag">MT5</span>
         </div>
         <p>
-        07:00–08:00 (server) session box breakout via pending orders. 
-        Buy Stop above high (+buffer), Sell Stop below low. 
-        SL at opposite side (+extra), TP by R-multiple. One set per day, validator-safe guards.
+          07:00–08:00 (server) session box breakout via pending orders.
+          Buy Stop above high (+buffer), Sell Stop below low.
+          SL at opposite side (+extra), TP by R-multiple. One set per day, validator-safe guards.
         </p>
-       <div class="btns">
-         <a class="btn"
-         href="https://aptradingtools.lemonsqueezy.com/buy/YOUR_METALS_LINK"
-         data-ls-modal="buy" rel="noopener">Buy Now (MT5)</a>
-         <a class="btn ghost" href="./AP_Metals_London_Breakout_PRO/" rel="noopener">Docs</a>
+        <div class="btns">
+          <a class="btn"
+             href="https://aptradingtools.lemonsqueezy.com/buy/YOUR_METALS_LINK"
+             data-ls-modal="buy" rel="noopener">Buy Now (MT5)</a>
+          <a class="btn ghost" href="./AP_Metals_London_Breakout_PRO/" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP Oil Navigator PRO (MT5)</h3>
+        <div class="tags">
+          <span class="tag">Oil</span><span class="tag">XTIUSD</span><span class="tag">MT5</span>
+        </div>
+        <p>
+          Trend + pullback entries on XTIUSD/USOIL (M30) with ATR-based SL/TP, session &amp; spread guards,
+          and calm order flow. No martingale. No grid.
+        </p>
+        <div class="btns">
+          <a class="btn"
+             href="https://buy.stripe.com/7sY4gBfCw1Wb9yz0jhdjO00"
+             target="_blank" rel="noopener">Buy Now (MT5)</a>
+          <a class="btn ghost"
+             href="/AP%20Oil%20Navigator%20PRO%20MT5/"
+             target="_blank" rel="noopener">Docs</a>
+        </div>
       </div>
     </div>
-    
-  <div class="card">
-  <h3>AP Oil Navigator PRO (MT5)</h3>
-  <div class="tags">
-    <span class="tag">Oil</span><span class="tag">XTIUSD</span><span class="tag">MT5</span>
-  </div>
-  <p>
-    Trend + pullback entries on XTIUSD/USOIL (M30) with ATR-based SL/TP, session & spread guards,
-    and calm order flow. No martingale. No grid.
-  </p>
+  </section>
 
-  <div class="btns">
-    <a class="btn"
-       href="https://buy.stripe.com/7sY4gBfCw1Wb9yz0jhdjO00"
-       target="_blank" rel="noopener">Buy Now (MT5)</a>
-
-    <a class="btn ghost"
-       href="/AP%20Oil%20Navigator%20PRO%20MT5/"
-       target="_blank" rel="noopener">Docs</a>
-  </div>
-</div>
-
-</section>
-  
-<section id="indicators" class="catalog">
-  <h2>Indicators</h2>
-  <div class="grid3">
-
-    <div class="card">
-      <h3>AP Session Boxes</h3>
-      <div class="tags">
-        <span class="tag">Indicator</span><span class="tag">Sessions</span>
+  <!-- Indicators -->
+  <section id="indicators" class="catalog">
+    <h2>Indicators</h2>
+    <div class="grid3">
+      <div class="card">
+        <h3>AP Session Boxes</h3>
+        <div class="tags">
+          <span class="tag">Indicator</span><span class="tag">Sessions</span>
+        </div>
+        <p>Clean London/NY/Asia session boxes with custom times, opacity, and lookback. Great for screenshots.</p>
+        <div class="btns">
+          <a class="btn" href="https://www.mql5.com/en/market/product/148712" target="_blank" rel="noopener">Download</a>
+          <a class="btn ghost" href="./AP_Session_Boxes/" target="_blank" rel="noopener">Docs</a>
+        </div>
       </div>
-      <p>Clean London/NY/Asia session boxes with custom times, opacity, and lookback. Great for screenshots.</p>
-      <div class="btns">
-        <a class="btn" href="https://www.mql5.com/en/market/product/148712" target="_blank" rel="noopener">Download</a>
-        <a class="btn ghost" href="./AP_Session_Boxes/" target="_blank" rel="noopener">Docs</a>
+
+      <div class="card">
+        <h3>AP BTC Spread Radar MT5</h3>
+        <div class="tags">
+          <span class="tag">Indicator</span>
+          <span class="tag">BTC</span>
+          <span class="tag">Spread</span>
+        </div>
+        <p>Shows live spread (pts) with an MA baseline — quick broker/volatility check before trading.</p>
+        <div class="btns">
+          <a class="btn"
+             href="./AP%20BTC%20Spread%20Radar%20MT5/"
+             target="_blank" rel="noopener">
+            Download Free (MT5)
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP Round Numbers Grid (MT5)</h3>
+        <div class="tags">
+          <span class="tag">Indicator</span><span class="tag">Levels</span>
+        </div>
+        <p>Round-number grid by points with optional half/quarter levels. Non-trading, fast, and tidy.</p>
+        <div class="btns">
+          <a class="btn" href="https://www.mql5.com/en/market/product/148903" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./AP%20Round%20Numbers%20Grid%20MT5/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP ATR Trail (Indicator)</h3>
+        <div class="tags">
+          <span class="tag">Indicator</span><span class="tag">ATR</span>
+        </div>
+        <p>Clean ATR trailing line for discretionary exits or screenshots.</p>
+        <div class="btns">
+          <a class="btn"
+             href="./AP%20ATR%20Trail%20(MT5)/"
+             target="_blank" rel="noopener">
+            Download Free
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>MA Cross Alerts</h3>
+        <div class="tags">
+          <span class="tag">Indicator</span><span class="tag">Signals</span>
+        </div>
+        <p>Moving-average cross alerts with on-chart labels and optional notifications.</p>
+        <div class="btns">
+          <a class="btn" href="https://www.mql5.com/en/market/product/148553" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./MA%20Cross%20Alerts/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Pro Countdown Candle</h3>
+        <div class="tags">
+          <span class="tag">Indicator</span><span class="tag">Utility</span>
+        </div>
+        <p>Minimal candle time-left display that respects chart theme and stays light on resources.</p>
+        <div class="btns">
+          <a class="btn" href="https://www.mql5.com/en/market/product/148541" target="_blank" rel="noopener">Download</a>
+          <a class="btn ghost" href="./Pro%20Countdown%20Candle/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP Previous Levels</h3>
+        <div class="tags">
+          <span class="tag">Indicator</span><span class="tag">Levels</span>
+        </div>
+        <p>Marks prior session/day/week levels with neutral styling for context.</p>
+        <div class="btns">
+          <a class="btn" href="https://www.mql5.com/en/market/product/148635" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./AP%20Previous%20levels/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Daily Open Line</h3>
+        <div class="tags">
+          <span class="tag">Indicator</span><span class="tag">Utility</span>
+        </div>
+        <p>Draws the daily open with session-aware styling. Lightweight and neutral.</p>
+        <div class="btns">
+          <a class="btn" href="https://www.mql5.com/en/market/product/148547" target="_blank" rel="noopener">Get on MQL5</a>
+          <a class="btn ghost" href="./Daily%20open%20line/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP VWAP Bands Pro MT5</h3>
+        <div class="tags">
+          <span class="tag">Indicator</span><span class="tag">BTC</span>
+        </div>
+        <p>Session-based VWAP with optional ±1/±2 bands for balanced intraday reference.</p>
+        <div class="btns">
+          <a class="btn" href="https://www.mql5.com/en/market/product/150646" target="_blank" rel="noopener">Download</a>
+          <a class="btn ghost" href="./AP%20Btc%20Session%20VWAP%20Bands%20MT5/" target="_blank" rel="noopener">Docs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>ICT Liquidity Sweep (FVG) MT5</h3>
+        <div class="tags">
+          <span class="tag">Indicator</span><span class="tag">BTC/FX</span>
+        </div>
+        <p>Marks prior HI/LO sweeps and fair-value gaps with clean, optional alerts.</p>
+        <div class="btns">
+          <a class="btn ghost"
+             href="https://github.com/noo0oobep-eng/ap-tools/tree/main/ICT_LiquiditySweep_FVG_MT5"
+             target="_blank" rel="noopener">
+            Docs
+          </a>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="card">
-      <h3>AP BTC Spread Radar MT5</h3>
-      <div class="tags">
-        <span class="tag">Indicator</span>
-        <span class="tag">BTC</span>
-        <span class="tag">Spread</span>
+  <!-- Utilities -->
+  <section id="utilities" class="catalog">
+    <h2>Utilities &amp; Risk</h2>
+    <div class="grid3">
+      <div class="card">
+        <h3>AP Trade Manager (Lite)</h3>
+        <div class="tags">
+          <span class="tag">Utility</span>
+          <span class="tag">Manager</span>
+        </div>
+        <p>Compact trade manager with break-even, partials, and quick-close actions.</p>
+        <div class="btns">
+          <a class="btn"
+             href="https://www.mql5.com/en/market/product/148619"
+             target="_blank" rel="noopener">
+            Get on MQL5
+          </a>
+          <a class="btn ghost"
+             href="./AP%20Trade%20Manager/"
+             target="_blank" rel="noopener">
+            Docs
+          </a>
+        </div>
       </div>
-      <p>Shows live spread (pts) with an MA baseline — quick broker/volatility check before trading.</p>
-      <div class="btns">
-        <a class="btn"
-           href="./AP%20BTC%20Spread%20Radar%20MT5/"
-           target="_blank" rel="noopener">
-          Download Free (MT5)
-        </a>
+
+      <div class="card">
+        <h3>AP Trade Assistant (MT5)</h3>
+        <div class="tags">
+          <span class="tag">Utility</span>
+          <span class="tag">Assistant</span>
+          <span class="tag">MT5</span>
+        </div>
+        <p>Automated trade assistant with clear risk controls and streamlined order management.</p>
+        <div class="btns">
+          <a class="btn"
+             href="https://buy.stripe.com/7sY14paic44jfWX7LJdjO03"
+             target="_blank" rel="noopener">
+            Buy Now (MT5)
+          </a>
+          <a class="btn ghost"
+             href="/AP%20Trade%20Assistant%20MT5/"
+             target="_blank" rel="noopener">
+            Docs
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AP ATR Trail Manager PRO (MT5)</h3>
+        <div class="tags">
+          <span class="tag">Manager</span>
+          <span class="tag">ATR</span>
+          <span class="tag">MT5</span>
+        </div>
+        <p>
+          Utility EA that manages existing positions only. ATR trailing stop, breakeven,
+          one partial, time-tighten, symbol/magic filters, and optional daily equity guard.
+        </p>
+        <div class="btns">
+          <a class="btn"
+             href="https://buy.stripe.com/bJeeVfgGA9oD6mn4zxdjO05"
+             target="_blank" rel="noopener">
+            Buy Now (MT5)
+          </a>
+          <a class="btn ghost"
+             href="./AP%20ATR%20Trail%20Manager%20PRO/"
+             target="_blank" rel="noopener">
+            Docs
+          </a>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="card">
-      <h3>AP Round Numbers Grid (MT5)</h3>
-      <div class="tags">
-        <span class="tag">Indicator</span><span class="tag">Levels</span>
-      </div>
-      <p>Round-number grid by points with optional half/quarter levels. Non-trading, fast, and tidy.</p>
-      <div class="btns">
-        <a class="btn" href="https://www.mql5.com/en/market/product/148903" target="_blank" rel="noopener">Get on MQL5</a>
-        <a class="btn ghost" href="./AP%20Round%20Numbers%20Grid%20MT5/" target="_blank" rel="noopener">Docs</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>AP ATR Trail (Indicator)</h3>
-      <div class="tags">
-        <span class="tag">Indicator</span><span class="tag">ATR</span>
-      </div>
-      <p>Clean ATR trailing line for discretionary exits or screenshots.</p>
-      <div class="btns">
-        <a class="btn"
-           href="./AP%20ATR%20Trail%20(MT5)/"
-           target="_blank" rel="noopener">
-          Download Free
-        </a>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>MA Cross Alerts</h3>
-      <div class="tags">
-        <span class="tag">Indicator</span><span class="tag">Signals</span>
-      </div>
-      <p>Moving-average cross alerts with on-chart labels and optional notifications.</p>
-      <div class="btns">
-        <a class="btn" href="https://www.mql5.com/en/market/product/148553" target="_blank" rel="noopener">Get on MQL5</a>
-        <a class="btn ghost" href="./MA%20Cross%20Alerts/" target="_blank" rel="noopener">Docs</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Pro Countdown Candle</h3>
-      <div class="tags">
-        <span class="tag">Indicator</span><span class="tag">Utility</span>
-      </div>
-      <p>Minimal candle time-left display that respects chart theme and stays light on resources.</p>
-      <div class="btns">
-        <a class="btn" href="https://www.mql5.com/en/market/product/148541" target="_blank" rel="noopener">Download</a>
-        <a class="btn ghost" href="./Pro%20Countdown%20Candle/" target="_blank" rel="noopener">Docs</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>AP Previous Levels</h3>
-      <div class="tags">
-        <span class="tag">Indicator</span><span class="tag">Levels</span>
-      </div>
-      <p>Marks prior session/day/week levels with neutral styling for context.</p>
-      <div class="btns">
-        <a class="btn" href="https://www.mql5.com/en/market/product/148635" target="_blank" rel="noopener">Get on MQL5</a>
-        <a class="btn ghost" href="./AP%20Previous%20levels/" target="_blank" rel="noopener">Docs</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Daily Open Line</h3>
-      <div class="tags">
-        <span class="tag">Indicator</span><span class="tag">Utility</span>
-      </div>
-      <p>Draws the daily open with session-aware styling. Lightweight and neutral.</p>
-      <div class="btns">
-        <a class="btn" href="https://www.mql5.com/en/market/product/148547" target="_blank" rel="noopener">Get on MQL5</a>
-        <a class="btn ghost" href="./Daily%20open%20line/" target="_blank" rel="noopener">Docs</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>AP VWAP Bands Pro MT5</h3>
-      <div class="tags">
-        <span class="tag">Indicator</span><span class="tag">BTC</span>
-      </div>
-      <p>Session-based VWAP with optional ±1/±2 bands for balanced intraday reference.</p>
-      <div class="btns">
-        <a class="btn" href="https://www.mql5.com/en/market/product/150646" target="_blank" rel="noopener">Download</a>
-        <a class="btn ghost" href="./AP%20Btc%20Session%20VWAP%20Bands%20MT5/" target="_blank" rel="noopener">Docs</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>ICT Liquidity Sweep (FVG) MT5</h3>
-      <div class="tags">
-        <span class="tag">Indicator</span><span class="tag">BTC/FX</span>
-      </div>
-      <p>Marks prior HI/LO sweeps and fair-value gaps with clean, optional alerts.</p>
-      <div class="btns">
-        <a class="btn ghost"
-           href="https://github.com/noo0oobep-eng/ap-tools/tree/main/ICT_LiquiditySweep_FVG_MT5"
-           target="_blank" rel="noopener">
-          Docs
-        </a>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-
-<section id="utilities" class="catalog">
-  <h2>Utilities &amp; Risk</h2>
-
-  <div class="grid3">
-    <!-- AP Trade Manager (Lite) -->
-    <div class="card">
-      <h3>AP Trade Manager (Lite)</h3>
-      <div class="tags">
-        <span class="tag">Utility</span>
-        <span class="tag">Manager</span>
-      </div>
-      <p>
-        Compact trade manager with break-even, partials, and quick-close actions.
-      </p>
-      <div class="btns">
-        <a class="btn"
-           href="https://www.mql5.com/en/market/product/148619"
-           target="_blank" rel="noopener">
-          Get on MQL5
-        </a>
-        <a class="btn ghost"
-           href="./AP%20Trade%20Manager/"
-           target="_blank" rel="noopener">
-          Docs
-        </a>
-      </div>
-    </div>
-
-    <!-- AP Trade Assistant (MT5) -->
-    <div class="card">
-      <h3>AP Trade Assistant (MT5)</h3>
-      <div class="tags">
-        <span class="tag">Utility</span>
-        <span class="tag">Assistant</span>
-        <span class="tag">MT5</span>
-      </div>
-      <p>
-        Automated trade assistant with clear risk controls and streamlined order management.
-      </p>
-      <div class="btns">
-        <a class="btn"
-           href="https://buy.stripe.com/7sY14paic44jfWX7LJdjO03"
-           target="_blank" rel="noopener">
-          Buy Now (MT5)
-        </a>
-        <a class="btn ghost"
-           href="/AP%20Trade%20Assistant%20MT5/"
-           target="_blank" rel="noopener">
-          Docs
-        </a>
-      </div>
-    </div>
-
-    <!-- AP ATR Trail Manager PRO (MT5) -->
-    <div class="card">
-      <h3>AP ATR Trail Manager PRO (MT5)</h3>
-      <div class="tags">
-        <span class="tag">Manager</span>
-        <span class="tag">ATR</span>
-        <span class="tag">MT5</span>
-      </div>
-      <p>
-        Utility EA that manages existing positions only. ATR trailing stop, breakeven,
-        one partial, time-tighten, symbol/magic filters, and optional daily equity guard.
-      </p>
-      <div class="btns">
-        <a class="btn"
-           href="https://buy.stripe.com/bJeeVfgGA9oD6mn4zxdjO05"
-           target="_blank" rel="noopener">
-          Buy Now (MT5)
-        </a>
-        <a class="btn ghost"
-           href="./AP%20ATR%20Trail%20Manager%20PRO/"
-           target="_blank" rel="noopener">
-          Docs
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<section id="levels" class="catalog">
-  <h2>Levels &amp; Context</h2>
-  <div class="grid3">
-  <div class="card">
+  <!-- Levels -->
+  <section id="levels" class="catalog">
+    <h2>Levels &amp; Context</h2>
+    <div class="grid3">
+      <div class="card">
         <h3>AP Previous Day Breakout (MT5)</h3>
         <div class="tags"><span class="tag">EA</span><span class="tag">Range</span></div>
         <p>Previous-day range breakout with buffered pending orders and built-in safety checks.</p>
@@ -738,31 +767,34 @@ section.catalog h2{max-width:1100px; margin:10px auto 12px; padding:0 4px;}
         </div>
       </div>
     </div>
-</section> 
+  </section>
 
   <footer class="site-footer">
-  <div class="wrap">
-    <span>© AP Trading Tools</span>
-    <nav>
-      <a href="/terms/">Terms</a>
-      <a href="/support/"  target="_blank" rel="noopener">Support</a>
-      <a href="/refunds/"  target="_blank" rel="noopener">Refunds</a>
-      <a href="/privacy/"  target="_blank" rel="noopener">Privacy</a>
-    </nav>
-  </div>
-</footer>
+    <div class="wrap">
+      <span>© AP Trading Tools</span>
+      <nav>
+        <a href="/terms/">Terms</a>
+        <a href="/support/"  target="_blank" rel="noopener">Support</a>
+        <a href="/refunds/"  target="_blank" rel="noopener">Refunds</a>
+        <a href="/privacy/"  target="_blank" rel="noopener">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
   <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const v = document.querySelector('.bg-video');
-  if(!v) return;
-  v.muted = true; // ensure autoplay policy is satisfied
-  const nudge = () => v.play().catch(()=>{});
-  v.addEventListener('ended', nudge);
-  v.addEventListener('pause', nudge);
-  nudge();
-});
-</script>
-  <!-- Gumroad overlay script (load once per page) -->
-<script src="https://gumroad.com/js/gumroad.js"></script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const v = document.querySelector('.bg-video');
+      if(!v) return;
+      v.muted = true;
+      const nudge = () => v.play().catch(() => {});
+      v.addEventListener('ended', nudge);
+      v.addEventListener('pause', nudge);
+      nudge();
+    });
+  </script>
+
+  <!-- Gumroad overlay script -->
+  <script src="https://gumroad.com/js/gumroad.js"></script>
 </body>
 </html>
+
