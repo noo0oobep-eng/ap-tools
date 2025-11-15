@@ -44,6 +44,8 @@
     ul,ol{margin:6px 0 0 18px}
     footer{color:var(--muted);text-align:center;padding:28px}
     .muted{color:var(--muted)}
+    .small{font-size:13px}
+
     /* email form */
     .dl-form{
       display:flex;
@@ -64,7 +66,6 @@
       border:none;
       cursor:pointer;
     }
-    .small{font-size:13px}
     .sr-only{
       position:absolute;
       width:1px;
@@ -86,32 +87,28 @@
       Lightweight and neutral for discretionary trade management and screenshots.
     </p>
 
-    <!-- Main CTA: free ZIP from your site only -->
-    <div class="btns">
-      <a class="btn"
-         href="./AP_ATR_Trail_MT5.zip"
-         download>
-        Download Free ZIP
-      </a>
-    </div>
-
+    <!-- Email gate: user enters email, then sees the download link -->
     <div class="card">
-      <h2>Get updates (optional)</h2>
+      <h2>Get AP ATR Trail (free)</h2>
       <p>
-        If you’d like updates about new tools and presets, leave your email below.
-        You can unsubscribe at any time.
+        Enter your email and click the button to unlock the download link.
       </p>
 
-      <form class="dl-form" method="post" action="#">
-        <!-- TODO: replace action with your real form endpoint when you’re ready -->
+      <form class="dl-form" id="atr-download-form">
         <label for="email" class="sr-only">Email</label>
         <input type="email"
                id="email"
                name="email"
                required
                placeholder="you@example.com">
-        <button type="submit" class="btn">Get email updates</button>
+        <button type="submit" class="btn">Get free download</button>
       </form>
+
+      <p id="atr-download-link"
+         class="muted small"
+         style="display:none;margin-top:8px;">
+        Download: <a href="./AP_ATR_Trail_MT5.zip" download>AP_ATR_Trail_MT5.zip</a>
+      </p>
     </div>
 
     <div class="btns">
@@ -217,8 +214,23 @@
 
     <footer>© AP Trading Tools • Built for MetaTrader 5</footer>
   </div>
+
+  <!-- Simple front-end gate: no POST, no 405 -->
+  <script>
+    (function(){
+      var form  = document.getElementById('atr-download-form');
+      var linkP = document.getElementById('atr-download-link');
+      if(!form || !linkP) return;
+
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        var input = form.querySelector('input[type="email"]');
+        if(!input) return;
+        var v = (input.value || '').trim();
+        if(!v) return; // require something in the email box
+        linkP.style.display = 'block';
+      });
+    })();
+  </script>
 </body>
 </html>
-
-
-
