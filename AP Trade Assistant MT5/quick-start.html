@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AP Trade Assistant — 60-second Quick Start</title>
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <style>
+    :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;--border:#1d2633}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:900px;margin:0 auto;padding:28px 18px}
+    a{color:var(--accent);text-decoration:none}
+    .back{display:inline-block;background:#0e141d;border:1px solid var(--border);color:var(--muted);padding:8px 12px;border-radius:10px}
+    h1{margin:18px 0 12px;font-size:28px}
+    h2{margin:18px 0 8px;font-size:20px}
+    ul{margin:6px 0 0 22px}
+    hr{border:0;border-top:1px solid var(--border);margin:16px 0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/AP%20Trade%20Assistant%20MT5/"><span>←</span> Back to Assistant docs</a>
+
+    <h1>AP Trade Assistant — 60-second Quick Start</h1>
+
+    <h2>1. Attach &amp; enable</h2>
+    <ul>
+      <li>Attach <strong>AP Trade Assistant</strong> to a chart.</li>
+      <li>Enable <strong>Algo Trading</strong> in MT5 and on the chart.</li>
+    </ul>
+    <hr>
+
+    <h2>2. Size your trade</h2>
+    <ul>
+      <li>Toggle between <strong>Risk%</strong> or <strong>Lots</strong> on the panel.</li>
+      <li>The <strong>MDB</strong> (Main Display Box) shows cash risk and R multiple.</li>
+    </ul>
+    <hr>
+
+    <h2>3. Compose with Lines</h2>
+    <ul>
+      <li>Press <strong>Lines</strong>.</li>
+      <li>Drag <strong>ENTRY / SL / TP</strong> on the chart.</li>
+      <li>Use <strong>Snap/Step</strong> controls to keep prices clean.</li>
+      <li>Minimum distances and broker limits are enforced automatically.</li>
+    </ul>
+    <hr>
+
+    <h2>4. Place the order</h2>
+    <ul>
+      <li>Press <strong>PLACE</strong>.</li>
+      <li>If ENTRY is beyond Bid/Ask → a <strong>pending order</strong> is sent (Stop vs Limit is auto-chosen).</li>
+      <li>If ENTRY crosses the market → a <strong>market order</strong> is sent.</li>
+    </ul>
+    <hr>
+
+    <h2>5. Manage the position</h2>
+    <ul>
+      <li><strong>BE</strong> moves SL to entry + offset.</li>
+      <li><strong>Trail</strong> selects a trailing method and ratchets (never loosens).</li>
+      <li><strong>Partials 25/50/75</strong> close part of the position volume.</li>
+    </ul>
+    <hr>
+
+    <h2>6. Advanced sends</h2>
+    <ul>
+      <li><strong>OCO</strong>: paired pendings — when one fills, the sibling is cancelled.</li>
+      <li><strong>Bracket</strong>: after a market fill, auto-attach SL/TP using your current lines.</li>
+    </ul>
+    <hr>
+
+    <h2>7. Hindsight &amp; exports</h2>
+    <ul>
+      <li><strong>Hindsight</strong>: snapshot a closed trade with context notes.</li>
+      <li><strong>Export (More)</strong>: write CSV logs to <code>\MQL5\Files\APTA_Reports\</code> for later review.</li>
+    </ul>
+    <hr>
+
+    <h2>8. Tips</h2>
+    <ul>
+      <li><strong>News</strong> panel shows upcoming events (informational only, no auto-blocking).</li>
+      <li><strong>Manage</strong> drawer shows a live table of tickets.</li>
+      <li><strong>More</strong> drawer provides utilities, preferences and export options.</li>
+    </ul>
+  </div>
+</body>
+</html>
