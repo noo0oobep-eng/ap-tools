@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AP Oil Navigator PRO (MT5) — Quick Start</title>
+  <meta name="description"
+        content="AP Oil Navigator PRO (MT5) — 60-second quick start guide for setup, risk and basic use." />
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <style>
+    :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;--border:#1d2633}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:900px;margin:0 auto;padding:28px 18px}
+    a{color:var(--accent);text-decoration:none}
+    .back{display:inline-block;background:#0e141d;border:1px solid var(--border);color:var(--muted);padding:8px 12px;border-radius:10px}
+    h1{margin:18px 0 12px;font-size:28px}
+    h2{margin:18px 0 8px;font-size:20px}
+    ul{margin:6px 0 0 22px}
+    hr{border:0;border-top:1px solid var(--border);margin:16px 0}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/AP%20Oil%20Navigator%20PRO%20MT5/">
+      ← Back to Oil Navigator docs
+    </a>
+
+    <h1>AP Oil Navigator PRO (MT5) — 60-second Quick Start</h1>
+
+    <h2>1. Attach &amp; enable</h2>
+    <ul>
+      <li>Attach <strong>AP Oil Navigator PRO</strong> to an <strong>XTIUSD/USOIL</strong> chart (M30 recommended).</li>
+      <li>Enable <strong>Algo Trading</strong> in MT5 and on the chart.</li>
+      <li>Check the top-left info line for version and symbol check.</li>
+    </ul>
+    <hr>
+
+    <h2>2. Basic inputs</h2>
+    <ul>
+      <li>Leave timeframe on <code>PERIOD_M30</code> for the default profile.</li>
+      <li>Keep default fast/slow EMA (e.g. <code>20 / 200</code>) and ATR (e.g. <code>14</code>).</li>
+      <li>Entry buffer (pts) defines how far above/below the prior bar high/low entries are placed.</li>
+    </ul>
+    <hr>
+
+    <h2>3. Size your risk</h2>
+    <ul>
+      <li>Choose between <strong>fixed lot</strong> or <strong>% balance risk</strong> in the risk section.</li>
+      <li>Risk is calculated from ATR-based SL: <code>SL = ATR × SL_Mult</code>.</li>
+      <li>Lots are floored to broker minimum and step.</li>
+    </ul>
+    <hr>
+
+    <h2>4. Session &amp; filters</h2>
+    <ul>
+      <li>Confirm the <strong>session start–end</strong> matches your broker server time (e.g. <code>13:00 → 22:59</code>).</li>
+      <li>Adjust the <strong>news pause</strong> window if you want the EA to stand aside around major reports.</li>
+      <li>Set <strong>Max spread</strong> and <strong>daily loss stop</strong> to values that fit your risk profile.</li>
+    </ul>
+    <hr>
+
+    <h2>5. Let it trade</h2>
+    <ul>
+      <li>During the active session the EA reads trend on each new M30 bar.</li>
+      <li>If fast &gt; slow EMA → a <strong>Buy Stop</strong> is placed above the previous high (+buffer).</li>
+      <li>If fast &lt; slow EMA → a <strong>Sell Stop</strong> is placed below the previous low (–buffer).</li>
+      <li>Pendings auto-expire after the configured expiry hours; only one working order at a time.</li>
+    </ul>
+    <hr>
+
+    <h2>6. Monitor &amp; manage</h2>
+    <ul>
+      <li>Use the MT5 <strong>Terminal</strong> to watch active orders and positions.</li>
+      <li>Equity guard stops new trades once the daily loss cap is reached.</li>
+      <li>Spread, session, and news filters must all be OK before a new order is sent.</li>
+    </ul>
+    <hr>
+
+    <h2>7. Safety notes</h2>
+    <ul>
+      <li>No DLL or WebRequest; all checks use built-in <code>OrderCheck</code> and margin control.</li>
+      <li>In live accounts, trading is restricted to symbols matching the configured oil tokens (e.g. <code>XTI</code>, <code>USOIL</code>, <code>WTI</code>, <code>OIL</code>).</li>
+      <li>Tester mode keeps logic but can relax some gates; always validate on demo before going live.</li>
+    </ul>
+  </div>
+</body>
+</html>
