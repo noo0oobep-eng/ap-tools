@@ -1,35 +1,39 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AP BTC Spread Radar MT5 — Docs</title>
-<style>
-:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-.wrap{max-width:900px;margin:0 auto;padding:22px}
-h1{margin:12px 0 6px;font-size:28px}
-.lead{color:var(--muted);margin:0 0 16px}
-.card{background:var(--card);border:1px solid #1d2633;border-radius:14px;padding:18px;margin:16px 0}
-.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
-a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
-a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
-img{max-width:100%;border-radius:10px;border:1px solid #1d2633}
-ul{margin:8px 0 0 18px}
-small,.muted{color:var(--muted)}
-hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AP BTC Spread Radar MT5 — Docs</title>
+  <meta name="description" content="AP BTC Spread Radar MT5 — real-time spread monitor (points) with optional moving-average baseline for BTC and other symbols." />
+  <style>
+    :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:900px;margin:0 auto;padding:22px}
+    h1{margin:12px 0 6px;font-size:28px}
+    .lead{color:var(--muted);margin:0 0 16px}
+    .card{background:var(--card);border:1px solid #1d2633;border-radius:14px;padding:18px;margin:16px 0}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+    a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
+    a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+    img{max-width:100%;border-radius:10px;border:1px solid #1d2633}
+    ul{margin:8px 0 0 18px}
+    small,.muted{color:var(--muted)}
+    hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
+  </style>
 </head>
 <body>
 <div class="wrap">
-  <a class="ghost btn" href="../">← Back to Home</a>
+  <a class="ghost btn" href="/" rel="noopener">← Back to Home</a>
   <h1>AP BTC Spread Radar MT5</h1>
-  <p class="lead">Real-time spread monitor (points) with an optional moving-average baseline. Lightweight, BTC-friendly. Support via MQL5 messages/comments only.</p>
+  <p class="lead">
+    Real-time spread monitor (points) with an optional moving-average baseline.
+    Lightweight, BTC-friendly, and useful for checking broker conditions before trading.
+  </p>
 
   <div class="btns">
-    <!-- Put your real product ID when published -->
-    <a class="btn" href="https://www.mql5.com/en/market/product/REPLACE_SPREAD_RADAR_ID" target="_blank" rel="noopener">Get on MQL5</a>
+    <!-- zip file lives in this folder -->
+    <a class="btn" href="./AP_BTC_Spread_Radar_MT5.zip" download>Download Free (MT5)</a>
     <a class="ghost btn" href="Quick_Start.md" target="_blank" rel="noopener">Quick Start</a>
     <a class="ghost btn" href="Pinned_Comment.txt" target="_blank" rel="noopener">Pinned Comment</a>
   </div>
@@ -37,9 +41,9 @@ hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
   <div class="card">
     <h3>What it does</h3>
     <ul>
-      <li>Displays the **live spread** in points for the current symbol.</li>
-      <li>Optionally plots a **moving-average** of the spread for context (quiet vs. volatile periods).</li>
-      <li>HUD comment (optional) for quick “spread: X pts | MA(N): Y pts”.</li>
+      <li>Displays the <strong>live spread</strong> in points for the current symbol.</li>
+      <li>Optionally plots a <strong>moving-average</strong> of the spread for context (quiet vs. volatile periods).</li>
+      <li>Optional HUD comment: <strong>“spread: X pts | MA(N): Y pts”</strong> on the main chart.</li>
       <li>Very low resource usage — safe to leave on BTC M5/M1.</li>
     </ul>
   </div>
@@ -47,27 +51,30 @@ hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
   <div class="card">
     <h3>How to use</h3>
     <ol>
-      <li>Drop the indicator on **BTCUSD** (or any symbol you want to check).</li>
-      <li>Choose the **MA period** for the spread baseline (or set to 0 to hide).</li>
-      <li>Optionally enable the **chart comment** and set how often it updates.</li>
+      <li>Drop the indicator on <strong>BTCUSD</strong> (or any symbol you want to check).</li>
+      <li>Choose the <strong>MA period</strong> for the spread baseline (or set to 0 to hide).</li>
+      <li>Optionally enable the <strong>chart comment</strong> and set how often it updates.</li>
       <li>If you see unusually high spread compared to the MA, consider pausing new entries.</li>
     </ol>
-    <p class="muted">Tip: On brokers with 10k points ≈ $1 for BTC, “100 pts” ≈ 1¢. Adjust your intuition to your broker’s point scale.</p>
+    <p class="muted">
+      Tip: On some brokers with 10 000 points ≈ $1 for BTC, “100 pts” ≈ 1¢.
+      Always calibrate to your broker’s point scale.
+    </p>
   </div>
 
   <div class="card">
-  <h3>Screenshots</h3>
-  <img src="./spread-01.png" alt="Spread radar on chart" />
-  <br><br>
-  <img src="./spread-02.png" alt="Inputs panel" />
-</div>
-
+    <h3>Screenshots</h3>
+    <img src="./spread-01.png" alt="Spread radar on chart" />
+    <br><br>
+    <img src="./spread-02.png" alt="Inputs panel" />
+  </div>
 
   <div class="card">
     <h3>Files in this folder</h3>
     <ul>
-      <li><code>Quick_Start.md</code> — usage & inputs</li>
-      <li><code>Pinned_Comment.txt</code> — short MQL5 pinned comment</li>
+      <li><code>AP_BTC_Spread_Radar_MT5.zip</code> — indicator + extras (this download)</li>
+      <li><code>Quick_Start.md</code> — usage &amp; inputs</li>
+      <li><code>Pinned_Comment.txt</code> — short pinned comment text</li>
       <li><code>Version.txt</code> — version tag for reference</li>
       <li><code>AP_BTC_Spread_Radar_Default.set</code> — sample preset</li>
       <li>PNG screenshots used above</li>
@@ -75,7 +82,11 @@ hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
   </div>
 
   <hr />
-  <p class="muted">Support via MQL5 messages/comments only. No profit promises or external links.</p>
+  <p class="muted">
+    Indicator only (no trading actions). No profit promises.  
+    Support: use the contact options on the AP Trading Tools website if you need help or presets.
+  </p>
 </div>
 </body>
 </html>
+
