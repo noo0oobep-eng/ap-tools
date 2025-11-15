@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AP ATR Trail Manager PRO (MT5)</title>
+  <meta name="description" content="AP ATR Trail Manager PRO (MT5) — ATR trailing stop + BE, partials, and equity guard for managing positions from any EA or manual entries." />
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#121822;
+      --text:#e8eef6;
+      --muted:#9fb0c3;
+      --accent:#58a6ff;
+      --border:#1d2633;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    a{color:var(--accent);text-decoration:none}
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px}
+    .back{
+      display:inline-block;
+      background:#0e141d;
+      border:1px solid var(--border);
+      color:var(--muted);
+      padding:8px 12px;
+      border-radius:10px;
+      margin-bottom:10px;
+    }
+    h1{margin:14px 0 8px;font-size:32px}
+    .lead{margin:0 0 18px;color:var(--muted)}
+    .pillbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 22px;
+    }
+    .pill{
+      display:inline-block;
+      background:var(--accent);
+      color:#000;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:600;
+    }
+    .pill.ghost{
+      background:transparent;
+      color:var(--accent);
+      border:1px solid var(--accent);
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:18px;
+      margin:16px 0;
+    }
+    h3{margin:0 0 10px;font-size:18px}
+    ul{margin:8px 0 0 18px}
+    ol{margin:8px 0 0 18px}
+    .muted{color:var(--muted)}
+    .grid-2{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:14px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+    th,td{
+      border-bottom:1px solid var(--border);
+      padding:6px 6px;
+      text-align:left;
+    }
+    code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+    .shots{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:12px;
+    }
+    .shots img{
+      width:100%;
+      height:auto;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#0e141d;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/"><span>←</span> Back to Home</a>
+
+    <h1>AP ATR Trail Manager PRO (MT5)</h1>
+    <p class="lead">
+      Position manager for existing trades from any EA or manual entries.
+      ATR trailing stop, breakeven, one partial, and daily equity guard for netting and hedging accounts.
+    </p>
+
+    <div class="pillbar">
+      <!-- replace href with your real checkout link when ready -->
+      <a class="pill" href="#" target="_blank" rel="noopener">Buy Now (MT5)</a>
+      <a class="pill ghost" href="./Quick%20Start.md" target="_blank" rel="noopener">Quick Start</a>
+      <a class="pill ghost" href="#inputs">Inputs</a>
+      <a class="pill ghost" href="#version">Version</a>
+    </div>
+
+    <div class="panel">
+      <h3>What it does</h3>
+      <ul>
+        <li><strong>ATR Trailing Stop:</strong> adaptive SL based on <span class="mono">ATR(Period) × Multiplier</span>.</li>
+        <li><strong>Time-Tighten:</strong> optionally tighten to a smaller ATR multiple after N minutes in the trade.</li>
+        <li><strong>Breakeven:</strong> move SL to BE (with optional offset) once profit in points is reached.</li>
+        <li><strong>One Partial Close:</strong> close a percentage of volume at a profit target; safe on netting &amp; hedging.</li>
+        <li><strong>Equity Guard (Daily):</strong> optional daily loss cap (in % or money) that closes managed positions.</li>
+        <li><strong>Spread &amp; Stops Safety:</strong> acts only below max spread; respects broker stop/freeze levels.</li>
+        <li><strong>Symbol / Magic Filters:</strong> manage this symbol only, a CSV watchlist, and/or selected magic IDs.</li>
+        <li><strong>Order-flow throttles:</strong> one edit per bar plus minimum seconds between edits to avoid spam.</li>
+        <li><strong>No entries:</strong> the EA never opens trades, it only manages open positions.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>Why traders use it</h3>
+      <ul>
+        <li><strong>Universal:</strong> plug-in manager that works with any strategy—manual or EA.</li>
+        <li><strong>Adaptive:</strong> ATR trail that breathes with volatility and tightens into strength.</li>
+        <li><strong>Calm &amp; safe:</strong> throttled modifications, spread checks, and no external DLLs.</li>
+        <li><strong>Cross-account ready:</strong> magic filtering lets you isolate exactly which positions are managed.</li>
+      </ul>
+    </div>
+
+    <div id="inputs" class="panel">
+      <h3>Inputs (key groups)</h3>
+      <div class="grid-2">
+        <div>
+          <table>
+            <tr><th>ATR / Trail</th><th>Example</th></tr>
+            <tr><td>ATR timeframe</td><td class="mono">M15</td></tr>
+            <tr><td>ATR period</td><td class="mono">14</td></tr>
+            <tr><td>Base multiplier</td><td class="mono">2.0</td></tr>
+            <tr><td>Tighten to (mult.)</td><td class="mono">1.5 after 20 min</td></tr>
+          </table>
+        </div>
+        <div>
+          <table>
+            <tr><th>Breakeven / Partial</th><th>Example</th></tr>
+            <tr><td>BE trigger</td><td class="mono">+60 pts</td></tr>
+            <tr><td>BE offset</td><td class="mono">0 pts (or custom)</td></tr>
+            <tr><td>Partial trigger</td><td class="mono">+150 pts</td></tr>
+            <tr><td>Partial size</td><td class="mono">50% of position</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <table>
+            <tr><th>Guards</th><th>Example</th></tr>
+            <tr><td>Max spread (pts)</td><td class="mono">120</td></tr>
+            <tr><td>Min SL step (pts)</td><td class="mono">per symbol</td></tr>
+            <tr><td>One-edit-per-bar TF</td><td class="mono">M5</td></tr>
+            <tr><td>Min seconds between edits</td><td class="mono">10s</td></tr>
+          </table>
+        </div>
+        <div>
+          <table>
+            <tr><th>Filters &amp; equity</th><th>Example</th></tr>
+            <tr><td>Manage chart symbol only</td><td class="mono">true / false</td></tr>
+            <tr><td>Symbols CSV</td><td class="mono">e.g. "EURUSD,XAUUSD,US30"</td></tr>
+            <tr><td>Magic filter (All/Only/Exclude)</td><td class="mono">Only</td></tr>
+            <tr><td>Daily equity guard</td><td class="mono">-5% or -$500</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Suggested defaults (from screenshots)</h3>
+      <ul>
+        <li><strong>ATR trail:</strong> <span class="mono">ATR(M15, 14) × 2.0</span>, tighten to <span class="mono">1.5</span> after <span class="mono">20</span> minutes.</li>
+        <li><strong>Breakeven:</strong> move SL to BE at <span class="mono">+60</span> points, offset <span class="mono">0</span>.</li>
+        <li><strong>Partial:</strong> close <span class="mono">50%</span> at <span class="mono">+150</span> points.</li>
+        <li><strong>Throttle:</strong> one edit per <span class="mono">M5</span> bar + <span class="mono">10</span> seconds minimum between edits.</li>
+        <li><strong>Max spread:</strong> <span class="mono">120</span> points (adjust per symbol/instrument).</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>Quick start</h3>
+      <ol>
+        <li>Attach the EA to a chart of a symbol you trade (any timeframe).</li>
+        <li>Decide what you want to manage:
+          <ul>
+            <li>Set <span class="mono">ManageOnlyThisSymbol</span> = true to manage just this chart symbol, or</li>
+            <li>Set it to false and fill <span class="mono">SymbolsCSV</span> for multi-symbol management.</li>
+            <li>Use the magic filter mode (All / Only / Exclude) and magic list CSV to target the right positions.</li>
+          </ul>
+        </li>
+        <li>Adjust ATR / BE / Partial inputs for your instrument and risk style.</li>
+        <li>Optionally enable the Daily Equity Guard and set % or money cap.</li>
+        <li>Let it run. The EA will:
+          <ul>
+            <li>Trail SL using ATR.</li>
+            <li>Move to breakeven when the trigger hits.</li>
+            <li>Perform one partial close at your target.</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+    <div class="panel">
+      <h3>Notes &amp; tips</h3>
+      <ul>
+        <li>Works on both netting and hedging accounts; SL/TP and partials are handled by ticket.</li>
+        <li><strong>Points</strong> are broker points (e.g., 10 points = 1 pip on 5-digit FX).</li>
+        <li>For XAU, indices, or crypto, increase <span class="mono">MaxSpreadPoints</span> and review ATR settings.</li>
+        <li>To manage all symbols, set <span class="mono">ManageOnlyThisSymbol = false</span> and fill <span class="mono">SymbolsCSV</span>.</li>
+        <li>Logs are kept concise by default; raise the log level input if you need detailed diagnostics.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>FAQ</h3>
+      <ul>
+        <li><strong>Does it open trades?</strong> No. It only manages existing positions.</li>
+        <li><strong>Can I run it alongside other EAs?</strong> Yes. Use the symbol/magic filters so it manages only the tickets you intend.</li>
+        <li><strong>Is it safe on netting accounts?</strong> Yes. SL/TP and partial closes are done by ticket, safe for netting &amp; hedging.</li>
+        <li><strong>Will it overload my broker?</strong> No. There is one-edit-per-bar plus a seconds throttle, and every change checks spread and stop level first.</li>
+        <li><strong>Does it handle metals/indices/crypto?</strong> Yes. Just tune ATR and MaxSpreadPoints for each symbol.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>Screenshots</h3>
+      <div class="shots">
+        <img src="./Screenshot%20(1430).png" alt="AP ATR Trail Manager PRO — panel on chart">
+        <img src="./ReportTester-11619729.png" alt="Example report">
+        <img src="./ReportTester-11619729-holding.png" alt="Holding-period stats">
+        <img src="./ReportTester-11619729-mfemaep.png" alt="MFE / MAE view">
+      </div>
+    </div>
+
+    <div id="version" class="panel">
+      <h3>Version</h3>
+      <p><strong>v1.1</strong> — initial public release (ATR trail + tighten, BE, one partial, equity guard, filters, throttles).</p>
+    </div>
+
+  </div>
+</body>
+</html>
