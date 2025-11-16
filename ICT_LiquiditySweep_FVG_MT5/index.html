@@ -87,7 +87,8 @@ form small{font-size:12px;}
   <a class="ghost btn" href="../">← Back to Home</a>
   <h1>ICT Liquidity Sweep (FVG) MT5</h1>
   <p class="lead">
-    Marks prior HI/LO sweeps and fair-value gaps with clean, optional alerts. Built for BTC/FX on MT5.
+    Marks equal-high/equal-low “liquidity pools” and alerts when price sweeps them and closes back inside.
+    Optional ATR-based displacement filter. Non-trading, MT5-only.
   </p>
 
   <!-- Email + download card -->
@@ -113,31 +114,95 @@ form small{font-size:12px;}
   </div>
 
   <div class="card">
-    <h3>Full source & docs</h3>
-    <p>Open-source code and detailed documentation are available on GitHub.</p>
-    <div class="btns">
-      <a class="btn ghost"
-         href="https://github.com/noo0oobep-eng/ap-tools/tree/main/ICT_LiquiditySweep_FVG_MT5"
-         target="_blank"
-         rel="noopener">
-        View on GitHub
-      </a>
-    </div>
+    <h3>What it does</h3>
+    <ul>
+      <li>Scans a lookback window for <strong>equal highs</strong> and <strong>equal lows</strong> (“liquidity pools”).</li>
+      <li>Optionally draws horizontal lines at those pools for clear visual context.</li>
+      <li>Marks <strong>sweep down</strong> when price takes equal highs (EQH) and closes back below.</li>
+      <li>Marks <strong>sweep up</strong> when price takes equal lows (EQL) and closes back above.</li>
+      <li>Optional ATR/body displacement filter to ignore tiny or weak sweeps.</li>
+      <li>Non-trading: does not open/close orders; it is a visual/alert tool only.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>How sweeps are detected (logic)</h3>
+    <ul>
+      <li>Within <code>InpLookbackBars</code>, the indicator finds bars whose highs/lows are within
+          <code>InpEqualTolPoints</code> of each other → these form EQH/EQL pools.</li>
+      <li>For an EQH sweep:
+        <ul>
+          <li>Current bar’s high goes <em>above</em> the EQH price.</li>
+          <li>Current bar’s close comes back <em>below</em> the EQH price.</li>
+          <li>Distance from pool to extreme is at least <code>InpMinSwingGapPoints</code>.</li>
+          <li>If displacement is enabled, candle body must be ≥ <code>InpDisp_MinBodyATR</code> × ATR.</li>
+        </ul>
+      </li>
+      <li>For an EQL sweep:
+        <ul>
+          <li>Current bar’s low goes <em>below</em> the EQL price.</li>
+          <li>Current bar’s close comes back <em>above</em> the EQL price.</li>
+          <li>Distance from pool to extreme is at least <code>InpMinSwingGapPoints</code>.</li>
+          <li>Same optional ATR/body displacement check.</li>
+        </ul>
+      </li>
+      <li>Sweeps are drawn as arrow markers below/above the bar to keep charts clean.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Main Inputs (summary)</h3>
+    <ul>
+      <li><code>InpLookbackBars</code> — bars to scan for equal highs/lows.</li>
+      <li><code>InpEqualTolPoints</code> — tolerance (points) for “equal” highs/lows.</li>
+      <li><code>InpMinSwingGapPoints</code> — minimum distance from pool to sweep extreme.</li>
+    </ul>
+    <h4>Displacement filter</h4>
+    <ul>
+      <li><code>InpUseDisplacement</code> — enable/disable body/ATR filter.</li>
+      <li><code>InpDisp_ATR_Period</code> — ATR period used for filter.</li>
+      <li><code>InpDisp_MinBodyATR</code> — minimum candle body as a fraction of ATR (e.g. 0.4).</li>
+    </ul>
+    <h4>Visuals</h4>
+    <ul>
+      <li><code>InpMarkPools</code> — draw pool lines (EQH/EQL) or not.</li>
+      <li><code>InpShowLines</code> — toggle horizontal pool lines.</li>
+      <li><code>InpColorEQH / InpColorEQL</code> — colors for EQH/EQL lines.</li>
+      <li><code>InpColorSweepUp / InpColorSweepDn</code> — arrow colors for sweeps.</li>
+    </ul>
+    <h4>Alerts</h4>
+    <ul>
+      <li><code>InpAlertsOnSweep</code> — turn sweep alerts on/off.</li>
+      <li><code>InpUsePopup</code> — terminal popup alerts.</li>
+      <li><code>InpUseSound + InpSoundFile</code> — sound alerts.</li>
+      <li><code>InpUsePush</code> — mobile push notifications (if configured).</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Usage notes</h3>
+    <ul>
+      <li>Attach to any BTC/FX symbol and timeframe; logic is timeframe-agnostic.</li>
+      <li>Use modest <code>InpLookbackBars</code> to keep the chart uncluttered.</li>
+      <li>ATR displacement filter helps ignore tiny “noise” sweeps.</li>
+      <li>Combine with your own bias/structure; this is not a standalone trading system.</li>
+      <li>No DLLs. No WebRequest. English-only inputs.</li>
+    </ul>
   </div>
 
   <div class="card">
     <h3>Files in this folder</h3>
     <ul>
-      <li><code>ICT_Liquidity_Sweep_FVG_MT5.zip</code> — indicator + presets (downloaded via the form)</li>
+      <li><code>ICT_Liquidity_Sweep_FVG_MT5.zip</code> — indicator + any presets (downloaded via the form)</li>
       <li><code>Version.txt</code> — version tag</li>
-      <li>Optional: screenshots or extra notes</li>
+      <li>Optional: screenshots for your Market/website page</li>
     </ul>
   </div>
 
   <hr />
   <p class="muted">
     Indicator only (no auto-trading). No profit promises.  
-    Support: use GitHub issues or the contact options on the AP Trading Tools website.
+    Support: use the contact options on the AP Trading Tools website if you need help or presets.
   </p>
 </div>
 
@@ -168,4 +233,3 @@ form small{font-size:12px;}
 </script>
 </body>
 </html>
-
