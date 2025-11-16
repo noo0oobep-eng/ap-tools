@@ -5,27 +5,112 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>AP Previous Levels — Docs</title>
 <style>
-:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+:root{
+  --bg:#0b0f14;
+  --card:#121822;
+  --text:#e8eef6;
+  --muted:#9fb0c3;
+  --accent:#58a6ff;
+  --border:#1d2633;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
 .wrap{max-width:900px;margin:0 auto;padding:24px}
-h1{margin:0 0 8px;font-size:28px}.lead{color:var(--muted);margin:0 0 18px}
-.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px}
-a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
-a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
-.card{background:#121822;border:1px solid #1d2633;border-radius:14px;padding:18px;margin:14px 0}
-h2{margin:8px 0 6px} ul,ol{margin:6px 0 0 18px}
+h1{margin:0 0 8px;font-size:28px}
+.lead{color:var(--muted);margin:0 0 18px}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+  margin:14px 0;
+}
+h2{margin:8px 0 6px}
+ul,ol{margin:6px 0 0 18px}
 footer{color:var(--muted);text-align:center;padding:28px}
+.muted{color:var(--muted)}
+
+/* buttons */
+.btns{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:12px 0 24px;
+}
+.btn{
+  display:inline-block;
+  text-decoration:none;
+  color:#000;
+  background:var(--accent);
+  padding:8px 12px;
+  border-radius:10px;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+}
+.btn:hover{filter:brightness(1.05);}
+.btn.ghost,
+a.ghost{
+  background:transparent;
+  color:var(--accent);
+  border:1px solid var(--accent);
+}
+
+/* email form */
+label{
+  display:block;
+  margin-bottom:6px;
+  font-size:14px;
+  color:var(--muted);
+}
+input[type="email"]{
+  width:100%;
+  max-width:320px;
+  padding:8px 10px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:#0e141d;
+  color:var(--text);
+  margin-bottom:10px;
+}
+form small{font-size:12px;}
 </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>AP Previous Levels</h1>
-    <p class="lead">Marks prior session/day/week levels with neutral styling for quick context. Designed to be light and screenshot-friendly.</p>
+    <a class="ghost btn" href="../">← Back to Home</a>
 
-    <div class="btns">
-      <!-- Replace XXXXXX with the real MQL5 product ID for Previous Levels -->
-      <a class="btn" href="https://www.mql5.com/en/market/product/148635" target="_blank" rel="noopener">Get on MQL5</a>
-      <a class="ghost btn" href="/" rel="noopener">⬅ Back to Home</a>
+    <h1>AP Previous Levels</h1>
+    <p class="lead">
+      Marks prior session/day/week levels with neutral styling for quick context. Designed to be light and screenshot-friendly.
+    </p>
+
+    <!-- Email + download card -->
+    <div class="card">
+      <h2>Get AP Previous Levels (free)</h2>
+      <form id="download-form"
+            action="https://formspree.io/f/xkgkrzye"
+            method="POST">
+        <label for="email">
+          Enter your email to get the .zip download:
+        </label>
+        <input id="email"
+               name="email"
+               type="email"
+               required
+               placeholder="you@example.com" />
+        <input type="hidden" name="product" value="AP Previous Levels (MT5)">
+        <div class="btns" style="margin-top:8px;">
+          <button class="btn" type="submit">Download Free (MT5)</button>
+        </div>
+        <small class="muted"></small>
+      </form>
     </div>
 
     <div class="card">
@@ -40,7 +125,7 @@ footer{color:var(--muted);text-align:center;padding:28px}
     <div class="card">
       <h2>Quick Start</h2>
       <ol>
-        <li>Attach to any chart & timeframe.</li>
+        <li>Attach to any chart &amp; timeframe.</li>
         <li>Enable the sessions/periods you want (e.g., London H/L, Prior Day H/L, Prior Week H/L).</li>
         <li>Choose lookback (how many past days/weeks to draw) and line/label style.</li>
       </ol>
@@ -65,7 +150,43 @@ footer{color:var(--muted);text-align:center;padding:28px}
       </ul>
     </div>
 
+    <div class="card">
+      <h2>Files in this folder</h2>
+      <ul>
+        <li><code>AP_Previous_Levels_MT5.zip</code> — indicator + extras (downloaded via the form)</li>
+        <li><code>Quick_Start.md</code> — usage &amp; inputs</li>
+        <li><code>Pinned_Comment.txt</code> — short MQL5 pinned comment</li>
+        <li><code>Version.txt</code> — version tag</li>
+        <li>Any PNG screenshots you add for the docs</li>
+      </ul>
+    </div>
+
     <footer>© AP Trading Tools • Built for MetaTrader 5</footer>
   </div>
+
+  <script>
+    (function () {
+      const form = document.getElementById('download-form');
+      if (!form) return;
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const data = new FormData(form);
+
+        try {
+          await fetch(form.action, {
+            method: 'POST',
+            body: data,
+            headers: { 'Accept': 'application/json' }
+          });
+        } catch (err) {
+          // ignore errors – still give the download
+        }
+
+        // Trigger the zip download (same folder as this index.html)
+        window.location.href = 'AP_Previous_Levels_MT5.zip';
+      });
+    })();
+  </script>
 </body>
 </html>
