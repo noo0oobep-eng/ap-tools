@@ -7,7 +7,14 @@
   <meta name="description" content="AP ATR Trail (MT5) — ATR-based trailing stop and bias line with flip/retouch alerts for discretionary trade management." />
   <link rel="icon" href="/assets/favicon.png" type="image/png">
   <style>
-    :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;--border:#1d2633}
+    :root{
+      --bg:#0b0f14;
+      --card:#121822;
+      --text:#e8eef6;
+      --muted:#9fb0c3;
+      --accent:#58a6ff;
+      --border:#1d2633;
+    }
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -18,21 +25,7 @@
     .wrap{max-width:900px;margin:0 auto;padding:24px}
     h1{margin:0 0 8px;font-size:28px}
     .lead{color:var(--muted);margin:0 0 18px}
-    .btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px}
-    a.btn{
-      display:inline-block;
-      text-decoration:none;
-      color:#000;
-      background:var(--accent);
-      padding:8px 12px;
-      border-radius:10px;
-      font-weight:600;
-    }
-    a.ghost{
-      background:transparent;
-      color:var(--accent);
-      border:1px solid var(--accent);
-    }
+
     .card{
       background:var(--card);
       border:1px solid var(--border);
@@ -46,37 +39,48 @@
     .muted{color:var(--muted)}
     .small{font-size:13px}
 
-    /* email form */
-    .dl-form{
+    .btns{
       display:flex;
-      flex-wrap:wrap;
       gap:10px;
-      margin:10px 0 4px;
+      flex-wrap:wrap;
+      margin:12px 0 24px;
     }
-    .dl-form input[type="email"]{
-      flex:1 1 190px;
-      min-width:0;
+    .btn{
+      display:inline-block;
+      text-decoration:none;
+      color:#000;
+      background:var(--accent);
+      padding:8px 12px;
+      border-radius:10px;
+      font-weight:600;
+      border:none;
+      cursor:pointer;
+    }
+    .btn:hover{filter:brightness(1.05);}
+    .btn.ghost,
+    a.ghost{
+      background:transparent;
+      color:var(--accent);
+      border:1px solid var(--accent);
+    }
+
+    label{
+      display:block;
+      margin-bottom:6px;
+      font-size:14px;
+      color:var(--muted);
+    }
+    input[type="email"]{
+      width:100%;
+      max-width:320px;
       padding:8px 10px;
       border-radius:8px;
       border:1px solid var(--border);
       background:#0e141d;
       color:var(--text);
+      margin-bottom:10px;
     }
-    .dl-form button{
-      border:none;
-      cursor:pointer;
-    }
-    .sr-only{
-      position:absolute;
-      width:1px;
-      height:1px;
-      padding:0;
-      margin:-1px;
-      overflow:hidden;
-      clip:rect(0,0,0,0);
-      white-space:nowrap;
-      border:0;
-    }
+    form small{font-size:12px;}
   </style>
 </head>
 <body>
@@ -87,34 +91,30 @@
       Lightweight and neutral for discretionary trade management and screenshots.
     </p>
 
-    <!-- Email gate: user enters email, then sees the download link -->
+    <!-- Email gate: same pattern / button style as other free indicators -->
     <div class="card">
       <h2>Get AP ATR Trail (free)</h2>
-      <p>
-        Enter your email and click the button to unlock the download link.
-      </p>
-
-      <form class="dl-form" id="atr-download-form">
-        <label for="email" class="sr-only">Email</label>
+      <form id="download-form"
+            action="https://formspree.io/f/xkgkrzye"
+            method="POST">
+        <label for="email">
+          Enter your email to get the .zip download:
+        </label>
         <input type="email"
                id="email"
                name="email"
                required
                placeholder="you@example.com">
-        <button type="submit" class="btn">Get free download</button>
+        <input type="hidden" name="product" value="AP ATR Trail (Indicator) MT5">
+        <div class="btns">
+          <button type="submit" class="btn">Download Free (MT5)</button>
+        </div>
+        <small class="muted"></small>
       </form>
-
-      <p id="atr-form-status" class="muted small" style="margin-top:4px;"></p>
-
-      <p id="atr-download-link"
-         class="muted small"
-         style="display:none;margin-top:8px;">
-        Download: <a href="./AP_ATR_Trail_MT5.zip" download>AP_ATR_Trail_MT5.zip</a>
-      </p>
     </div>
 
     <div class="btns">
-      <a class="ghost btn" href="/" rel="noopener">⬅ Back to Home</a>
+      <a class="ghost btn" href="../" rel="noopener">⬅ Back to Home</a>
     </div>
 
     <div class="card">
@@ -217,59 +217,30 @@
     <footer>© AP Trading Tools • Built for MetaTrader 5</footer>
   </div>
 
-  <!-- Email capture via Formspree; download link shows on success -->
+  <!-- Formspree submit + direct ZIP download -->
   <script>
     (function(){
-      var form   = document.getElementById('atr-download-form');
-      var linkP  = document.getElementById('atr-download-link');
-      var status = document.getElementById('atr-form-status');
+      const form = document.getElementById('download-form');
+      if (!form) return;
 
-      // REPLACE this with your real Formspree endpoint URL
-      var endpoint = 'https://formspree.io/f/xkgkrzye';
-
-      if (!form || !linkP) return;
-
-      form.addEventListener('submit', function(e){
+      form.addEventListener('submit', async function(e){
         e.preventDefault();
-        var input = form.querySelector('input[type="email"]');
-        if (!input) return;
+        const data = new FormData(form);
 
-        var email = (input.value || '').trim();
-        if (!email) {
-          if (status) status.textContent = 'Please enter an email address.';
-          return;
+        try{
+          await fetch(form.action, {
+            method: 'POST',
+            body: data,
+            headers: { 'Accept': 'application/json' }
+          });
+        }catch(err){
+          // ignore errors – still give the download
         }
 
-        if (status) status.textContent = 'Sending...';
-
-        fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email: email })
-        })
-        .then(function(response){
-          if (response.ok) {
-            if (status) status.textContent = 'Thanks — your download is unlocked below.';
-            linkP.style.display = 'block';
-            input.disabled = true;
-            var btn = form.querySelector('button[type="submit"]');
-            if (btn) {
-              btn.disabled = true;
-              btn.textContent = 'Done';
-            }
-          } else {
-            if (status) status.textContent = 'Something went wrong. Please try again.';
-          }
-        })
-        .catch(function(){
-          if (status) status.textContent = 'Network error — please try again.';
-        });
+        // trigger the .zip download (same folder as this index.html)
+        window.location.href = 'AP_ATR_Trail_MT5.zip';
       });
     })();
   </script>
 </body>
 </html>
-
