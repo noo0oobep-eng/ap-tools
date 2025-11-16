@@ -6,87 +6,101 @@
   <title>AP BTC Spread Radar MT5 — Docs</title>
   <meta name="description" content="AP BTC Spread Radar MT5 — real-time spread monitor (points) with optional moving-average baseline for BTC and other symbols." />
   <style>
-    :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
+    :root{
+      --bg:#0b0f14;
+      --card:#121822;
+      --text:#e8eef6;
+      --muted:#9fb0c3;
+      --accent:#58a6ff;
+    }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    }
     .wrap{max-width:900px;margin:0 auto;padding:22px}
     h1{margin:12px 0 6px;font-size:28px}
     .lead{color:var(--muted);margin:0 0 16px}
-    .card{background:var(--card);border:1px solid #1d2633;border-radius:14px;padding:18px;margin:16px 0}
+    .card{
+      background:var(--card);
+      border:1px solid #1d2633;
+      border-radius:14px;
+      padding:18px;
+      margin:16px 0;
+    }
     .btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
-    a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
-    a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+
+    /* same blue button style as Session Boxes / Round Numbers */
+    .btn{
+      display:inline-block;
+      text-decoration:none;
+      color:#000;
+      background:var(--accent);
+      padding:8px 12px;
+      border-radius:10px;
+      font-weight:600;
+      border:none;
+      cursor:pointer;
+    }
+    .btn:hover{filter:brightness(1.05);}
+
+    .btn.ghost,
+    a.ghost{
+      background:transparent;
+      color:var(--accent);
+      border:1px solid var(--accent);
+    }
+
     img{max-width:100%;border-radius:10px;border:1px solid #1d2633}
-    ul{margin:8px 0 0 18px}
+    ul,ol{margin:8px 0 0 18px}
     small,.muted{color:var(--muted)}
     hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
 
-    .small{font-size:13px}
-
-    .dl-form{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin:10px 0 4px;
-    }
-    .dl-form input[type="email"]{
-      flex:1 1 190px;
-      min-width:0;
+    label{display:block;margin-bottom:6px;font-size:14px;color:var(--muted);}
+    input[type="email"]{
+      width:100%;
+      max-width:320px;
       padding:8px 10px;
       border-radius:8px;
       border:1px solid #1d2633;
       background:#0e141d;
       color:var(--text);
+      margin-bottom:10px;
     }
-    .dl-form button{
-      border:none;
-      cursor:pointer;
-    }
-    .sr-only{
-      position:absolute;
-      width:1px;
-      height:1px;
-      padding:0;
-      margin:-1px;
-      overflow:hidden;
-      clip:rect(0,0,0,0);
-      white-space:nowrap;
-      border:0;
-    }
+    form small{font-size:12px;}
   </style>
 </head>
 <body>
 <div class="wrap">
-  <a class="ghost btn" href="/" rel="noopener">← Back to Home</a>
+  <a class="ghost btn" href="../" rel="noopener">← Back to Home</a>
   <h1>AP BTC Spread Radar MT5</h1>
   <p class="lead">
     Real-time spread monitor (points) with an optional moving-average baseline.
     Lightweight, BTC-friendly, and useful for checking broker conditions before trading.
   </p>
 
-  <!-- Email gate card -->
+  <!-- Email + download card (same pattern as Session Boxes / Round Numbers) -->
   <div class="card">
-    <h2>Get AP BTC Spread Radar (free)</h2>
-    <p>Enter your email and click the button to unlock the download link.</p>
-
-    <form class="dl-form" id="btc-download-form">
-      <label for="btc-email" class="sr-only">Email</label>
-      <input type="email"
-             id="btc-email"
+    <h3>Get the indicator (free)</h3>
+    <form id="download-form"
+          action="https://formspree.io/f/xkgkrzye"
+          method="POST">
+      <label for="email">
+        Enter your email to get the .zip download:
+      </label>
+      <input id="email"
              name="email"
+             type="email"
              required
-             placeholder="you@example.com">
+             placeholder="you@example.com" />
       <input type="hidden" name="product" value="AP BTC Spread Radar (MT5)">
-      <button type="submit" class="btn">Get free download</button>
+      <div class="btns">
+        <button class="btn" type="submit">Download Free (MT5)</button>
+      </div>
+      <small class="muted"></small>
     </form>
-
-    <p id="btc-download-link"
-       class="muted small"
-       style="display:none;margin-top:8px;">
-      Download: <a href="./AP_BTC_Spread_Radar_MT5.zip" download>AP_BTC_Spread_Radar_MT5.zip</a><br>
-      Extras: <a href="Quick_Start.md" target="_blank" rel="noopener">Quick Start</a> ·
-      <a href="Pinned_Comment.txt" target="_blank" rel="noopener">Pinned Comment</a>
-    </p>
   </div>
 
   <div class="card">
@@ -108,7 +122,7 @@
       <li>If you see unusually high spread compared to the MA, consider pausing new entries.</li>
     </ol>
     <p class="muted">
-      Tip: On some brokers with 10 000 points ≈ $1 for BTC, “100 pts” ≈ 1¢.
+      Tip: On some brokers with 10&nbsp;000 points ≈ $1 for BTC, “100 pts” ≈ 1¢.
       Always calibrate to your broker’s point scale.
     </p>
   </div>
@@ -141,35 +155,26 @@
 
 <script>
   (function () {
-    var form  = document.getElementById('btc-download-form');
-    var linkP = document.getElementById('btc-download-link');
-    if (!form || !linkP) return;
+    const form = document.getElementById('download-form');
+    if (!form) return;
 
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      var emailInput = form.querySelector('input[type="email"]');
-      if (!emailInput) return;
-      var email = (emailInput.value || '').trim();
-      if (!email) return;
+      const data = new FormData(form);
 
-      var data = new FormData(form);
+      try {
+        await fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+      } catch (err) {
+        // ignore errors – still give the download
+      }
 
-      fetch('https://formspree.io/f/xkgkrzye', {
-        method: 'POST',
-        body: data,
-        headers: { 'Accept': 'application/json' }
-      }).then(function () {
-        linkP.style.display = 'block';
-        var btn = form.querySelector('button[type="submit"]');
-        if (btn) {
-          btn.disabled = true;
-          btn.textContent = 'Download unlocked';
-        }
-      }).catch(function () {
-        // Even if Formspree fails, still show the link
-        linkP.style.display = 'block';
-      });
+      // Trigger the zip download (same folder as this index.html)
+      window.location.href = 'AP_BTC_Spread_Radar_MT5.zip';
     });
   })();
 </script>
