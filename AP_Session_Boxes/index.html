@@ -18,17 +18,44 @@ a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent
 h2{margin:8px 0 6px}
 ul,ol{margin:6px 0 0 18px}
 footer{color:var(--muted);text-align:center;padding:28px}
-form.session-form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:8px}
-.session-form label{font-size:14px;color:var(--muted);display:block;margin-bottom:2px}
+
+/* email form */
+form.session-form{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:flex-end;
+  margin-top:8px;
+}
+.session-form label{
+  font-size:14px;
+  color:var(--muted);
+  display:block;
+  margin-bottom:2px;
+}
 .session-form input[type="email"]{
-  padding:6px 8px;border-radius:8px;border:1px solid #243244;
-  background:#0b1018;color:var(--text);min-width:230px;
+  padding:6px 8px;
+  border-radius:8px;
+  border:1px solid #243244;
+  background:#0b1018;
+  color:var(--text);
+  min-width:230px;
 }
 .session-form button{
-  border:0;border-radius:10px;padding:8px 14px;font-weight:600;
-  background:var(--accent);color:#000;cursor:pointer;
+  border:0;
+  border-radius:10px;
+  padding:8px 14px;
+  font-weight:600;
+  background:var(--accent);
+  color:#000;
+  cursor:pointer;
 }
-.session-form small{color:var(--muted);font-size:12px;display:block;margin-top:4px}
+.session-form small{
+  color:var(--muted);
+  font-size:12px;
+  display:block;
+  margin-top:4px;
+}
 </style>
 </head>
 <body>
@@ -62,16 +89,13 @@ form.session-form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;marg
         <!-- identify which product they requested -->
         <input type="hidden" name="product" value="AP Session Boxes (MT5)" />
 
-        <!-- redirect straight to the local ZIP file after submit -->
+        <!-- redirect to the local ZIP file after submit -->
         <input type="hidden" name="_redirect" value="./AP_Session_Boxes_MT5.zip" />
 
         <button type="submit">Download Free (MT5)</button>
       </form>
 
-      <small class="muted">
-        Already downloaded it before? You can also grab the zip directly:
-        <a href="./AP_Session_Boxes_MT5.zip">AP_Session_Boxes_MT5.zip</a>
-      </small>
+      <!-- no direct zip link shown -->
     </div>
 
     <div class="card">
