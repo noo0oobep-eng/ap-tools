@@ -7,95 +7,87 @@
 <style>
 :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
 .wrap{max-width:900px;margin:0 auto;padding:24px}
 h1{margin:0 0 8px;font-size:28px}
 .lead{color:var(--muted);margin:0 0 18px}
 .btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px}
-a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
-a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
-.card{background:#121822;border:1px solid #1d2633;border-radius:14px;padding:18px;margin:14px 0}
-h2{margin:8px 0 6px}
-ul,ol{margin:6px 0 0 18px}
-footer{color:var(--muted);text-align:center;padding:28px}
-
-/* email form */
-form.session-form{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  align-items:flex-end;
-  margin-top:8px;
-}
-.session-form label{
-  font-size:14px;
-  color:var(--muted);
-  display:block;
-  margin-bottom:2px;
-}
-.session-form input[type="email"]{
-  padding:6px 8px;
-  border-radius:8px;
-  border:1px solid #243244;
-  background:#0b1018;
-  color:var(--text);
-  min-width:230px;
-}
-.session-form button{
-  border:0;
-  border-radius:10px;
-  padding:8px 14px;
-  font-weight:600;
-  background:var(--accent);
+a.btn,
+button.btn{
+  display:inline-block;
+  text-decoration:none;
   color:#000;
+  background:var(--accent);
+  padding:8px 12px;
+  border-radius:10px;
+  font-weight:600;
+  border:none;
   cursor:pointer;
 }
-.session-form small{
-  color:var(--muted);
-  font-size:12px;
-  display:block;
-  margin-top:4px;
+a.ghost{
+  background:transparent;
+  color:var(--accent);
+  border:1px solid var(--accent);
 }
+.card{
+  background:#121822;
+  border:1px solid #1d2633;
+  border-radius:14px;
+  padding:18px;
+  margin:14px 0;
+}
+h2{margin:8px 0 6px}
+ul,ol{margin:6px 0 0 18px}
+footer{color:var(--muted);text-align:center;padding:28px;font-size:14px}
+form{margin:0}
+label{display:block;margin-bottom:8px;font-size:14px;color:var(--muted)}
+input[type="email"]{
+  width:100%;
+  max-width:320px;
+  padding:8px 10px;
+  border-radius:8px;
+  border:1px solid #2b3850;
+  background:#0f1520;
+  color:var(--text);
+}
+.small-note{font-size:13px;color:var(--muted);margin-top:6px}
 </style>
 </head>
 <body>
   <div class="wrap">
+    <a class="ghost btn" href="/" rel="noopener">← Back to Home</a>
+
     <h1>AP Session Boxes</h1>
     <p class="lead">
-      Clean London/NY/Asia boxes with custom times, opacity, and lookback. Neutral and screenshot-friendly.
+      Clean London/NY/Asia boxes with custom times, opacity, and lookback.
+      Neutral and screenshot-friendly.
     </p>
 
-    <div class="btns">
-      <a class="ghost btn" href="/" rel="noopener">⬅ Back to Home</a>
-    </div>
-
+    <!-- Email gate + download -->
     <div class="card">
-      <h2>Get the free indicator (MT5)</h2>
-      <p>
-        Enter your email to get the free AP Session Boxes (MT5) download.
-        After you submit, the <strong>AP_Session_Boxes_MT5.zip</strong> file will download automatically.
-      </p>
-
+      <h2>Get the indicator (free)</h2>
       <form
-        class="session-form"
+        id="session-boxes-download"
         action="https://formspree.io/f/xkgkrzye"
         method="POST"
       >
-        <div>
-          <label for="email">Email address</label>
-          <input id="email" name="email" type="email" required />
+        <label>
+          Email address
+          <input type="email" name="email" required autocomplete="email" />
+        </label>
+        <div class="btns">
+          <button type="submit" class="btn">Download Free (MT5)</button>
         </div>
-
-        <!-- identify which product they requested -->
-        <input type="hidden" name="product" value="AP Session Boxes (MT5)" />
-
-        <!-- redirect to the local ZIP file after submit -->
-        <input type="hidden" name="_redirect" value="./AP_Session_Boxes_MT5.zip" />
-
-        <button type="submit">Download Free (MT5)</button>
+        <p class="small-note">
+          We’ll send the download event to Formspree so you’re notified
+          when someone grabs this tool. The file downloads immediately after you click.
+        </p>
       </form>
-
-      <!-- no direct zip link shown -->
     </div>
 
     <div class="card">
@@ -129,5 +121,39 @@ form.session-form{
 
     <footer>© AP Trading Tools • Built for MetaTrader 5</footer>
   </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('session-boxes-download');
+    if (!form) return;
+
+    const button = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Sending...';
+      }
+
+      // Send email to Formspree in the background
+      fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      }).catch(() => {
+        // even if it fails, still allow the download
+      }).finally(() => {
+        if (button) {
+          button.disabled = false;
+          button.textContent = 'Download Free (MT5)';
+        }
+        // Trigger the zip download from this same page
+        window.location.href = './AP_Session_Boxes_MT5.zip';
+      });
+    });
+  });
+  </script>
 </body>
 </html>
