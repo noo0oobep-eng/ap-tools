@@ -6,26 +6,72 @@
 <title>AP Session Boxes — Docs</title>
 <style>
 :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
 .wrap{max-width:900px;margin:0 auto;padding:24px}
-h1{margin:0 0 8px;font-size:28px}.lead{color:var(--muted);margin:0 0 18px}
+h1{margin:0 0 8px;font-size:28px}
+.lead{color:var(--muted);margin:0 0 18px}
 .btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px}
 a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
 a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
 .card{background:#121822;border:1px solid #1d2633;border-radius:14px;padding:18px;margin:14px 0}
-h2{margin:8px 0 6px} ul,ol{margin:6px 0 0 18px}
+h2{margin:8px 0 6px}
+ul,ol{margin:6px 0 0 18px}
 footer{color:var(--muted);text-align:center;padding:28px}
+form.session-form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:8px}
+.session-form label{font-size:14px;color:var(--muted);display:block;margin-bottom:2px}
+.session-form input[type="email"]{
+  padding:6px 8px;border-radius:8px;border:1px solid #243244;
+  background:#0b1018;color:var(--text);min-width:230px;
+}
+.session-form button{
+  border:0;border-radius:10px;padding:8px 14px;font-weight:600;
+  background:var(--accent);color:#000;cursor:pointer;
+}
+.session-form small{color:var(--muted);font-size:12px;display:block;margin-top:4px}
 </style>
 </head>
 <body>
   <div class="wrap">
     <h1>AP Session Boxes</h1>
-    <p class="lead">Clean London/NY/Asia boxes with custom times, opacity, and lookback. Neutral and screenshot-friendly.</p>
+    <p class="lead">
+      Clean London/NY/Asia boxes with custom times, opacity, and lookback. Neutral and screenshot-friendly.
+    </p>
 
     <div class="btns">
-      <!-- Paste the exact MQL5 product URL you used on the homepage -->
-      <a class="btn" href="https://www.mql5.com/en/market/product/148712" target="_blank" rel="noopener">Download on MQL5</a>
       <a class="ghost btn" href="/" rel="noopener">⬅ Back to Home</a>
+    </div>
+
+    <div class="card">
+      <h2>Get the free indicator (MT5)</h2>
+      <p>
+        Enter your email to get the free AP Session Boxes (MT5) download.
+        After you submit, the <strong>AP_Session_Boxes_MT5.zip</strong> file will download automatically.
+      </p>
+
+      <form
+        class="session-form"
+        action="https://formspree.io/f/xkgkrzye"
+        method="POST"
+      >
+        <div>
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" required />
+        </div>
+
+        <!-- identify which product they requested -->
+        <input type="hidden" name="product" value="AP Session Boxes (MT5)" />
+
+        <!-- redirect straight to the local ZIP file after submit -->
+        <input type="hidden" name="_redirect" value="./AP_Session_Boxes_MT5.zip" />
+
+        <button type="submit">Download Free (MT5)</button>
+      </form>
+
+      <small class="muted">
+        Already downloaded it before? You can also grab the zip directly:
+        <a href="./AP_Session_Boxes_MT5.zip">AP_Session_Boxes_MT5.zip</a>
+      </small>
     </div>
 
     <div class="card">
