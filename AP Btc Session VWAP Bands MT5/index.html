@@ -1,24 +1,86 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta name="description" content="Session/anchored VWAP with ±1/±2 bands and clean visuals. Lightweight, screenshot-friendly, and free on MQL5." />
+<meta name="description" content="Session/anchored VWAP with ±1/±2 bands and clean visuals. Lightweight, screenshot-friendly, and free." />
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AP Btc Session VWAP Bands MT5 — Docs</title>
+<title>AP VWAP Bands Pro MT5 — Docs</title>
 <style>
-:root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+:root{
+  --bg:#0b0f14;
+  --card:#121822;
+  --text:#e8eef6;
+  --muted:#9fb0c3;
+  --accent:#58a6ff;
+  --border:#1d2633;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
 .wrap{max-width:900px;margin:0 auto;padding:22px}
 h1{margin:12px 0 6px;font-size:28px}
 .lead{color:var(--muted);margin:0 0 16px}
-.card{background:var(--card);border:1px solid #1d2633;border-radius:14px;padding:18px;margin:16px 0}
-.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
-a.btn{display:inline-block;text-decoration:none;color:#000;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:600}
-a.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+  margin:16px 0;
+}
+.btns{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:12px 0;
+}
+
+/* unified blue button style (same as other freebies) */
+.btn{
+  display:inline-block;
+  text-decoration:none;
+  color:#000;
+  background:var(--accent);
+  padding:8px 12px;
+  border-radius:10px;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+}
+.btn:hover{filter:brightness(1.05);}
+a.ghost,
+.btn.ghost{
+  background:transparent;
+  color:var(--accent);
+  border:1px solid var(--accent);
+}
+
 img{max-width:100%;border-radius:10px;border:1px solid #1d2633}
-ul{margin:8px 0 0 18px}
-small, .muted{color:var(--muted)}
+ul,ol{margin:8px 0 0 18px}
+small,.muted{color:var(--muted)}
 hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
+
+/* email form */
+label{
+  display:block;
+  margin-bottom:6px;
+  font-size:14px;
+  color:var(--muted);
+}
+input[type="email"]{
+  width:100%;
+  max-width:320px;
+  padding:8px 10px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:#0e141d;
+  color:var(--text);
+  margin-bottom:10px;
+}
+form small{font-size:12px;}
 </style>
 </head>
 <body>
@@ -27,11 +89,27 @@ hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
   <h1>AP VWAP Bands Pro MT5</h1>
   <p class="lead">Session/anchored VWAP with ±1/±2 bands and clean visuals. English only; support via MQL5 messages/comments.</p>
 
-  <div class="btns">
-  <a class="btn" href="https://www.mql5.com/en/market/product/150646" target="_blank" rel="noopener">Get on MQL5</a>
-  <a class="ghost btn" href="README.md" target="_blank" rel="noopener">Quick Start</a>
-  <a class="ghost btn" href="Pinned%20comment%20AP%20BTC%20Session%20VWAP%20....txt" target="_blank" rel="noopener">Pinned Comment</a>
-</div>
+  <!-- Email + download card -->
+  <div class="card">
+    <h3>Get AP VWAP Bands Pro (free)</h3>
+    <form id="download-form"
+          action="https://formspree.io/f/xkgkrzye"
+          method="POST">
+      <label for="email">
+        Enter your email to get the .zip download:
+      </label>
+      <input id="email"
+             name="email"
+             type="email"
+             required
+             placeholder="you@example.com" />
+      <input type="hidden" name="product" value="AP VWAP Bands Pro MT5">
+      <div class="btns">
+        <button class="btn" type="submit">Download Free (MT5)</button>
+      </div>
+      <small class="muted"></small>
+    </form>
+  </div>
 
   <div class="card">
     <h3>What it does</h3>
@@ -53,18 +131,18 @@ hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
     <p class="muted">Tip: For screenshots, set a gentle opacity and slightly thicker line width.</p>
   </div>
   
-<div class="card">
-  <h3>Downloads</h3>
-  <div class="btns">
-    <a class="btn" href="VWAP_Anchor_0800_StdBands.set" download>
-      Anchor Preset (.set)
-    </a>
-    <a class="btn" href="VWAP_Daily_Default.set" download>
-      Daily Preset (.set)
-    </a>
+  <div class="card">
+    <h3>Presets</h3>
+    <div class="btns">
+      <a class="btn" href="VWAP_Anchor_0800_StdBands.set" download>
+        Anchor Preset (.set)
+      </a>
+      <a class="btn" href="VWAP_Daily_Default.set" download>
+        Daily Preset (.set)
+      </a>
+    </div>
+    <small class="muted">If your browser opens the file as text, right-click → “Save link as…”.</small>
   </div>
-  <small class="muted">If your browser opens the file as text, right-click → “Save link as…”.</small>
-</div>
 
   <div class="card">
     <h3>Screenshots</h3>
@@ -76,17 +154,43 @@ hr{border:none;border-top:1px solid #1d2633;margin:22px 0}
   <div class="card">
     <h3>Files in this folder</h3>
     <ul>
+      <li><code>AP_VWAP_Bands_Pro_MT5.zip</code> – indicator + extras (downloaded via the form)</li>
       <li><code>Quick_Start.md</code> – quick start and input notes</li>
       <li><code>Pinned comment AP BTC Session VWAP ....txt</code> – short MQL5 pinned comment</li>
       <li><code>Version</code> (or <code>Version.txt</code>) – version tag</li>
       <li><code>VWAP_Anchor_0800_StdBands.set</code> – sample preset</li>
       <li><code>VWAP_Daily_Default.set</code> – sample preset</li>
-      <li>PNG screenshots for the Market page</li>
+      <li>PNG screenshots for the docs/Market page</li>
     </ul>
   </div>
 
   <hr />
   <p class="muted">Support via MQL5 messages/comments only. No profit promises or external links.</p>
 </div>
+
+<script>
+  (function () {
+    const form = document.getElementById('download-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const data = new FormData(form);
+
+      try {
+        await fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+      } catch (err) {
+        // ignore errors – still give the download
+      }
+
+      // Trigger the zip download (same folder as this index.html)
+      window.location.href = 'AP_VWAP_Bands_Pro_MT5.zip';
+    });
+  })();
+</script>
 </body>
 </html>
