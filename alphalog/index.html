@@ -5,12 +5,20 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AP AlphaLog AI – Upload Trade Log</title>
   <style>
-    :root{--bg:#0b0f14;--card:#121822;--text:#e8eef6;--muted:#9fb0c3;--accent:#58a6ff;}
+    :root{
+      --bg:#070a0f;
+      --card:#111722;
+      --text:#e8eef6;
+      --muted:#9fb0c3;
+      --accent:#00d3a7;
+      --accent-soft:#12352f;
+      --border:#1f2835;
+    }
     *{box-sizing:border-box}
     body{
       margin:0;
       min-height:100vh;
-      background:var(--bg);
+      background:radial-gradient(circle at top,#101624 0,#05070c 55%,#020308 100%);
       color:var(--text);
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
       display:flex;
@@ -19,16 +27,16 @@
       padding:20px;
     }
     .wrap{
-      max-width:640px;
+      max-width:720px;
       width:100%;
-      background:rgba(16,20,26,.9);
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      padding:22px 22px 18px;
-      box-shadow:0 14px 34px rgba(0,0,0,.55);
+      background:rgba(10,14,22,.94);
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.09);
+      padding:22px 24px 18px;
+      box-shadow:0 18px 40px rgba(0,0,0,.7);
     }
-    h1{margin:0 0 6px;font-size:26px;}
-    .lead{margin:0 0 14px;color:var(--muted);}
+    h1{margin:0 0 4px;font-size:26px;}
+    .lead{margin:0 0 16px;color:var(--muted);}
     label{display:block;margin:12px 0 6px;font-weight:600;font-size:0.9rem;}
     input[type="file"]{
       width:100%;
@@ -45,38 +53,113 @@
       border-radius:8px;
       border:none;
       cursor:pointer;
-      background:#00d3a7;
+      background:var(--accent);
       color:#00110c;
       font-weight:600;
       font-size:0.95rem;
+    }
+    button:disabled{
+      opacity:.5;
+      cursor:default;
     }
     .note{
       margin-top:18px;
       font-size:0.85rem;
       color:var(--muted);
     }
-    a{color:var(--accent);text-decoration:none;}
+    a{color:#58a6ff;text-decoration:none;}
     a:hover{text-decoration:underline;}
+    code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em;}
+
+    .results{
+      margin-top:20px;
+      font-size:0.9rem;
+    }
+    .results h2{
+      margin:0 0 6px;
+      font-size:1.05rem;
+    }
+    .results p{
+      margin:0 0 8px;
+    }
+    .results ul{
+      margin:4px 0 10px 18px;
+      padding:0;
+    }
+    .results li{
+      margin:0 0 2px;
+    }
+    .results-section{
+      margin-top:16px;
+      padding-top:10px;
+      border-top:1px solid var(--border);
+    }
+
+    .chart-wrap{
+      margin-top:8px;
+      padding:10px;
+      border-radius:10px;
+      background:radial-gradient(circle at top left,#151f30,#070b13);
+      border:1px solid #1f2835;
+    }
+    canvas{
+      width:100%;
+      max-width:640px;
+      height:160px;
+      border-radius:6px;
+      background:#05070c;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:6px;
+      font-size:0.86rem;
+    }
+    th,td{
+      padding:4px 6px;
+      text-align:left;
+      border-bottom:1px solid #1a2230;
+    }
+    th{
+      font-weight:600;
+      color:var(--muted);
+    }
+    tbody tr:nth-child(odd){
+      background:rgba(255,255,255,.01);
+    }
+    .text-right{text-align:right;}
+    .pill{
+      display:inline-block;
+      padding:1px 8px;
+      border-radius:999px;
+      font-size:0.75rem;
+      background:var(--accent-soft);
+      color:var(--accent);
+    }
+    .muted{color:var(--muted);}
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>AP AlphaLog AI</h1>
-    <p class="lead">Upload your <code>.alog</code> file for analysis.</p>
+    <p class="lead">Upload your <code>.alog</code> trade log for a local preview summary.</p>
 
-    <form id="alphalog-form">
+    <form id="alog-form">
       <label for="alog-file">AlphaLog file</label>
       <input id="alog-file" type="file" accept=".alog" />
       <div class="hint">
-        Exported by the MT5 EA: <code>AP AlphaLog AI – MT5 Trade Journal Engine</code>
+        Exported by the MT5 EA: <code>AP AlphaLog AI – MT5 Trade Journal Engine</code>.
+        File is processed only in your browser – nothing is uploaded.
       </div>
 
-      <button type="button" id="analyse-btn">Analyse (preview)</button>
-      <div id="results" style="margin-top:18px;font-size:0.9em;color:#e8eef6;"></div>
+      <button id="analyse-btn" type="submit">Analyse (preview)</button>
+      <div id="results" class="results"></div>
     </form>
 
     <p class="note">
-      Basic on-screen stats will be free. The <strong>full PDF diagnostic report</strong> is available via the
+      Basic on-screen stats will be free. The <strong>full PDF diagnostic report</strong> (equity curve,
+      R-multiple analysis, written advice) is available via the
       <a href="/#alphalog-ai">Get Full Report</a> option on the main site.
     </p>
 
@@ -86,136 +169,288 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const fileInput  = document.getElementById('alog-file');
-      const analyseBtn = document.getElementById('analyse-btn');
-      const resultsEl  = document.getElementById('results');
+    const form   = document.getElementById('alog-form');
+    const fileEl = document.getElementById('alog-file');
+    const btn    = document.getElementById('analyse-btn');
+    const outEl  = document.getElementById('results');
 
-      function show(html) {
-        resultsEl.innerHTML = html;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const file = fileEl.files && fileEl.files[0];
+      if(!file){
+        alert('Please choose an .alog file first.');
+        return;
       }
 
-      analyseBtn.addEventListener('click', () => {
-        const file = fileInput.files[0];
-        if (!file) {
-          alert('Please choose an .alog file first.');
-          return;
+      btn.disabled = true;
+      btn.textContent = 'Analysing…';
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        try{
+          const text   = reader.result;
+          const trades = parseAlphaLog(text);
+          renderStats(trades);
+        }catch(err){
+          console.error(err);
+          outEl.innerHTML = '<p style="color:#ff9b9b;">Could not read this file. Make sure it was exported by the AP AlphaLog AI MT5 EA.</p>';
+        }finally{
+          btn.disabled = false;
+          btn.textContent = 'Analyse (preview)';
+        }
+      };
+      reader.onerror = () => {
+        outEl.innerHTML = '<p style="color:#ff9b9b;">File reading failed in the browser.</p>';
+        btn.disabled = false;
+        btn.textContent = 'Analyse (preview)';
+      };
+      reader.readAsText(file);
+    });
+
+    function parseAlphaLog(raw){
+      const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const trades = [];
+
+      for(const line of lines){
+        if(line.startsWith('AP_ALPHA_LOG_AI_V1')) continue;
+        if(line.startsWith('SCHEMA:')) continue;
+
+        const parts = line.split(';');
+        if(parts.length < 2) continue;
+
+        const ts  = parts[0];
+        const b64 = parts.slice(1).join(';'); // in case ; appears later
+
+        try{
+          const jsonStr = base64ToUtf8(b64);
+          const obj = JSON.parse(jsonStr);
+          obj._ts = ts;
+          trades.push(obj);
+        }catch(err){
+          console.warn('Line skipped (decode/JSON error):', err);
+        }
+      }
+      return trades;
+    }
+
+    function base64ToUtf8(b64){
+      const bin = atob(b64);
+      const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+      if(window.TextDecoder){
+        return new TextDecoder('utf-8').decode(bytes);
+      }
+      // fallback
+      let s = '';
+      for(let i=0;i<bytes.length;i++) s += String.fromCharCode(bytes[i]);
+      return decodeURIComponent(escape(s));
+    }
+
+    function renderStats(trades){
+      if(!trades.length){
+        outEl.innerHTML = '<p class="muted">No trades found in this file.</p>';
+        return;
+      }
+
+      // ---------- Core aggregates ----------
+      let total = trades.length;
+      let wins  = 0, losses = 0;
+      let net   = 0;
+
+      let sumR = 0, countR = 0;
+      let bestR = -1e9, worstR = 1e9;
+
+      const bySymbol  = {};
+      const bySession = {};
+      const byDOW     = {};
+
+      // equity curve (relative, start from 0)
+      const sorted = trades.slice().sort((a,b) => {
+        const ta = Date.parse(a.close_time || a._ts || '');
+        const tb = Date.parse(b.close_time || b._ts || '');
+        return (isNaN(ta)?0:ta) - (isNaN(tb)?0:tb);
+      });
+      let runningEq = 0;
+      const eqPoints = [];
+
+      for(const t of sorted){
+        const netRes = Number(t.net_result_currency || 0);
+        net += netRes;
+        if(netRes > 0) wins++;
+        else if(netRes < 0) losses++;
+
+        const riskPts = Number(t.initial_risk_points || 0);
+        const rMult   = Number(t.initial_r_multiple || 0);
+        if(riskPts > 0){
+          sumR += rMult;
+          countR++;
+          if(rMult > bestR)  bestR  = rMult;
+          if(rMult < worstR) worstR = rMult;
         }
 
-        const reader = new FileReader();
+        const sym = t.symbol || 'UNKNOWN';
+        if(!bySymbol[sym]) bySymbol[sym] = {trades:0,wins:0,losses:0,net:0,sumR:0,countR:0};
+        const sAgg = bySymbol[sym];
+        sAgg.trades++;
+        sAgg.net += netRes;
+        if(netRes>0) sAgg.wins++;
+        else if(netRes<0) sAgg.losses++;
+        if(riskPts>0){
+          sAgg.sumR += rMult;
+          sAgg.countR++;
+        }
 
-        reader.onload = (e) => {
-          try {
-            const text  = e.target.result || "";
-            const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
+        const sess = t.session_tag || 'OTHER';
+        if(!bySession[sess]) bySession[sess] = {trades:0,wins:0,losses:0,net:0,sumR:0,countR:0};
+        const sessAgg = bySession[sess];
+        sessAgg.trades++;
+        sessAgg.net += netRes;
+        if(netRes>0) sessAgg.wins++;
+        else if(netRes<0) sessAgg.losses++;
+        if(riskPts>0){
+          sessAgg.sumR += rMult;
+          sessAgg.countR++;
+        }
 
-            if (!lines.length) {
-              show('<p>No data found in file.</p>');
-              return;
-            }
+        const dow = t.day_of_week || 'UNK';
+        if(!byDOW[dow]) byDOW[dow] = {trades:0,wins:0,losses:0,net:0,sumR:0,countR:0};
+        const dAgg = byDOW[dow];
+        dAgg.trades++;
+        dAgg.net += netRes;
+        if(netRes>0) dAgg.wins++;
+        else if(netRes<0) dAgg.losses++;
+        if(riskPts>0){
+          dAgg.sumR += rMult;
+          dAgg.countR++;
+        }
 
-            // Skip header + schema lines
-            const tradeLines = lines.filter(l =>
-              !l.startsWith('AP_ALPHA_LOG_AI_') &&
-              !l.startsWith('SCHEMA:')
-            );
+        runningEq += netRes;
+        eqPoints.push(runningEq);
+      }
 
-            const trades = [];
+      const winrate = total ? (wins / total * 100) : 0;
+      const avgR    = countR ? (sumR / countR) : 0;
+      if(countR === 0){ bestR = 0; worstR = 0; }
 
-            for (const line of tradeLines) {
-              const parts = line.split(';');
-              if (parts.length < 2) continue;
+      // ---------- Build HTML ----------
+      let html = '';
 
-              const ts  = parts[0];
-              const b64 = parts[1];
+      html += '<div class="results-section">';
+      html += '<h2>Preview summary</h2>';
+      html += '<ul>';
+      html += `<li><strong>Total closed trades:</strong> ${total}</li>`;
+      html += `<li><strong>Wins / Losses:</strong> ${wins} / ${losses}</li>`;
+      html += `<li><strong>Winrate:</strong> ${winrate.toFixed(1)}%</li>`;
+      html += `<li><strong>Net result (account currency):</strong> ${net.toFixed(2)}</li>`;
+      html += `<li><strong>Avg R (trades with SL):</strong> ${avgR.toFixed(2)}</li>`;
+      html += `<li><strong>Best R / Worst R:</strong> ${bestR.toFixed(2)} / ${worstR.toFixed(2)}</li>`;
+      html += '</ul>';
+      html += '<p class="muted">This is a local preview from your .alog file. The full AP AlphaLog AI report will add equity curve, session/time-of-day breakdown, symbol performance, and written advice.</p>';
+      html += '</div>';
 
-              let jsonStr;
-              try {
-                jsonStr = atob(b64);
-              } catch (err) {
-                console.warn('Base64 decode failed for line:', line, err);
-                continue;
-              }
+      html += '<div class="results-section">';
+      html += '<h2>Relative equity curve</h2>';
+      html += '<div class="chart-wrap"><canvas id="equityCanvas" width="640" height="160"></canvas></div>';
+      html += '<p class="muted">Starting from 0 and adding each trade\'s net result. In the full report this will be normalised to account balance.</p>';
+      html += '</div>';
 
-              try {
-                const obj = JSON.parse(jsonStr);
-                obj._ts = ts;
-                trades.push(obj);
-              } catch (err) {
-                console.warn('JSON parse failed:', err, jsonStr);
-              }
-            }
+      // By symbol
+      html += '<div class="results-section">';
+      html += '<h2>Performance by symbol</h2>';
+      html += '<table><thead><tr>';
+      html += '<th>Symbol</th><th class="text-right">Trades</th><th class="text-right">Winrate</th><th class="text-right">Net</th><th class="text-right">Avg R</th>';
+      html += '</tr></thead><tbody>';
 
-            if (!trades.length) {
-              show('<p>No trades could be read from this file.</p>');
-              return;
-            }
+      const symKeys = Object.keys(bySymbol).sort();
+      for(const sym of symKeys){
+        const a = bySymbol[sym];
+        const wr = a.trades ? (a.wins / a.trades * 100) : 0;
+        const avgR_sym = a.countR ? (a.sumR / a.countR) : 0;
+        html += `<tr><td>${sym}</td><td class="text-right">${a.trades}</td><td class="text-right">${wr.toFixed(1)}%</td><td class="text-right">${a.net.toFixed(2)}</td><td class="text-right">${avgR_sym.toFixed(2)}</td></tr>`;
+      }
+      html += '</tbody></table>';
+      html += '</div>';
 
-            const total = trades.length;
-            let netSum  = 0;
-            let wins    = 0;
-            let losses  = 0;
-            let sumR    = 0;
-            let countR  = 0;
-            let bestR   = -1e9;
-            let worstR  =  1e9;
+      // By session
+      html += '<div class="results-section">';
+      html += '<h2>Performance by session</h2>';
+      html += '<table><thead><tr>';
+      html += '<th>Session</th><th class="text-right">Trades</th><th class="text-right">Winrate</th><th class="text-right">Net</th><th class="text-right">Avg R</th>';
+      html += '</tr></thead><tbody>';
 
-            for (const t of trades) {
-              const net = Number(t.net_result_currency || 0);
-              netSum += net;
-              if (net > 0) wins++;
-              if (net < 0) losses++;
+      const sessKeys = Object.keys(bySession).sort();
+      for(const s of sessKeys){
+        const a = bySession[s];
+        const wr = a.trades ? (a.wins / a.trades * 100) : 0;
+        const avgR_s = a.countR ? (a.sumR / a.countR) : 0;
+        html += `<tr><td><span class="pill">${s}</span></td><td class="text-right">${a.trades}</td><td class="text-right">${wr.toFixed(1)}%</td><td class="text-right">${a.net.toFixed(2)}</td><td class="text-right">${avgR_s.toFixed(2)}</td></tr>`;
+      }
+      html += '</tbody></table>';
+      html += '</div>';
 
-              const rVal = (t.initial_r_multiple !== undefined)
-                ? Number(t.initial_r_multiple)
-                : NaN;
+      // By day-of-week
+      html += '<div class="results-section">';
+      html += '<h2>Performance by day of week</h2>';
+      html += '<table><thead><tr>';
+      html += '<th>Day</th><th class="text-right">Trades</th><th class="text-right">Winrate</th><th class="text-right">Net</th><th class="text-right">Avg R</th>';
+      html += '</tr></thead><tbody>';
 
-              if (!isNaN(rVal) && isFinite(rVal)) {
-                sumR   += rVal;
-                countR += 1;
-                if (rVal > bestR)  bestR  = rVal;
-                if (rVal < worstR) worstR = rVal;
-              }
-            }
+      const dowOrder = ['MON','TUE','WED','THU','FRI','SAT','SUN','UNK'];
+      for(const dow of dowOrder){
+        if(!byDOW[dow]) continue;
+        const a = byDOW[dow];
+        const wr = a.trades ? (a.wins / a.trades * 100) : 0;
+        const avgR_d = a.countR ? (a.sumR / a.countR) : 0;
+        html += `<tr><td>${dow}</td><td class="text-right">${a.trades}</td><td class="text-right">${wr.toFixed(1)}%</td><td class="text-right">${a.net.toFixed(2)}</td><td class="text-right">${avgR_d.toFixed(2)}</td></tr>`;
+      }
+      html += '</tbody></table>';
+      html += '</div>';
 
-            const winrate = total > 0 ? (wins / total * 100) : 0;
-            const avgR    = countR > 0 ? (sumR / countR)   : 0;
+      outEl.innerHTML = html;
 
-            const html = `
-              <h3 style="margin:0 0 8px;font-size:1.05em;">Preview summary</h3>
-              <ul style="margin:0 0 4px 18px;">
-                <li><strong>Total closed trades:</strong> ${total}</li>
-                <li><strong>Wins / Losses:</strong> ${wins} / ${losses}</li>
-                <li><strong>Winrate:</strong> ${winrate.toFixed(1)}%</li>
-                <li><strong>Net result (account currency):</strong> ${netSum.toFixed(2)}</li>
-                <li><strong>Avg R (trades with SL):</strong> ${avgR.toFixed(2)}</li>
-                <li><strong>Best R / Worst R:</strong> ${
-                  countR ? `${bestR.toFixed(2)} / ${worstR.toFixed(2)}` : 'n/a'
-                }</li>
-              </ul>
-              <p style="font-size:0.8em;color:#9fb0c3;margin-top:6px;">
-                This is a local preview from your .alog file.  
-                The full AlphaLog AI report will add equity curve, session/time-of-day breakdown,
-                symbol performance, and written advice.
-              </p>
-            `;
+      // draw equity curve
+      drawEquity(eqPoints);
+    }
 
-            show(html);
-          } catch (err) {
-            console.error(err);
-            show('<p>There was a problem reading this file.</p>');
-          }
-        };
+    function drawEquity(points){
+      const canvas = document.getElementById('equityCanvas');
+      if(!canvas || !points.length) return;
 
-        reader.onerror = () => {
-          show('<p>Could not read file (browser error).</p>');
-        };
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
 
-        reader.readAsText(file);
-      });
-    });
+      ctx.clearRect(0,0,w,h);
+
+      const minY = Math.min(...points, 0);
+      const maxY = Math.max(...points, 0);
+      const range = (maxY - minY) || 1;
+
+      // background grid
+      ctx.fillStyle = '#05070c';
+      ctx.fillRect(0,0,w,h);
+      ctx.strokeStyle = '#151b27';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, h/2);
+      ctx.lineTo(w, h/2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      const stepX = w / Math.max(points.length - 1, 1);
+      for(let i=0;i<points.length;i++){
+        const x = i * stepX;
+        const norm = (points[i] - minY) / range; // 0..1
+        const y = h - norm * (h - 10) - 5;
+        if(i===0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+      }
+      ctx.strokeStyle = '#00d3a7';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
   </script>
 </body>
 </html>
+
 
 
