@@ -64,14 +64,15 @@
     <h1>AP AlphaLog AI</h1>
     <p class="lead">Upload your <code>.alog</code> file for analysis.</p>
 
-    <form onsubmit="event.preventDefault(); alert('Basic analyser backend coming soon – keep your .alog files, they will work with the live version.');">
+    <form id="alphalog-form">
       <label for="alog-file">AlphaLog file</label>
       <input id="alog-file" type="file" accept=".alog" />
       <div class="hint">
         Exported by the MT5 EA: <code>AP AlphaLog AI – MT5 Trade Journal Engine</code>
       </div>
 
-      <button type="submit">Analyse (preview)</button>
+      <button type="button" id="analyse-btn">Analyse (preview)</button>
+      <div id="results" style="margin-top:18px;font-size:0.9em;color:#e8eef6;"></div>
     </form>
 
     <p class="note">
@@ -83,6 +84,138 @@
       <a href="/">← Back to AP Trading Tools</a>
     </p>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fileInput  = document.getElementById('alog-file');
+      const analyseBtn = document.getElementById('analyse-btn');
+      const resultsEl  = document.getElementById('results');
+
+      function show(html) {
+        resultsEl.innerHTML = html;
+      }
+
+      analyseBtn.addEventListener('click', () => {
+        const file = fileInput.files[0];
+        if (!file) {
+          alert('Please choose an .alog file first.');
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          try {
+            const text  = e.target.result || "";
+            const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
+
+            if (!lines.length) {
+              show('<p>No data found in file.</p>');
+              return;
+            }
+
+            // Skip header + schema lines
+            const tradeLines = lines.filter(l =>
+              !l.startsWith('AP_ALPHA_LOG_AI_') &&
+              !l.startsWith('SCHEMA:')
+            );
+
+            const trades = [];
+
+            for (const line of tradeLines) {
+              const parts = line.split(';');
+              if (parts.length < 2) continue;
+
+              const ts  = parts[0];
+              const b64 = parts[1];
+
+              let jsonStr;
+              try {
+                jsonStr = atob(b64);
+              } catch (err) {
+                console.warn('Base64 decode failed for line:', line, err);
+                continue;
+              }
+
+              try {
+                const obj = JSON.parse(jsonStr);
+                obj._ts = ts;
+                trades.push(obj);
+              } catch (err) {
+                console.warn('JSON parse failed:', err, jsonStr);
+              }
+            }
+
+            if (!trades.length) {
+              show('<p>No trades could be read from this file.</p>');
+              return;
+            }
+
+            const total = trades.length;
+            let netSum  = 0;
+            let wins    = 0;
+            let losses  = 0;
+            let sumR    = 0;
+            let countR  = 0;
+            let bestR   = -1e9;
+            let worstR  =  1e9;
+
+            for (const t of trades) {
+              const net = Number(t.net_result_currency || 0);
+              netSum += net;
+              if (net > 0) wins++;
+              if (net < 0) losses++;
+
+              const rVal = (t.initial_r_multiple !== undefined)
+                ? Number(t.initial_r_multiple)
+                : NaN;
+
+              if (!isNaN(rVal) && isFinite(rVal)) {
+                sumR   += rVal;
+                countR += 1;
+                if (rVal > bestR)  bestR  = rVal;
+                if (rVal < worstR) worstR = rVal;
+              }
+            }
+
+            const winrate = total > 0 ? (wins / total * 100) : 0;
+            const avgR    = countR > 0 ? (sumR / countR)   : 0;
+
+            const html = `
+              <h3 style="margin:0 0 8px;font-size:1.05em;">Preview summary</h3>
+              <ul style="margin:0 0 4px 18px;">
+                <li><strong>Total closed trades:</strong> ${total}</li>
+                <li><strong>Wins / Losses:</strong> ${wins} / ${losses}</li>
+                <li><strong>Winrate:</strong> ${winrate.toFixed(1)}%</li>
+                <li><strong>Net result (account currency):</strong> ${netSum.toFixed(2)}</li>
+                <li><strong>Avg R (trades with SL):</strong> ${avgR.toFixed(2)}</li>
+                <li><strong>Best R / Worst R:</strong> ${
+                  countR ? `${bestR.toFixed(2)} / ${worstR.toFixed(2)}` : 'n/a'
+                }</li>
+              </ul>
+              <p style="font-size:0.8em;color:#9fb0c3;margin-top:6px;">
+                This is a local preview from your .alog file.  
+                The full AlphaLog AI report will add equity curve, session/time-of-day breakdown,
+                symbol performance, and written advice.
+              </p>
+            `;
+
+            show(html);
+          } catch (err) {
+            console.error(err);
+            show('<p>There was a problem reading this file.</p>');
+          }
+        };
+
+        reader.onerror = () => {
+          show('<p>Could not read file (browser error).</p>');
+        };
+
+        reader.readAsText(file);
+      });
+    });
+  </script>
 </body>
 </html>
+
 
