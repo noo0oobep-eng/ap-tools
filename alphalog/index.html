@@ -331,6 +331,61 @@
       const avgR    = countR ? (sumR / countR) : 0;
       if(countR === 0){ bestR = 0; worstR = 0; }
 
+      // ---------- Simple advice lines ----------
+      const adviceLines = [];
+
+      // Sample size
+      if(total < 20){
+        adviceLines.push(`You only have ${total} closed trades in this log. Treat this as early exploration rather than a finished system verdict.`);
+      }else if(total < 50){
+        adviceLines.push(`With ${total} closed trades you are starting to see structure, but more data will make the stats more reliable.`);
+      }else{
+        adviceLines.push(`You have ${total} closed trades here, which is enough to start trusting the patterns you see.`);
+      }
+
+      // Winrate
+      if(winrate < 40){
+        adviceLines.push(`Winrate is ${winrate.toFixed(1)}%. Focus on cutting costs on losing trades and checking that entries truly align with your playbook.`);
+      }else if(winrate <= 60){
+        adviceLines.push(`Winrate sits around ${winrate.toFixed(1)}%. This is a healthy middle ground if your average R on winners is strong enough.`);
+      }else{
+        adviceLines.push(`Winrate is high at ${winrate.toFixed(1)}%. Protect this by keeping risk per trade steady and avoiding over-sizing.`);
+      }
+
+      // R-multiple quality
+      if(countR === 0){
+        adviceLines.push(`No trades in this file have a valid initial R defined. Make sure your SL is set so R-multiple quality can be tracked.`);
+      }else if(avgR < 0.7){
+        adviceLines.push(`Average R on SL-defined trades is ${avgR.toFixed(2)}R. This suggests winners are not running far enough relative to initial risk.`);
+      }else if(avgR > 1.5){
+        adviceLines.push(`Average R is ${avgR.toFixed(2)}R. That is strong; your best upgrade is usually to increase quality, not size.`);
+      }else{
+        adviceLines.push(`Average R is ${avgR.toFixed(2)}R. There is room to push a little more distance on winners without changing your risk per trade.`);
+      }
+
+      // Best / worst symbol
+      const symKeys = Object.keys(bySymbol);
+      if(symKeys.length){
+        const bestSym = symKeys.slice().sort((a,b) => bySymbol[b].net - bySymbol[a].net)[0];
+        const worstSym = symKeys.slice().sort((a,b) => bySymbol[a].net - bySymbol[b].net)[0];
+
+        const bAgg = bySymbol[bestSym];
+        adviceLines.push(`Best symbol in this sample is ${bestSym} with ${bAgg.trades} trade(s) and net ${bAgg.net.toFixed(2)}. Consider documenting exactly how you trade this symbol and making it your primary focus.`);
+
+        if(worstSym !== bestSym){
+          const wAgg = bySymbol[worstSym];
+          adviceLines.push(`Weakest symbol is ${worstSym} with net ${wAgg.net.toFixed(2)} over ${wAgg.trades} trade(s). Either tighten your rules there or pause trading it until you have a clear edge.`);
+        }
+      }
+
+      // Sessions (only if more than one)
+      const sessKeys = Object.keys(bySession);
+      if(sessKeys.length > 1){
+        const bestSess = sessKeys.slice().sort((a,b) => bySession[b].net - bySession[a].net)[0];
+        const worstSess = sessKeys.slice().sort((a,b) => bySession[a].net - bySession[b].net)[0];
+        adviceLines.push(`Session behaviour is uneven: ${bestSess} leads on net results, while ${worstSess} lags. You may want to size down or be more selective in the weaker session.`);
+      }
+
       // ---------- Build HTML ----------
       let html = '';
 
@@ -344,7 +399,7 @@
       html += `<li><strong>Avg R (trades with SL):</strong> ${avgR.toFixed(2)}</li>`;
       html += `<li><strong>Best R / Worst R:</strong> ${bestR.toFixed(2)} / ${worstR.toFixed(2)}</li>`;
       html += '</ul>';
-      html += '<p class="muted">This is a local preview from your .alog file. The full AP AlphaLog AI report will add equity curve, session/time-of-day breakdown, symbol performance, and written advice.</p>';
+      html += '<p class="muted">This is a local preview from your .alog file. The full AP AlphaLog AI report will add deeper R-multiple analysis, time-of-day context, symbol breakdowns, and a longer written plan.</p>';
       html += '</div>';
 
       html += '<div class="results-section">';
@@ -360,8 +415,8 @@
       html += '<th>Symbol</th><th class="text-right">Trades</th><th class="text-right">Winrate</th><th class="text-right">Net</th><th class="text-right">Avg R</th>';
       html += '</tr></thead><tbody>';
 
-      const symKeys = Object.keys(bySymbol).sort();
-      for(const sym of symKeys){
+      const symKeys2 = Object.keys(bySymbol).sort();
+      for(const sym of symKeys2){
         const a = bySymbol[sym];
         const wr = a.trades ? (a.wins / a.trades * 100) : 0;
         const avgR_sym = a.countR ? (a.sumR / a.countR) : 0;
@@ -377,8 +432,8 @@
       html += '<th>Session</th><th class="text-right">Trades</th><th class="text-right">Winrate</th><th class="text-right">Net</th><th class="text-right">Avg R</th>';
       html += '</tr></thead><tbody>';
 
-      const sessKeys = Object.keys(bySession).sort();
-      for(const s of sessKeys){
+      const sessKeys2 = Object.keys(bySession).sort();
+      for(const s of sessKeys2){
         const a = bySession[s];
         const wr = a.trades ? (a.wins / a.trades * 100) : 0;
         const avgR_s = a.countR ? (a.sumR / a.countR) : 0;
@@ -405,6 +460,17 @@
       html += '</tbody></table>';
       html += '</div>';
 
+      // Advice preview
+      html += '<div class="results-section">';
+      html += '<h2>Advice preview</h2>';
+      html += '<ul>';
+      for(const line of adviceLines){
+        html += `<li>${line}</li>`;
+      }
+      html += '</ul>';
+      html += '<p class="muted">This advice preview is generated locally from the basic stats above. The full AP AlphaLog AI report will expand this into a longer narrative with concrete action items.</p>';
+      html += '</div>';
+
       outEl.innerHTML = html;
 
       // draw equity curve
@@ -425,7 +491,7 @@
       const maxY = Math.max(...points, 0);
       const range = (maxY - minY) || 1;
 
-      // background grid
+      // background + midline
       ctx.fillStyle = '#05070c';
       ctx.fillRect(0,0,w,h);
       ctx.strokeStyle = '#151b27';
@@ -451,6 +517,7 @@
   </script>
 </body>
 </html>
+
 
 
 
