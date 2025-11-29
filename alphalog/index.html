@@ -593,41 +593,18 @@
 (function () {
   const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-advice";
 
-  const form = document.querySelector("form");
   const adviceCard = document.getElementById("ai-advice-card");
-  const adviceBtn = document.getElementById("ai-advice-btn");
-  const adviceOut = document.getElementById("ai-advice-output");
+  const adviceBtn  = document.getElementById("ai-advice-btn");
+  const adviceOut  = document.getElementById("ai-advice-output");
 
-  if (!form || !adviceBtn || !adviceCard) return;
-
-  let latestSummaryText = "";
-
-  // After the existing analyser runs, grab the preview block text
-  form.addEventListener("submit", function () {
-    setTimeout(() => {
-      const previewHeading = Array.from(
-        document.querySelectorAll("h2, h3")
-      ).find((h) =>
-        h.textContent.toLowerCase().includes("preview summary")
-      );
-
-      const previewSection = previewHeading ? previewHeading.parentElement : null;
-
-      if (previewSection) {
-        latestSummaryText = previewSection.innerText.trim();
-        adviceCard.style.display = "block";
-        adviceOut.textContent = "";
-      } else {
-        latestSummaryText = "";
-        adviceCard.style.display = "none";
-      }
-    }, 0);
-  });
+  if (!adviceCard || !adviceBtn || !adviceOut) return;
 
   adviceBtn.addEventListener("click", async function () {
-    if (!latestSummaryText) {
+    const summary = window.alphalogLatestSummaryText;
+
+    if (!summary) {
       adviceOut.textContent =
-        "Run the preview analysis first, then click this button again.";
+        "Run the preview analysis above first, then click this button again.";
       return;
     }
 
@@ -640,7 +617,7 @@
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ summary: latestSummaryText }),
+        body: JSON.stringify({ summary })
       });
 
       const data = await res.json();
@@ -651,7 +628,7 @@
       const adviceText = data.advice || "(No advice text returned.)";
       adviceOut.textContent = adviceText;
 
-      // 🔓 Reveal advanced sections (equity curve, sessions, DOW, stat-notes)
+      // Reveal advanced sections (equity curve, sessions, DOW, stat-notes)
       document.querySelectorAll(".advanced-after-ai").forEach((el) => {
         el.style.display = "";
       });
@@ -665,6 +642,7 @@
   });
 })();
 </script>
+
 
 
   <!-- Full AI report (paid) -->
