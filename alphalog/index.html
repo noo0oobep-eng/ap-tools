@@ -538,13 +538,7 @@
       }
     };
   }
-  // === NEW: show the AI advice card once preview is ready ===
-    const adviceCard = document.getElementById("ai-advice-card");
-    const adviceOut  = document.getElementById("ai-advice-output");
-    if (adviceCard) {
-      adviceCard.style.display = "block";   // or "" if you prefer
-      if (adviceOut) adviceOut.textContent = "";
-    }
+
 }
   function drawEquity(points){
     const canvas = document.getElementById('equityCanvas');
