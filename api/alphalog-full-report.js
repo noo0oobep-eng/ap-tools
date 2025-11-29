@@ -1,92 +1,95 @@
-// api/alphalog-full-report.js
-const OpenAI = require("openai");
+// full-report.js
+(function () {
+  const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-full-report";
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+  // We mount the "Full AI report" section at the bottom of the .wrap card
+  const wrap = document.querySelector(".wrap");
+  if (!wrap) return;
 
-module.exports = async (req, res) => {
-  // --- CORS headers so the browser can call this from aptradingtools.com ---
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  // Handle preflight
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
+  // Create the section only once
+  let section = document.getElementById("alphalog-full-report-section");
+  if (!section) {
+    section = document.createElement("div");
+    section.id = "alphalog-full-report-section";
+    section.className = "results-section";
+    section.innerHTML = `
+      <h2>Full AI report (for paid users)</h2>
+      <p class="muted">
+        After running the preview above, click the button to generate a longer
+        AI-written report (strengths, issues, and an action plan). This uses the
+        stats already shown on this page.
+      </p>
+      <button id="generate-full-report-btn" type="button">
+        Generate full AI report
+      </button>
+      <div id="alphalog-full-report-status"
+           style="margin-top:8px; font-size:0.85rem; color:#9fb0c3;"></div>
+      <pre id="alphalog-full-report-output"
+           style="margin-top:10px; font-size:0.9rem; white-space:pre-wrap;"></pre>
+    `;
+    // Insert before the final "Back to AP Trading Tools" note if possible
+    const backLink = wrap.querySelector('a[href="/"]');
+    if (backLink && backLink.parentElement === wrap) {
+      wrap.insertBefore(section, backLink);
+    } else {
+      wrap.appendChild(section);
+    }
   }
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  const btn = document.getElementById("generate-full-report-btn");
+  const statusEl = document.getElementById("alphalog-full-report-status");
+  const outputEl = document.getElementById("alphalog-full-report-output");
 
-  try {
-    const { summary, stats } = req.body || {};
+  if (!btn || !statusEl || !outputEl) return;
+
+  btn.addEventListener("click", async function () {
+    const preview = window.alphalogPreview || {};
+    const summary = preview.summary;
+    const stats = preview.stats;
 
     if (!summary || !stats) {
-      return res.status(400).json({ error: "Missing summary or stats" });
+      statusEl.textContent =
+        "Run the preview analysis above first, then click this button again.";
+      outputEl.textContent = "";
+      return;
     }
 
-    // Build a single prompt string from the preview summary + stats
-    const prompt = `
-You are a trading performance coach. The user has uploaded a trade log.
-You get two inputs:
+    btn.disabled = true;
+    const originalLabel = btn.textContent;
+    btn.textContent = "Generating full report…";
+    statusEl.textContent = "Contacting AI backend…";
+    outputEl.textContent = "";
 
-1) Preview summary text:
-${summary}
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ summary, stats })
+      });
 
-2) JSON stats:
-${JSON.stringify(stats, null, 2)}
+      const data = await res.json();
 
-Write:
-- 2–3 bullet points on strengths.
-- 3–5 bullet points on key issues.
-- A concrete action plan for the next 20 trades (numbered steps).
-
-Keep it concise but specific. Do not repeat raw numbers back; interpret them.
-`;
-
-    const aiResponse = await client.responses.create({
-      model: "gpt-4.1-mini",
-      input: prompt,
-    });
-
-    // Extract text from the Responses API result.
-    let text = "";
-
-    // Prefer the structured output field if present
-    if (aiResponse.output && Array.isArray(aiResponse.output)) {
-      const first = aiResponse.output[0];
-      if (
-        first &&
-        first.content &&
-        first.content[0] &&
-        first.content[0].type === "output_text"
-      ) {
-        text = first.content[0].text;
+      if (!res.ok) {
+        throw new Error(data.error || "Request failed");
       }
-    }
 
-    // Fallbacks for any other shapes
-    if (!text && aiResponse.output_text) {
-      text = aiResponse.output_text;
-    }
-    if (!text && aiResponse.content && Array.isArray(aiResponse.content)) {
-      const c0 = aiResponse.content[0];
-      if (c0 && c0.text) text = c0.text;
-    }
+      if (!data.advice || !data.advice.trim()) {
+        statusEl.textContent = "No advice text was generated.";
+        outputEl.textContent = "";
+        return;
+      }
 
-    if (!text || !text.trim()) {
-      return res
-        .status(500)
-        .json({ error: "AI response was empty", advice: "" });
+      statusEl.textContent = "";
+      outputEl.textContent = data.advice.trim();
+    } catch (err) {
+      statusEl.textContent =
+        "Error: " + (err && err.message ? err.message : "Failed to fetch.");
+      outputEl.textContent = "";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
     }
+  });
+})();
 
-    return res.status(200).json({ advice: text.trim() });
-  } catch (err) {
-    console.error("alphalog-full-report error", err);
-    const msg = err && err.message ? err.message : "Unknown error";
-    return res.status(500).json({ error: "AI backend error: " + msg });
-  }
-};
 
