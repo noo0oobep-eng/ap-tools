@@ -530,6 +530,78 @@
       ctx.stroke();
     }
   </script>
+<script>
+(function () {
+  const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-advice";
+
+  const form = document.querySelector("form");
+  const adviceCard = document.getElementById("ai-advice-card");
+  const adviceBtn = document.getElementById("ai-advice-btn");
+  const adviceOut = document.getElementById("ai-advice-output");
+
+  if (!form || !adviceBtn || !adviceCard) return;
+
+  let latestSummaryText = "";
+
+  // After the existing analyser runs, grab the preview block text
+  form.addEventListener("submit", function () {
+    // Let your existing handler finish rendering first
+    setTimeout(() => {
+      // Find the section whose heading contains "Preview summary"
+      const previewHeading = Array.from(
+        document.querySelectorAll("h2, h3")
+      ).find((h) =>
+        h.textContent.toLowerCase().includes("preview summary")
+      );
+
+      const previewSection = previewHeading ? previewHeading.parentElement : null;
+
+      if (previewSection) {
+        latestSummaryText = previewSection.innerText.trim();
+        adviceCard.style.display = "block";
+        adviceOut.textContent = "";
+      } else {
+        latestSummaryText = "";
+        adviceCard.style.display = "none";
+      }
+    }, 0);
+  });
+
+  adviceBtn.addEventListener("click", async function () {
+    if (!latestSummaryText) {
+      adviceOut.textContent =
+        "Run the preview analysis first, then click this button again.";
+      return;
+    }
+
+    adviceBtn.disabled = true;
+    const originalLabel = adviceBtn.textContent;
+    adviceBtn.textContent = "Generating advice…";
+    adviceOut.textContent = "Talking to the AI…";
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ summary: latestSummaryText }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Request failed");
+      }
+
+      adviceOut.textContent = data.advice || "(No advice text returned.)";
+    } catch (err) {
+      adviceOut.textContent =
+        "Could not get advice: " + (err.message || String(err));
+    } finally {
+      adviceBtn.disabled = false;
+      adviceBtn.textContent = originalLabel;
+    }
+  });
+})();
+</script>  
 </body>
 </html>
 
