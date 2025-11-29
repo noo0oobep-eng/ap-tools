@@ -1,4 +1,4 @@
-// alphalog/full-report.js
+// full-report.js
 (function () {
   const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-full-report";
 
@@ -42,40 +42,15 @@
 
   if (!btn || !statusEl || !outputEl) return;
 
-  // Helper: grab the preview "summary" block and turn it into summary + stats
-  function getPreviewSummaryAndStats() {
-    // Find the section whose heading contains "Preview summary"
-    const heading = Array.from(document.querySelectorAll("h2, h3")).find((h) =>
-      h.textContent.toLowerCase().includes("preview summary")
-    );
-    if (!heading) {
-      return { summary: "", stats: null };
-    }
-
-    const section =
-      heading.closest(".results-section") || heading.parentElement || heading;
-
-    const summaryText = section.innerText.trim();
-    if (!summaryText) {
-      return { summary: "", stats: null };
-    }
-
-    // Build a very simple stats object from the bullet list
-    const bulletTexts = Array.from(section.querySelectorAll("li")).map((li) =>
-      li.innerText.trim()
-    );
-
-    const stats = {
-      bullets: bulletTexts,
-    };
-
-    return { summary: summaryText, stats };
-  }
-
   btn.addEventListener("click", async function () {
-    const { summary, stats } = getPreviewSummaryAndStats();
+    // This must be set by the preview script (alphalog index page)
+    const preview = window.alphalogPreview || {};
+    const summary = preview.summary;
+    const stats = preview.stats;
 
-    if (!summary || stats == null) {
+    console.log("alphalog-full-report click - preview object:", preview);
+
+    if (!summary || !stats) {
       statusEl.textContent =
         "Run the preview analysis above first, then click this button again.";
       outputEl.textContent = "";
@@ -89,15 +64,25 @@
     outputEl.textContent = "";
 
     try {
+      const payload = { summary, stats };
+      console.log("alphalog-full-report sending payload:", payload);
+
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ summary, stats }),
+        body: JSON.stringify(payload),
       });
 
-      const data = await res.json().catch(() => ({}));
+      let data;
+      try {
+        data = await res.json();
+      } catch (e) {
+        console.error("alphalog-full-report: could not parse JSON response", e);
+        throw new Error("Response was not valid JSON");
+      }
 
       if (!res.ok) {
+        console.error("alphalog-full-report: backend error payload:", data);
         throw new Error(data.error || "Request failed");
       }
 
@@ -110,6 +95,7 @@
       statusEl.textContent = "";
       outputEl.textContent = data.advice.trim();
     } catch (err) {
+      console.error("alphalog-full-report front-end error:", err);
       statusEl.textContent =
         "Error: " + (err && err.message ? err.message : "Failed to fetch.");
       outputEl.textContent = "";
@@ -119,5 +105,6 @@
     }
   });
 })();
+
 
 
