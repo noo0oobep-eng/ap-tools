@@ -24,9 +24,11 @@ module.exports = async (req, res) => {
     // ---- Make sure we actually have a parsed JSON body ----
     let body = req.body;
 
-    // Sometimes body is an empty object or undefined in Vercel Node functions.
     const isEmptyObject =
-      body && typeof body === "object" && !Array.isArray(body) && !Object.keys(body).length;
+      body &&
+      typeof body === "object" &&
+      !Array.isArray(body) &&
+      !Object.keys(body).length;
 
     if (!body || isEmptyObject) {
       // Read raw request stream and parse it ourselves
@@ -49,7 +51,6 @@ module.exports = async (req, res) => {
       }
     }
 
-    // If for some reason it's still a string
     if (typeof body === "string") {
       try {
         body = JSON.parse(body);
@@ -59,14 +60,17 @@ module.exports = async (req, res) => {
       }
     }
 
-    const { summary, stats } = body || {};
+    let { summary, stats } = body || {};
 
-    if (!summary) {
-      return res.status(400).json({ error: "Missing summary" });
-    }
+    // We *require* stats, but we do NOT require summary anymore
     if (!stats) {
       return res.status(400).json({ error: "Missing stats" });
     }
+
+    const summaryForPrompt =
+      summary && String(summary).trim().length
+        ? String(summary)
+        : "No written preview summary was supplied. Use only the JSON stats below to understand the system.";
 
     // ---- Build prompt from preview summary + stats ----
     const prompt = `
@@ -74,7 +78,7 @@ You are a trading performance coach. The user has uploaded a trade log.
 You get two inputs:
 
 1) Preview summary text:
-${summary}
+${summaryForPrompt}
 
 2) JSON stats:
 ${JSON.stringify(stats, null, 2)}
@@ -95,7 +99,6 @@ Keep it concise but specific. Do not repeat raw numbers back; interpret them.
     // ---- Extract text from Responses API result ----
     let text = "";
 
-    // Preferred shape
     if (
       aiResponse.output &&
       Array.isArray(aiResponse.output) &&
@@ -108,10 +111,10 @@ Keep it concise but specific. Do not repeat raw numbers back; interpret them.
       text = aiResponse.output[0].content[0].text;
     }
 
-    // Fallbacks (just in case the SDK changes shape)
     if (!text && typeof aiResponse.output_text === "string") {
       text = aiResponse.output_text;
     }
+
     if (
       !text &&
       aiResponse.content &&
@@ -134,6 +137,7 @@ Keep it concise but specific. Do not repeat raw numbers back; interpret them.
     return res.status(500).json({ error: "AI backend error: " + msg });
   }
 };
+
 
 
 
