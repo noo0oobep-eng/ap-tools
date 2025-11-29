@@ -6,12 +6,12 @@ const client = new OpenAI({
 });
 
 module.exports = async (req, res) => {
-  // --- CORS headers so the browser can call this from aptradingtools.com ---
+  // --- CORS so the browser can call this from aptradingtools.com ---
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Handle preflight
+  // Pre-flight
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
@@ -23,72 +23,72 @@ module.exports = async (req, res) => {
   try {
     const { summary, stats } = req.body || {};
 
-    if (!summary || !stats) {
+    // Both must be present (stats can be any non-null object)
+    if (!summary || stats == null) {
       return res.status(400).json({ error: "Missing summary or stats" });
     }
 
-    // Build a single prompt string from the preview summary + stats
-    const prompt = `
-You are a trading performance coach. The user has uploaded a trade log.
-You get two inputs:
+    const userPrompt = `
+You are a trading performance coach. The trader has uploaded a journal
+and you have:
 
-1) Preview summary text:
+1) A preview text summary (what their on-screen stats look like).
+2) A small JSON object with some extracted stats.
+
+Use this information to write:
+
+- 2–3 bullet points on strengths.
+- 3–5 bullet points on key issues / risks.
+- A numbered action plan for the next 20 trades.
+
+Focus on position sizing, trade selection, risk management and behaviour.
+Do not just repeat the numbers back; interpret what they mean for the trader.
+
+Preview summary:
 ${summary}
 
-2) JSON stats:
+Stats JSON:
 ${JSON.stringify(stats, null, 2)}
-
-Write:
-- 2–3 bullet points on strengths.
-- 3–5 bullet points on key issues.
-- A concrete action plan for the next 20 trades (numbered steps).
-
-Keep it concise but specific. Do not repeat raw numbers back; interpret them.
 `;
 
-    const aiResponse = await client.responses.create({
+    const completion = await client.chat.completions.create({
       model: "gpt-4.1-mini",
-      input: prompt,
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are an experienced trading performance coach who writes concise, practical feedback.",
+        },
+        {
+          role: "user",
+          content: userPrompt,
+        },
+      ],
     });
 
-    // Extract text from the Responses API result.
-    let text = "";
+    const text =
+      completion &&
+      completion.choices &&
+      completion.choices[0] &&
+      completion.choices[0].message &&
+      completion.choices[0].message.content
+        ? completion.choices[0].message.content.trim()
+        : "";
 
-    // Prefer the structured output field if present
-    if (aiResponse.output && Array.isArray(aiResponse.output)) {
-      const first = aiResponse.output[0];
-      if (
-        first &&
-        first.content &&
-        first.content[0] &&
-        first.content[0].type === "output_text"
-      ) {
-        text = first.content[0].text;
-      }
-    }
-
-    // Fallbacks for any other shapes
-    if (!text && aiResponse.output_text) {
-      text = aiResponse.output_text;
-    }
-    if (!text && aiResponse.content && Array.isArray(aiResponse.content)) {
-      const c0 = aiResponse.content[0];
-      if (c0 && c0.text) text = c0.text;
-    }
-
-    if (!text || !text.trim()) {
+    if (!text) {
       return res
         .status(500)
         .json({ error: "AI response was empty", advice: "" });
     }
 
-    return res.status(200).json({ advice: text.trim() });
+    return res.status(200).json({ advice: text });
   } catch (err) {
     console.error("alphalog-full-report error", err);
     const msg = err && err.message ? err.message : "Unknown error";
     return res.status(500).json({ error: "AI backend error: " + msg });
   }
 };
+
 
 
 
