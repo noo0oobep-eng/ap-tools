@@ -6,107 +6,127 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Only allow your site to call this
-const ALLOWED_ORIGIN = "https://aptradingtools.com";
-
 module.exports = async function handler(req, res) {
-  // --- CORS headers (needed for browser -> Vercel) ---
-  res.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.setHeader("Access-Control-Max-Age", "86400");
-
-  // Preflight request
-  if (req.method === "OPTIONS") {
-    res.status(204).end();
-    return;
-  }
-
-  // Only POST is allowed
+  // Only allow POST from the browser
   if (req.method !== "POST") {
-    res.status(405).json({ error: "Method not allowed" });
-    return;
+    res.setHeader("Allow", "POST");
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const payload = req.body || {};
+    const body = req.body || {};
 
-    // Be tolerant about field names
-    const summaryText =
-      payload.summaryText || payload.summary || payload.previewSummary || "";
-    const stats =
-      payload.stats || payload.basicStats || payload.metrics || null;
-    const advicePreview = payload.advicePreview || payload.previewAdvice || "";
+    // These are the fields the frontend may send.
+    // If you ever add more, we still include them in the blob below.
+    const {
+      summary,          // preview summary block
+      advicePreview,    // bullet list of local advice
+      symbolTableText,  // plain-text version of symbol table
+      sessionTableText, // plain-text version of session table
+      dowTableText,     // plain-text version of day-of-week table
+    } = body;
 
-    if (!summaryText) {
-      res.status(400).json({ error: "Missing summary text" });
-      return;
+    // Require *something* to work with
+    const hasAnyStats =
+      (summary && summary.trim()) ||
+      (advicePreview && advicePreview.trim()) ||
+      (symbolTableText && symbolTableText.trim()) ||
+      (sessionTableText && sessionTableText.trim()) ||
+      (dowTableText && dowTableText.trim());
+
+    if (!hasAnyStats) {
+      return res
+        .status(400)
+        .json({ error: "Missing summary or stats from the browser." });
     }
 
-    const prompt = buildPrompt(summaryText, stats, advicePreview);
+    // Build a single text blob containing everything we know.
+    let statsBlob = "";
+    if (summary) {
+      statsBlob += "=== PREVIEW SUMMARY ===\n" + summary.trim() + "\n\n";
+    }
+    if (advicePreview) {
+      statsBlob += "=== LOCAL ADVICE PREVIEW ===\n" +
+        advicePreview.trim() +
+        "\n\n";
+    }
+    if (symbolTableText) {
+      statsBlob += "=== SYMBOL BREAKDOWN ===\n" +
+        symbolTableText.trim() +
+        "\n\n";
+    }
+    if (sessionTableText) {
+      statsBlob += "=== SESSION BREAKDOWN ===\n" +
+        sessionTableText.trim() +
+        "\n\n";
+    }
+    if (dowTableText) {
+      statsBlob += "=== DAY OF WEEK BREAKDOWN ===\n" +
+        dowTableText.trim() +
+        "\n\n";
+    }
 
-    const aiResponse = await client.responses.create({
-      model: "gpt-5-mini", // from your models screen
-      input: prompt,
+    // As a fallback, include the raw JSON so the model always has context.
+    statsBlob += "=== RAW JSON FROM FRONTEND ===\n" +
+      JSON.stringify(body, null, 2);
+
+    const systemPrompt = `
+You are "AP AlphaLog AI", a trading performance analyst.
+
+The user has uploaded a trading journal. They already see a basic local
+preview (winrate, R-multiple, per-symbol/session breakdowns, etc.).
+Using ONLY the stats provided, produce a full diagnostic report that includes:
+
+1) A clear high-level summary (1–2 paragraphs)
+2) Strengths and weaknesses
+3) Risk and R-multiple quality discussion
+4) Symbol / session / day-of-week insights if present
+5) A concrete, numbered action plan (5–10 items) they can follow next month
+
+Be direct and practical. Avoid fluff and don't repeat raw tables; interpret them.
+Write in UK English.
+    `.trim();
+
+    const userPrompt = `
+Here are the stats exported from the user's AP AlphaLog preview:
+
+${statsBlob}
+    `.trim();
+
+    const completion = await client.chat.completions.create({
+      model: "gpt-4.1-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      temperature: 0.5,
     });
 
-    // Extract plain text from the Responses API
-    let fullText = "";
-    if (aiResponse.output && aiResponse.output[0] && aiResponse.output[0].content) {
-      fullText = aiResponse.output[0].content
-        .map((part) => (part.text && part.text.value) || "")
-        .join("")
-        .trim();
+    const planText =
+      completion.choices &&
+      completion.choices[0] &&
+      completion.choices[0].message &&
+      (completion.choices[0].message.content || "").trim();
+
+    if (!planText) {
+      // We got a response but no text – signal this clearly to the frontend
+      return res.status(200).json({
+        planText: "",
+        warning: "Model returned an empty message.",
+      });
     }
 
-    if (!fullText) {
-      fullText = "No advice text was generated.";
-    }
-
-    res.status(200).json({ fullReport: fullText });
+    // This is exactly what the frontend expects.
+    return res.status(200).json({ planText });
   } catch (err) {
     console.error("alphalog-full-report error:", err);
-    const statusCode = err.status || 500;
-    res.status(statusCode).json({
-      error:
-        "AI backend error: " +
-        (err.message || "Unexpected error (check Vercel logs for details)."),
+
+    const message =
+      (err && err.message) ||
+      "Unexpected error when generating full report.";
+
+    return res.status(err.status || 500).json({
+      error: message,
     });
   }
 };
-
-function buildPrompt(summaryText, stats, advicePreview) {
-  return `
-You are an experienced trading performance coach.
-
-The user has uploaded a trading log from their MT5 EA.
-Below is the preview summary and basic stats from their tool.
-
-SHORT SUMMARY FROM TOOL:
-${summaryText}
-
-RAW STATS (JSON, may be null):
-${stats ? JSON.stringify(stats, null, 2) : "none provided"}
-
-BASIC ADVICE PREVIEW THAT THE USER ALREADY SAW:
-${advicePreview || "none"}
-
-TASK:
-Write a detailed but concise performance report (around 600–900 words) with the following sections:
-
-1. Headline verdict (one short sentence).
-2. Strengths (bullet list).
-3. Main issues (bullet list).
-4. Action plan for the next 20–30 trades (numbered steps, very concrete).
-5. Risk and psychology notes (short paragraph).
-
-Use friendly but direct language.
-Do NOT repeat large tables or raw numbers; just refer to key values where it helps.
-Do NOT mention that you are an AI model.
-`;
-}
-
-
-
-
-
