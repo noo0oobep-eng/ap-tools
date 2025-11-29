@@ -6,7 +6,7 @@ const client = new OpenAI({
 });
 
 export default async function handler(req, res) {
-  // CORS preflight
+  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -22,12 +22,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Read raw body (works in plain Vercel serverless functions)
-    const chunks = [];
-    for await (const chunk of req) chunks.push(chunk);
-    const bodyStr = Buffer.concat(chunks).toString("utf8") || "{}";
-    const data = JSON.parse(bodyStr);
+    // Read raw body
+    let body = "";
+    await new Promise((resolve, reject) => {
+      req.on("data", chunk => {
+        body += chunk;
+      });
+      req.on("end", resolve);
+      req.on("error", reject);
+    });
 
+    const data = JSON.parse(body || "{}");
     const snapshotText = (data.snapshotText || "").toString().trim();
 
     if (!snapshotText) {
@@ -35,9 +40,10 @@ export default async function handler(req, res) {
       return;
     }
 
-    const response = await client.responses.create({
-      model: "gpt-5.1-mini",
-      input: [
+    // Use standard chat completions for reliability
+    const completion = await client.chat.completions.create({
+      model: "gpt-4.1-mini",
+      messages: [
         {
           role: "system",
           content:
@@ -63,18 +69,19 @@ export default async function handler(req, res) {
             "\n\nWrite the full report now.",
         },
       ],
-      max_output_tokens: 900,
+      max_tokens: 900,
     });
 
     const reportText =
-      response.output?.[0]?.content?.[0]?.text?.trim() ||
+      completion.choices?.[0]?.message?.content?.trim() ||
       "No report text returned.";
 
     res.status(200).json({ report: reportText });
   } catch (err) {
     console.error("alphalog-full-report error", err);
-    res
-      .status(500)
-      .json({ error: "AI_error", details: err.message || String(err) });
+    res.status(500).json({
+      error: "Server error",
+      details: err.message || String(err),
+    });
   }
 }
