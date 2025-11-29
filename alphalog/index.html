@@ -213,6 +213,11 @@
     const fileEl = document.getElementById('alog-file');
     const btn    = document.getElementById('analyse-btn');
     const outEl  = document.getElementById('results');
+// Global object used by full-report.js
+window.alphalogPreview = {
+  summary: "",
+  stats: null
+};
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
