@@ -6,79 +6,76 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-module.exports = async function handler(req, res) {
-  // --- CORS headers (important) ---
-  const allowedOrigin = "https://aptradingtools.com"; // use "*" temporarily if needed
-
-  res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  // Handle preflight
-  if (req.method === "OPTIONS") {
-    res.status(204).end();
-    return;
-  }
-
-  // Only allow POST for actual work
+module.exports = async (req, res) => {
   if (req.method !== "POST") {
-    res.status(405).json({ error: "Method not allowed" });
-    return;
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const { summary, stats } = req.body || {};
-
-    if (!summary || !stats) {
-      res.status(400).json({ error: "Missing summary or stats" });
-      return;
+    // Try to parse any JSON body we get
+    let parsed = {};
+    try {
+      parsed = req.body ? JSON.parse(req.body) : {};
+    } catch (e) {
+      parsed = {};
     }
 
-    // Build prompt from the summary + stats we already compute in the browser
+    const summary = parsed.summary || "";
+    const stats = parsed.stats || null;
+
+    // Build a safe prompt even if summary / stats are missing
+    const safeSummary =
+      summary ||
+      "No structured performance summary was provided. Give a general but concrete trading performance review and improvement plan.";
+
+    const safeStatsText = stats
+      ? JSON.stringify(stats, null, 2)
+      : "No numeric stats object was provided; base your advice only on the textual summary.";
+
     const prompt = `
-You are a trading performance coach. The user has uploaded a short trade log.
-Here is a compact stats snapshot and bullet summary:
+You are AP AlphaLog AI, a trading performance coach.
 
-STATS:
-${JSON.stringify(stats, null, 2)}
+Write a clear, structured report for a retail trader based on the information below.
+Focus on:
+- strengths
+- weaknesses / issues
+- concrete next steps and risk management advice
+- ideas for how to turn this into an ongoing playbook.
 
-SUMMARY:
-${summary}
+Textual summary:
+${safeSummary}
 
-Write a structured, plain-English diagnostic report with:
-1. Overall assessment (1 short paragraph)
-2. Key strengths (3–6 bullet points)
-3. Key issues / risks (3–6 bullet points)
-4. Concrete next-step plan (3–8 clear action bullets)
-Keep language clear, specific, and practical. Do not repeat the raw numbers.
-    `.trim();
+Raw stats (if any):
+${safeStatsText}
+
+Write the report in plain English, using short sections and bullet points where helpful.
+`;
 
     const aiResponse = await client.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
+      max_output_tokens: 900,
     });
 
-    // Extract text from the new Responses API shape
-    let reportText = "";
+    // Extract plain text from the response
+    const text =
+      aiResponse.output
+        ?.flatMap((item) =>
+          item.content?.map((c) => (c.text && c.text.value) || "").filter(Boolean)
+        )
+        .join("\n\n") || "No report text returned.";
 
-    try {
-      const firstOutput = aiResponse.output?.[0];
-      const firstContent = firstOutput?.content?.[0];
-      // openai-node 4.x: firstContent.text is an object with .value
-      reportText =
-        firstContent?.text?.value ||
-        firstContent?.text ||
-        JSON.stringify(aiResponse);
-    } catch (e) {
-      reportText = "Unable to read AI response payload.";
-    }
-
-    res.status(200).json({ report: reportText });
+    return res.status(200).json({ report: text });
   } catch (err) {
-    console.error("alphalog-full-report error", err);
-    res.status(500).json({ error: "Server error" });
+    console.error("alphalog-full-report error:", err);
+    const msg =
+      (err && err.error && err.error.message) ||
+      err.message ||
+      "Unknown server error";
+    return res.status(500).json({ error: msg });
   }
 };
+
 
 
 
