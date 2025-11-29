@@ -1,12 +1,14 @@
-// api/alphalog-full-report.js
-import OpenAI from "openai";
+// api/alphalog-full-report.js (CommonJS version for Vercel Node)
+
+// Use CommonJS require so it works without "type": "module"
+const OpenAI = require("openai");
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export default async function handler(req, res) {
-  // CORS
+module.exports = async (req, res) => {
+  // CORS – safe even if not strictly needed
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -22,25 +24,36 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Read raw body
+    // Read raw body from the request (since this isn’t Next.js)
     let body = "";
     await new Promise((resolve, reject) => {
-      req.on("data", chunk => {
+      req.on("data", (chunk) => {
         body += chunk;
       });
       req.on("end", resolve);
       req.on("error", reject);
     });
 
-    const data = JSON.parse(body || "{}");
-    const snapshotText = (data.snapshotText || "").toString().trim();
+    let data = {};
+    try {
+      data = JSON.parse(body || "{}");
+    } catch (e) {
+      res.status(400).json({ error: "Invalid JSON body" });
+      return;
+    }
+
+    const snapshotText =
+      (data && typeof data.snapshotText === "string"
+        ? data.snapshotText
+        : ""
+      ).trim();
 
     if (!snapshotText) {
       res.status(400).json({ error: "snapshotText is required" });
       return;
     }
 
-    // Use standard chat completions for reliability
+    // Call OpenAI using chat completions (reliable)
     const completion = await client.chat.completions.create({
       model: "gpt-4.1-mini",
       messages: [
@@ -48,18 +61,17 @@ export default async function handler(req, res) {
           role: "system",
           content:
             "You are a trading performance coach. You receive a plain-text " +
-            "snapshot of stats from a trade log (winrate, R-multiple, per-symbol " +
-            "results, sessions, days of week, etc.). " +
+            "snapshot of stats from a trade log (winrate, R-multiple, " +
+            "per-symbol results, sessions, days of week, etc.). " +
             "Write a detailed but practical performance report for a discretionary trader. " +
-            "Structure the answer with short headings:\n\n" +
+            "Use short headings:\n\n" +
             "1) High-level summary\n" +
             "2) What is working\n" +
             "3) Key problems / risks\n" +
             "4) Concrete action plan (3–7 bullet points)\n" +
             "5) Notes on sample size / expectations.\n\n" +
-            "Do NOT invent numbers. Refer to the stats qualitatively only " +
-            "(e.g. 'winrate is under 40%' rather than quoting exact figures). " +
-            "Keep tone calm, realistic and non-hype.",
+            "Do NOT invent numbers. Refer to stats qualitatively only " +
+            "(e.g. 'winrate is under 40%'). Keep tone calm and realistic.",
         },
         {
           role: "user",
@@ -73,15 +85,16 @@ export default async function handler(req, res) {
     });
 
     const reportText =
-      completion.choices?.[0]?.message?.content?.trim() ||
+      completion?.choices?.[0]?.message?.content?.trim() ||
       "No report text returned.";
 
     res.status(200).json({ report: reportText });
   } catch (err) {
-    console.error("alphalog-full-report error", err);
+    console.error("alphalog-full-report error:", err);
     res.status(500).json({
       error: "Server error",
       details: err.message || String(err),
     });
   }
-}
+};
+
