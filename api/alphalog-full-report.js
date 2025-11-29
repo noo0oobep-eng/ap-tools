@@ -5,42 +5,13 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Helper: ensure we always get a JSON object from the request body
-function readJsonBody(req) {
-  return new Promise((resolve) => {
-    // If Vercel / micro already parsed JSON, just use it
-    if (req.body && typeof req.body === "object") {
-      return resolve(req.body);
-    }
-
-    let data = "";
-    req.on("data", (chunk) => {
-      data += chunk;
-    });
-    req.on("end", () => {
-      if (!data) return resolve({});
-      try {
-        const json = JSON.parse(data);
-        resolve(json || {});
-      } catch (e) {
-        console.error("alphalog-full-report JSON parse error:", e);
-        resolve({});
-      }
-    });
-    req.on("error", (err) => {
-      console.error("alphalog-full-report body read error:", err);
-      resolve({});
-    });
-  });
-}
-
 module.exports = async (req, res) => {
-  // --- CORS headers so the browser can call this from aptradingtools.com ---
+  // --- CORS so the browser can call this from aptradingtools.com ---
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Handle preflight
+  // Preflight
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
@@ -50,27 +21,54 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const body = await readJsonBody(req);
-    const summary = body.summary;
-    const stats = body.stats;
+    // ---- Make sure we actually have a parsed JSON body ----
+    let body = req.body;
 
-    // We only *require* the summary. Stats are optional.
-    if (!summary || typeof summary !== "string") {
-      return res.status(400).json({ error: "Missing summary" });
+    // Sometimes body is an empty object or undefined in Vercel Node functions.
+    const isEmptyObject =
+      body && typeof body === "object" && !Array.isArray(body) && !Object.keys(body).length;
+
+    if (!body || isEmptyObject) {
+      // Read raw request stream and parse it ourselves
+      let raw = "";
+      await new Promise((resolve, reject) => {
+        req.on("data", (chunk) => {
+          raw += chunk;
+        });
+        req.on("end", resolve);
+        req.on("error", reject);
+      });
+
+      if (raw) {
+        try {
+          body = JSON.parse(raw);
+        } catch (e) {
+          console.error("alphalog-full-report: could not parse raw JSON body:", raw, e);
+          return res.status(400).json({ error: "Request body was not valid JSON" });
+        }
+      }
     }
 
-    const statsBlock = stats
-      ? `
-2) JSON stats object:
-${JSON.stringify(stats, null, 2)}
+    // If for some reason it's still a string
+    if (typeof body === "string") {
+      try {
+        body = JSON.parse(body);
+      } catch (e) {
+        console.error("alphalog-full-report: body was string but not JSON:", body, e);
+        return res.status(400).json({ error: "Request body was not valid JSON" });
+      }
+    }
 
-`
-      : `
-2) JSON stats object:
-(Stats were not provided. Use only the preview summary text.)
+    const { summary, stats } = body || {};
 
-`;
+    if (!summary) {
+      return res.status(400).json({ error: "Missing summary" });
+    }
+    if (!stats) {
+      return res.status(400).json({ error: "Missing stats" });
+    }
 
+    // ---- Build prompt from preview summary + stats ----
     const prompt = `
 You are a trading performance coach. The user has uploaded a trade log.
 You get two inputs:
@@ -78,13 +76,15 @@ You get two inputs:
 1) Preview summary text:
 ${summary}
 
-${statsBlock}
+2) JSON stats:
+${JSON.stringify(stats, null, 2)}
+
 Write:
 - 2–3 bullet points on strengths.
 - 3–5 bullet points on key issues.
 - A concrete action plan for the next 20 trades (numbered steps).
 
-Keep it concise but specific. Do not just repeat raw numbers; interpret them.
+Keep it concise but specific. Do not repeat raw numbers back; interpret them.
 `;
 
     const aiResponse = await client.responses.create({
@@ -92,27 +92,39 @@ Keep it concise but specific. Do not just repeat raw numbers; interpret them.
       input: prompt,
     });
 
-    // Extract plain text from the Responses API result
+    // ---- Extract text from Responses API result ----
     let text = "";
-    try {
-      if (
-        aiResponse &&
-        Array.isArray(aiResponse.output) &&
-        aiResponse.output[0] &&
-        Array.isArray(aiResponse.output[0].content) &&
-        aiResponse.output[0].content[0] &&
-        typeof aiResponse.output[0].content[0].text === "string"
-      ) {
-        text = aiResponse.output[0].content[0].text;
-      }
-    } catch (e) {
-      console.error("alphalog-full-report: output parse error:", e);
+
+    // Preferred shape
+    if (
+      aiResponse.output &&
+      Array.isArray(aiResponse.output) &&
+      aiResponse.output[0] &&
+      aiResponse.output[0].content &&
+      Array.isArray(aiResponse.output[0].content) &&
+      aiResponse.output[0].content[0] &&
+      typeof aiResponse.output[0].content[0].text === "string"
+    ) {
+      text = aiResponse.output[0].content[0].text;
+    }
+
+    // Fallbacks (just in case the SDK changes shape)
+    if (!text && typeof aiResponse.output_text === "string") {
+      text = aiResponse.output_text;
+    }
+    if (
+      !text &&
+      aiResponse.content &&
+      Array.isArray(aiResponse.content) &&
+      aiResponse.content[0] &&
+      typeof aiResponse.content[0].text === "string"
+    ) {
+      text = aiResponse.content[0].text;
     }
 
     if (!text || !text.trim()) {
-      return res
-        .status(500)
-        .json({ error: "AI response was empty", advice: "" });
+      console.error("alphalog-full-report: AI response was empty or unparseable", aiResponse);
+      return res.status(500).json({ error: "AI response was empty", advice: "" });
     }
 
     return res.status(200).json({ advice: text.trim() });
@@ -122,6 +134,7 @@ Keep it concise but specific. Do not just repeat raw numbers; interpret them.
     return res.status(500).json({ error: "AI backend error: " + msg });
   }
 };
+
 
 
 
