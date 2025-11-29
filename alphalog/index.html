@@ -156,6 +156,21 @@
       <button id="analyse-btn" type="submit">Analyse (preview)</button>
       <div id="results" class="results"></div>
     </form>
+  <!-- AI advice card -->
+  <div id="ai-advice-card" class="card" style="display:none; margin-top:18px;">
+    <h2>AI advice (preview)</h2>
+    <p class="note" id="ai-advice-note" style="margin-top:4px;">
+      After running the preview analysis, you can ask the AI for a short written
+      review and concrete next steps based on your stats.
+    </p>
+
+    <button id="ai-advice-btn" type="button" style="margin-top:12px;">
+      Generate AI advice
+    </button>
+
+    <div id="ai-advice-output"
+         style="margin-top:12px; font-size:0.9em; white-space:pre-wrap;"></div>
+  </div>
 
     <p class="note">
       Basic on-screen stats will be free. The <strong>full PDF diagnostic report</strong> (equity curve,
