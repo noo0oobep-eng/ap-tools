@@ -583,38 +583,36 @@
 (function () {
   const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-advice";
 
+  const form = document.querySelector("form");
   const adviceCard = document.getElementById("ai-advice-card");
-  const adviceBtn  = document.getElementById("ai-advice-btn");
-  const adviceOut  = document.getElementById("ai-advice-output");
-  const resultsEl  = document.getElementById("results"); // where preview is rendered
+  const adviceBtn = document.getElementById("ai-advice-btn");
+  const adviceOut = document.getElementById("ai-advice-output");
 
-  if (!adviceCard || !adviceBtn || !adviceOut || !resultsEl) return;
+  if (!form || !adviceBtn || !adviceCard) return;
 
   let latestSummaryText = "";
 
-  // Whenever the preview stats HTML changes, extract the "Preview summary" text
-  const observer = new MutationObserver(() => {
-    const previewHeading = Array.from(
-      resultsEl.querySelectorAll("h2, h3")
-    ).find((h) =>
-      h.textContent.toLowerCase().includes("preview summary")
-    );
+  // After the existing analyser runs, grab the preview block text
+  form.addEventListener("submit", function () {
+    setTimeout(() => {
+      const previewHeading = Array.from(
+        document.querySelectorAll("h2, h3")
+      ).find((h) =>
+        h.textContent.toLowerCase().includes("preview summary")
+      );
 
-    const previewSection = previewHeading ? previewHeading.parentElement : null;
+      const previewSection = previewHeading ? previewHeading.parentElement : null;
 
-    if (previewSection) {
-      latestSummaryText = previewSection.innerText.trim();
-      adviceCard.style.display = "block";
-      adviceOut.textContent = "";
-    } else {
-      latestSummaryText = "";
-      adviceCard.style.display = "none";
-      adviceOut.textContent = "";
-    }
+      if (previewSection) {
+        latestSummaryText = previewSection.innerText.trim();
+        adviceCard.style.display = "block";
+        adviceOut.textContent = "";
+      } else {
+        latestSummaryText = "";
+        adviceCard.style.display = "none";
+      }
+    }, 0);
   });
-
-  // Watch for preview being rendered after you click "Analyse (preview)"
-  observer.observe(resultsEl, { childList: true, subtree: true });
 
   adviceBtn.addEventListener("click", async function () {
     if (!latestSummaryText) {
@@ -640,10 +638,16 @@
         throw new Error(data.error || "Request failed");
       }
 
-      adviceOut.textContent = data.advice || "(No advice text returned.)";
+      const adviceText = data.advice || "(No advice text returned.)";
+      adviceOut.textContent = adviceText;
+
+      // 🔓 Reveal advanced sections (equity curve, sessions, DOW, stat-notes)
+      document.querySelectorAll(".advanced-after-ai").forEach((el) => {
+        el.style.display = "";
+      });
     } catch (err) {
       adviceOut.textContent =
-        "Could not get advice: " + (err && err.message ? err.message : String(err));
+        "Could not get advice: " + (err.message || String(err));
     } finally {
       adviceBtn.disabled = false;
       adviceBtn.textContent = originalLabel;
