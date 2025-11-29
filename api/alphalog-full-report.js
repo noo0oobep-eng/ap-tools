@@ -1,6 +1,4 @@
-// api/alphalog-full-report.js (CommonJS version for Vercel Node)
-
-// Use CommonJS require so it works without "type": "module"
+// api/alphalog-full-report.js
 const OpenAI = require("openai");
 
 const client = new OpenAI({
@@ -8,93 +6,69 @@ const client = new OpenAI({
 });
 
 module.exports = async (req, res) => {
-  // CORS – safe even if not strictly needed
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === "OPTIONS") {
-    res.status(204).end();
-    return;
-  }
-
   if (req.method !== "POST") {
-    res.status(405).json({ error: "Method not allowed" });
-    return;
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    // Read raw body from the request (since this isn’t Next.js)
-    let body = "";
-    await new Promise((resolve, reject) => {
-      req.on("data", (chunk) => {
-        body += chunk;
-      });
-      req.on("end", resolve);
-      req.on("error", reject);
-    });
+    const { stats } = req.body;
 
-    let data = {};
-    try {
-      data = JSON.parse(body || "{}");
-    } catch (e) {
-      res.status(400).json({ error: "Invalid JSON body" });
-      return;
+    if (!stats) {
+      return res.status(400).json({ error: "Missing stats in request body" });
     }
 
-    const snapshotText =
-      (data && typeof data.snapshotText === "string"
-        ? data.snapshotText
-        : ""
-      ).trim();
+    // Build the prompt from the stats we already calculated in the browser
+    const prompt = `
+You are a professional trading performance coach.
 
-    if (!snapshotText) {
-      res.status(400).json({ error: "snapshotText is required" });
-      return;
-    }
+You will receive summary stats from a single trading log.
+Write a detailed, plain-English diagnostic report for the trader.
 
-    // Call OpenAI using chat completions (reliable)
-    const completion = await client.chat.completions.create({
-      model: "gpt-4.1-mini",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a trading performance coach. You receive a plain-text " +
-            "snapshot of stats from a trade log (winrate, R-multiple, " +
-            "per-symbol results, sessions, days of week, etc.). " +
-            "Write a detailed but practical performance report for a discretionary trader. " +
-            "Use short headings:\n\n" +
-            "1) High-level summary\n" +
-            "2) What is working\n" +
-            "3) Key problems / risks\n" +
-            "4) Concrete action plan (3–7 bullet points)\n" +
-            "5) Notes on sample size / expectations.\n\n" +
-            "Do NOT invent numbers. Refer to stats qualitatively only " +
-            "(e.g. 'winrate is under 40%'). Keep tone calm and realistic.",
-        },
-        {
-          role: "user",
-          content:
-            "Here is the text snapshot copied from the on-screen preview:\n\n" +
-            snapshotText +
-            "\n\nWrite the full report now.",
-        },
-      ],
-      max_tokens: 900,
+Focus on:
+- Overall verdict (but remind them sample size may be small)
+- Strengths to keep doing
+- Problems / leaks to fix
+- Concrete next-step action plan
+
+Keep it practical, not fluffy.
+
+Here are the stats (JSON):
+${JSON.stringify(stats, null, 2)}
+`;
+
+    const aiResponse = await client.responses.create({
+      model: "gpt-4.1-mini",           // <- use this model
+      input: prompt,
+      max_output_tokens: 900,          // enough for a detailed report
+      temperature: 0.6,
     });
 
-    const reportText =
-      completion?.choices?.[0]?.message?.content?.trim() ||
-      "No report text returned.";
+    // New Responses API: first output item, first content block, text
+    const aiText =
+      aiResponse.output[0].content[0].text ||
+      "AI generated an empty response.";
 
-    res.status(200).json({ report: reportText });
+    return res.status(200).json({ advice: aiText });
   } catch (err) {
     console.error("alphalog-full-report error:", err);
-    res.status(500).json({
-      error: "Server error",
-      details: err.message || String(err),
+
+    // Try to surface useful info to the page
+    const status = err.status || 500;
+
+    // Special message for quota/billing issues
+    if (err.code === "insufficient_quota") {
+      return res.status(503).json({
+        error:
+          "AI quota / billing issue on the OpenAI account (insufficient_quota). The AP server is fine; please check OpenAI billing or wait a bit and try again.",
+      });
+    }
+
+    return res.status(status).json({
+      error:
+        "AI server error: " +
+        (err?.error?.message || err.message || "Unknown error"),
     });
   }
 };
+
 
