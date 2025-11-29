@@ -593,77 +593,78 @@ window.alphalogPreview = {
 
   <!-- AI advice (short preview) -->
   <script>
-  (function () {
-    const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-advice";
+(function () {
+  const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-advice";
 
-    const form = document.querySelector("form");
-    const adviceCard = document.getElementById("ai-advice-card");
-    const adviceBtn = document.getElementById("ai-advice-btn");
-    const adviceOut = document.getElementById("ai-advice-output");
+  const adviceCard = document.getElementById("ai-advice-card");
+  const adviceBtn  = document.getElementById("ai-advice-btn");
+  const adviceOut  = document.getElementById("ai-advice-output");
+  const resultsEl  = document.getElementById("results"); // where preview is rendered
 
-    if (!form || !adviceBtn || !adviceCard) return;
+  if (!adviceCard || !adviceBtn || !adviceOut || !resultsEl) return;
 
-    let latestSummaryText = "";
+  let latestSummaryText = "";
 
-    // After the existing analyser runs, grab the preview block text
-    form.addEventListener("submit", function () {
-      // Let your existing handler finish rendering first
-      setTimeout(() => {
-        // Find the section whose heading contains "Preview summary"
-        const previewHeading = Array.from(
-          document.querySelectorAll("h2, h3")
-        ).find((h) =>
-          h.textContent.toLowerCase().includes("preview summary")
-        );
+  // Whenever the preview stats HTML changes, extract the "Preview summary" text
+  const observer = new MutationObserver(() => {
+    const previewHeading = Array.from(
+      resultsEl.querySelectorAll("h2, h3")
+    ).find((h) =>
+      h.textContent.toLowerCase().includes("preview summary")
+    );
 
-        const previewSection = previewHeading ? previewHeading.parentElement : null;
+    const previewSection = previewHeading ? previewHeading.parentElement : null;
 
-        if (previewSection) {
-          latestSummaryText = previewSection.innerText.trim();
-          adviceCard.style.display = "block";
-          adviceOut.textContent = "";
-        } else {
-          latestSummaryText = "";
-          adviceCard.style.display = "none";
-        }
-      }, 0);
-    });
+    if (previewSection) {
+      latestSummaryText = previewSection.innerText.trim();
+      adviceCard.style.display = "block";
+      adviceOut.textContent = "";
+    } else {
+      latestSummaryText = "";
+      adviceCard.style.display = "none";
+      adviceOut.textContent = "";
+    }
+  });
 
-    adviceBtn.addEventListener("click", async function () {
-      if (!latestSummaryText) {
-        adviceOut.textContent =
-          "Run the preview analysis first, then click this button again.";
-        return;
+  // Watch for preview being rendered after you click "Analyse (preview)"
+  observer.observe(resultsEl, { childList: true, subtree: true });
+
+  adviceBtn.addEventListener("click", async function () {
+    if (!latestSummaryText) {
+      adviceOut.textContent =
+        "Run the preview analysis first, then click this button again.";
+      return;
+    }
+
+    adviceBtn.disabled = true;
+    const originalLabel = adviceBtn.textContent;
+    adviceBtn.textContent = "Generating advice…";
+    adviceOut.textContent = "Talking to the AI…";
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ summary: latestSummaryText }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Request failed");
       }
 
-      adviceBtn.disabled = true;
-      const originalLabel = adviceBtn.textContent;
-      adviceBtn.textContent = "Generating advice…";
-      adviceOut.textContent = "Talking to the AI…";
+      adviceOut.textContent = data.advice || "(No advice text returned.)";
+    } catch (err) {
+      adviceOut.textContent =
+        "Could not get advice: " + (err && err.message ? err.message : String(err));
+    } finally {
+      adviceBtn.disabled = false;
+      adviceBtn.textContent = originalLabel;
+    }
+  });
+})();
+</script>
 
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ summary: latestSummaryText }),
-        });
-
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error || "Request failed");
-        }
-
-        adviceOut.textContent = data.advice || "(No advice text returned.)";
-      } catch (err) {
-        adviceOut.textContent =
-          "Could not get advice: " + (err.message || String(err));
-      } finally {
-        adviceBtn.disabled = false;
-        adviceBtn.textContent = originalLabel;
-      }
-    });
-  })();
-  </script>
 
   <!-- Full AI report (paid) -->
   <script>
