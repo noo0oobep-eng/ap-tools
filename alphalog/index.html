@@ -209,387 +209,374 @@
 
   <!-- Main preview / stats script -->
   <script>
-    const form   = document.getElementById('alog-form');
-    const fileEl = document.getElementById('alog-file');
-    const btn    = document.getElementById('analyse-btn');
-    const outEl  = document.getElementById('results');
-// Global object used by full-report.js
-window.alphalogPreview = {
-  summary: "",
-  stats: null
-};
+  const form   = document.getElementById('alog-form');
+  const fileEl = document.getElementById('alog-file');
+  const btn    = document.getElementById('analyse-btn');
+  const outEl  = document.getElementById('results');
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const file = fileEl.files && fileEl.files[0];
-      if(!file){
-        alert('Please choose an .alog file first.');
-        return;
-      }
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const file = fileEl.files && fileEl.files[0];
+    if(!file){
+      alert('Please choose an .alog file first.');
+      return;
+    }
 
-      btn.disabled = true;
-      btn.textContent = 'Analysing…';
+    btn.disabled = true;
+    btn.textContent = 'Analysing…';
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        try{
-          const text   = reader.result;
-          const trades = parseAlphaLog(text);
-          renderStats(trades);
-        }catch(err){
-          console.error(err);
-          outEl.innerHTML = '<p style="color:#ff9b9b;">Could not read this file. Make sure it was exported by the AP AlphaLog AI MT5 EA.</p>';
-        }finally{
-          btn.disabled = false;
-          btn.textContent = 'Analyse (preview)';
-        }
-      };
-      reader.onerror = () => {
-        outEl.innerHTML = '<p style="color:#ff9b9b;">File reading failed in the browser.</p>';
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const text   = reader.result;
+        const trades = parseAlphaLog(text);
+        renderStats(trades);
+      }catch(err){
+        console.error(err);
+        outEl.innerHTML = '<p style="color:#ff9b9b;">Could not read this file. Make sure it was exported by the AP AlphaLog AI MT5 EA.</p>';
+      }finally{
         btn.disabled = false;
         btn.textContent = 'Analyse (preview)';
-      };
-      reader.readAsText(file);
-    });
-
-    function parseAlphaLog(raw){
-      const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-      const trades = [];
-
-      for(const line of lines){
-        if(line.startsWith('AP_ALPHA_LOG_AI_V1')) continue;
-        if(line.startsWith('SCHEMA:')) continue;
-
-        const parts = line.split(';');
-        if(parts.length < 2) continue;
-
-        const ts  = parts[0];
-        const b64 = parts.slice(1).join(';'); // in case ; appears later
-
-        try{
-          const jsonStr = base64ToUtf8(b64);
-          const obj = JSON.parse(jsonStr);
-          obj._ts = ts;
-          trades.push(obj);
-        }catch(err){
-          console.warn('Line skipped (decode/JSON error):', err);
-        }
       }
-      return trades;
-    }
-
-    function base64ToUtf8(b64){
-      const bin = atob(b64);
-      const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-      if(window.TextDecoder){
-        return new TextDecoder('utf-8').decode(bytes);
-      }
-      // fallback
-      let s = '';
-      for(let i=0;i<bytes.length;i++) s += String.fromCharCode(bytes[i]);
-      return decodeURIComponent(escape(s));
-    }
-
-    function renderStats(trades){
-  if(!trades.length){
-    outEl.innerHTML = '<p class="muted">No trades found in this file.</p>';
-    // Clear preview cache
-    window.alphalogPreview = null;
-    return;
-  }
-
-  // ---------- Core aggregates ----------
-  let total = trades.length;
-  let wins  = 0, losses = 0;
-  let net   = 0;
-
-  let sumR = 0, countR = 0;
-  let bestR = -1e9, worstR = 1e9;
-
-  const bySymbol  = {};
-  const bySession = {};
-  const byDOW     = {};
-
-  // equity curve (relative, start from 0)
-  const sorted = trades.slice().sort((a,b) => {
-    const ta = Date.parse(a.close_time || a._ts || '');
-    const tb = Date.parse(b.close_time || b._ts || '');
-    return (isNaN(ta)?0:ta) - (isNaN(tb)?0:tb);
+    };
+    reader.onerror = () => {
+      outEl.innerHTML = '<p style="color:#ff9b9b;">File reading failed in the browser.</p>';
+      btn.disabled = false;
+      btn.textContent = 'Analyse (preview)';
+    };
+    reader.readAsText(file);
   });
-  let runningEq = 0;
-  const eqPoints = [];
 
-  for(const t of sorted){
-    const netRes = Number(t.net_result_currency || 0);
-    net += netRes;
-    if(netRes > 0) wins++;
-    else if(netRes < 0) losses++;
+  function parseAlphaLog(raw){
+    const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const trades = [];
 
-    const riskPts = Number(t.initial_risk_points || 0);
-    const rMult   = Number(t.initial_r_multiple || 0);
-    if(riskPts > 0){
-      sumR += rMult;
-      countR++;
-      if(rMult > bestR)  bestR  = rMult;
-      if(rMult < worstR) worstR = rMult;
-    }
+    for(const line of lines){
+      if(line.startsWith('AP_ALPHA_LOG_AI_V1')) continue;
+      if(line.startsWith('SCHEMA:')) continue;
 
-    const sym = t.symbol || 'UNKNOWN';
-    if(!bySymbol[sym]) bySymbol[sym] = {trades:0,wins:0,losses:0,net:0,sumR:0,countR:0};
-    const sAgg = bySymbol[sym];
-    sAgg.trades++;
-    sAgg.net += netRes;
-    if(netRes>0) sAgg.wins++;
-    else if(netRes<0) sAgg.losses++;
-    if(riskPts>0){
-      sAgg.sumR += rMult;
-      sAgg.countR++;
-    }
+      const parts = line.split(';');
+      if(parts.length < 2) continue;
 
-    const sess = t.session_tag || 'OTHER';
-    if(!bySession[sess]) bySession[sess] = {trades:0,wins:0,losses:0,net:0,sumR:0,countR:0};
-    const sessAgg = bySession[sess];
-    sessAgg.trades++;
-    sessAgg.net += netRes;
-    if(netRes>0) sessAgg.wins++;
-    else if(netRes<0) sessAgg.losses++;
-    if(riskPts>0){
-      sessAgg.sumR += rMult;
-      sessAgg.countR++;
-    }
+      const ts  = parts[0];
+      const b64 = parts.slice(1).join(';'); // in case ; appears later
 
-    const dow = t.day_of_week || 'UNK';
-    if(!byDOW[dow]) byDOW[dow] = {trades:0,wins:0,losses:0,net:0,sumR:0,countR:0};
-    const dAgg = byDOW[dow];
-    dAgg.trades++;
-    dAgg.net += netRes;
-    if(netRes>0) dAgg.wins++;
-    else if(netRes<0) dAgg.losses++;
-    if(riskPts>0){
-      dAgg.sumR += rMult;
-      dAgg.countR++;
-    }
-
-    runningEq += netRes;
-    eqPoints.push(runningEq);
-  }
-
-  const winrate = total ? (wins / total * 100) : 0;
-  const avgR    = countR ? (sumR / countR) : 0;
-  if(countR === 0){ bestR = 0; worstR = 0; }
-
-  // ---------- Simple advice lines ----------
-  const adviceLines = [];
-
-  // Sample size
-  if(total < 20){
-    adviceLines.push(`You only have ${total} closed trades in this log. Treat this as early exploration rather than a finished system verdict.`);
-  }else if(total < 50){
-    adviceLines.push(`With ${total} closed trades you are starting to see structure, but more data will make the stats more reliable.`);
-  }else{
-    adviceLines.push(`You have ${total} closed trades here, which is enough to start trusting the patterns you see.`);
-  }
-
-  // Winrate
-  if(winrate < 40){
-    adviceLines.push(`Winrate sits around ${winrate.toFixed(1)}%. Focus on cutting costs on losing trades and checking that entries truly align with your playbook.`);
-  }else if(winrate <= 60){
-    adviceLines.push(`Winrate sits around ${winrate.toFixed(1)}%. This is a healthy middle ground if your average R on winners is strong enough.`);
-  }else{
-    adviceLines.push(`Winrate is high at ${winrate.toFixed(1)}%. Protect this by keeping risk per trade steady and avoiding over-sizing.`);
-  }
-
-  // R-multiple quality
-  if(countR === 0){
-    adviceLines.push(`No trades in this file have a valid initial R defined. Make sure your SL is set so R-multiple quality can be tracked.`);
-  }else if(avgR < 0.7){
-    adviceLines.push(`Average R on SL-defined trades is ${avgR.toFixed(2)}R. This suggests winners are not running far enough relative to initial risk.`);
-  }else if(avgR > 1.5){
-    adviceLines.push(`Average R is ${avgR.toFixed(2)}R. That is strong; your best upgrade is usually to increase quality, not size.`);
-  }else{
-    adviceLines.push(`Average R is ${avgR.toFixed(2)}R. There is room to push a little more distance on winners without changing your risk per trade.`);
-  }
-
-  // Best / worst symbol
-  const symKeys = Object.keys(bySymbol);
-  if(symKeys.length){
-    const bestSym = symKeys.slice().sort((a,b) => bySymbol[b].net - bySymbol[a].net)[0];
-    const worstSym = symKeys.slice().sort((a,b) => bySymbol[a].net - bySymbol[b].net)[0];
-
-    const bAgg = bySymbol[bestSym];
-    adviceLines.push(`Best symbol in this sample is ${bestSym} with ${bAgg.trades} trade(s) and net ${bAgg.net.toFixed(2)}. Consider documenting exactly how you trade this symbol and making it your primary focus.`);
-
-    if(worstSym !== bestSym){
-      const wAgg = bySymbol[worstSym];
-      adviceLines.push(`Weakest symbol is ${worstSym} with net ${wAgg.net.toFixed(2)} over ${wAgg.trades} trade(s). Either tighten your rules there or pause trading it until you have a clear edge.`);
-    }
-  }
-
-  // Sessions (only if more than one)
-  const sessKeys = Object.keys(bySession);
-  if(sessKeys.length > 1){
-    const bestSess = sessKeys.slice().sort((a,b) => bySession[b].net - bySession[a].net)[0];
-    const worstSess = sessKeys.slice().sort((a,b) => bySession[a].net - bySession[b].net)[0];
-    adviceLines.push(`Session behaviour is uneven: ${bestSess} leads on net results, while ${worstSess} lags. You may want to size down or be more selective in the weaker session.`);
-  }
-
-  // -------------------- NEW: cache summary + stats for the full report --------------------
-  window.alphalogPreview = {
-    summary: [
-      `Total closed trades: ${total}`,
-      `Wins / Losses: ${wins} / ${losses}`,
-      `Winrate: ${winrate.toFixed(1)}%`,
-      `Net result: ${net.toFixed(2)} (account currency)`,
-      `Average R (SL-defined trades): ${avgR.toFixed(2)}R`,
-      `Best R / Worst R: ${bestR.toFixed(2)}R / ${worstR.toFixed(2)}R`,
-      `Key observations:`,
-      ...adviceLines
-    ].join('\n'),
-    stats: {
-      total,
-      wins,
-      losses,
-      winrate,
-      net,
-      avgR,
-      bestR,
-      worstR,
-      bySymbol,
-      bySession,
-      byDOW
-    }
-  };
-  // ----------------------------------------------------------------------
-
-  // ---------- Build HTML ----------
-  let html = '';
-
-  html += '<div class="results-section">';
-  html += '<h2>Preview summary</h2>';
-  html += '<ul>';
-  html += `<li><strong>Total closed trades:</strong> ${total}</li>`;
-  html += `<li><strong>Wins / Losses:</strong> ${wins} / ${losses}</li>`;
-  html += `<li><strong>Winrate:</strong> ${winrate.toFixed(1)}%</li>`;
-  html += `<li><strong>Net result (account currency):</strong> ${net.toFixed(2)}</li>`;
-  html += `<li><strong>Avg R (trades with SL):</strong> ${avgR.toFixed(2)}</li>`;
-  html += `<li><strong>Best R / Worst R:</strong> ${bestR.toFixed(2)} / ${worstR.toFixed(2)}</li>`;
-  html += '</ul>';
-  html += '<p class="muted">This is a local preview from your .alog file. The full AP AlphaLog AI report will add deeper R-multiple analysis, time-of-day context, symbol breakdowns, and a longer written plan.</p>';
-  html += '</div>';
-
-  html += '<div class="results-section">';
-  html += '<h2>Relative equity curve</h2>';
-  html += '<div class="chart-wrap"><canvas id="equityCanvas" width="640" height="160"></canvas></div>';
-  html += '<p class="muted">Starting from 0 and adding each trade\'s net result. In the full report this will be normalised to account balance.</p>';
-  html += '</div>';
-
-  // By symbol
-  html += '<div class="results-section">';
-  html += '<h2>Performance by symbol</h2>';
-  html += '<table><thead><tr>';
-  html += '<th>Symbol</th><th class="text-right">Trades</th><th class="text-right">Winrate</th><th class="text-right">Net</th><th class="text-right">Avg R</th>';
-  html += '</tr></thead><tbody>';
-
-  const symKeys2 = Object.keys(bySymbol).sort();
-  for(const sym of symKeys2){
-    const a = bySymbol[sym];
-    const wr = a.trades ? (a.wins / a.trades * 100) : 0;
-    const avgR_sym = a.countR ? (a.sumR / a.countR) : 0;
-    html += `<tr><td>${sym}</td><td class="text-right">${a.trades}</td><td class="text-right">${wr.toFixed(1)}%</td><td class="text-right">${a.net.toFixed(2)}</td><td class="text-right">${avgR_sym.toFixed(2)}</td></tr>`;
-  }
-  html += '</tbody></table>';
-  html += '</div>';
-
-  // By session
-  html += '<div class="results-section">';
-  html += '<h2>Performance by session</h2>';
-  html += '<table><thead><tr>';
-  html += '<th>Session</th><th class="text-right">Trades</th><th class="text-right">Winrate</th><th class="text-right">Net</th><th class="text-right">Avg R</th>';
-  html += '</tr></thead><tbody>';
-
-  const sessKeys2 = Object.keys(bySession).sort();
-  for(const s of sessKeys2){
-    const a = bySession[s];
-    const wr = a.trades ? (a.wins / a.trades * 100) : 0;
-    const avgR_s = a.countR ? (a.sumR / a.countR) : 0;
-    html += `<tr><td><span class="pill">${s}</span></td><td class="text-right">${a.trades}</td><td class="text-right">${wr.toFixed(1)}%</td><td class="text-right">${a.net.toFixed(2)}</td><td class="text-right">${avgR_s.toFixed(2)}</td></tr>`;
-  }
-  html += '</tbody></table>';
-  html += '</div>';
-
-  // By day-of-week
-  html += '<div class="results-section">';
-  html += '<h2>Performance by day of week</h2>';
-  html += '<table><thead><tr>';
-  html += '<th>Day</th><th class="text-right">Trades</th><th class="text-right">Winrate</th><th class="text-right">Net</th><th class="text-right">Avg R</th>';
-  html += '</tr></thead><tbody>';
-
-  const dowOrder = ['MON','TUE','WED','THU','FRI','SAT','SUN','UNK'];
-  for(const dow of dowOrder){
-    if(!byDOW[dow]) continue;
-    const a = byDOW[dow];
-    const wr = a.trades ? (a.wins / a.trades * 100) : 0;
-    const avgR_d = a.countR ? (a.sumR / a.countR) : 0;
-    html += `<tr><td>${dow}</td><td class="text-right">${a.trades}</td><td class="text-right">${wr.toFixed(1)}%</td><td class="text-right">${a.net.toFixed(2)}</td><td class="text-right">${avgR_d.toFixed(2)}</td></tr>`;
-  }
-  html += '</tbody></table>';
-  html += '</div>';
-
-  // Advice preview
-  html += '<div class="results-section">';
-  html += '<h2>Advice preview</h2>';
-  html += '<ul>';
-  for(const line of adviceLines){
-    html += `<li>${line}</li>`;
-  }
-  html += '</ul>';
-  html += '<p class="muted">This advice preview is generated locally from the basic stats above. The full AP AlphaLog AI report will expand this into a longer narrative with concrete action items.</p>';
-  html += '</div>';
-
-  outEl.innerHTML = html;
-
-  // draw equity curve
-  drawEquity(eqPoints);
-}
-
-    function drawEquity(points){
-      const canvas = document.getElementById('equityCanvas');
-      if(!canvas || !points.length) return;
-
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
-
-      ctx.clearRect(0,0,w,h);
-
-      const minY = Math.min(...points, 0);
-      const maxY = Math.max(...points, 0);
-      const range = (maxY - minY) || 1;
-
-      // background + midline
-      ctx.fillStyle = '#05070c';
-      ctx.fillRect(0,0,w,h);
-      ctx.strokeStyle = '#151b27';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(0, h/2);
-      ctx.lineTo(w, h/2);
-      ctx.stroke();
-
-      ctx.beginPath();
-      const stepX = w / Math.max(points.length - 1, 1);
-      for(let i=0;i<points.length;i++){
-        const x = i * stepX;
-        const norm = (points[i] - minY) / range; // 0..1
-        const y = h - norm * (h - 10) - 5;
-        if(i===0) ctx.moveTo(x,y);
-        else ctx.lineTo(x,y);
+      try{
+        const jsonStr = base64ToUtf8(b64);
+        const obj = JSON.parse(jsonStr);
+        obj._ts = ts;
+        trades.push(obj);
+      }catch(err){
+        console.warn('Line skipped (decode/JSON error):', err);
       }
-      ctx.strokeStyle = '#00d3a7';
-      ctx.lineWidth = 2;
-      ctx.stroke();
     }
-  </script>
+    return trades;
+  }
+
+  function base64ToUtf8(b64){
+    const bin = atob(b64);
+    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+    if(window.TextDecoder){
+      return new TextDecoder('utf-8').decode(bytes);
+    }
+    // fallback
+    let s = '';
+    for(let i=0;i<bytes.length;i++) s += String.fromCharCode(bytes[i]);
+    return decodeURIComponent(escape(s));
+  }
+
+  function renderStats(trades){
+    if(!trades.length){
+      outEl.innerHTML = '<p class="muted">No trades found in this file.</p>';
+      window.alphalogPreview = null;
+      return;
+    }
+
+    // ---------- Core aggregates ----------
+    let total = trades.length;
+    let wins  = 0, losses = 0;
+    let net   = 0;
+
+    let sumR = 0, countR = 0;
+    let bestR = -1e9, worstR = 1e9;
+
+    const bySymbol  = {};
+    const bySession = {};
+    const byDOW     = {};
+
+    // equity curve (relative, start from 0)
+    const sorted = trades.slice().sort((a,b) => {
+      const ta = Date.parse(a.close_time || a._ts || '');
+      const tb = Date.parse(b.close_time || b._ts || '');
+      return (isNaN(ta)?0:ta) - (isNaN(tb)?0:tb);
+    });
+    let runningEq = 0;
+    const eqPoints = [];
+
+    for(const t of sorted){
+      const netRes = Number(t.net_result_currency || 0);
+      net += netRes;
+      if(netRes > 0) wins++;
+      else if(netRes < 0) losses++;
+
+      const riskPts = Number(t.initial_risk_points || 0);
+      const rMult   = Number(t.initial_r_multiple || 0);
+      if(riskPts > 0){
+        sumR += rMult;
+        countR++;
+        if(rMult > bestR)  bestR  = rMult;
+        if(rMult < worstR) worstR = rMult;
+      }
+
+      const sym = t.symbol || 'UNKNOWN';
+      if(!bySymbol[sym]) bySymbol[sym] = {trades:0,wins:0,losses:0,net:0,sumR:0,countR:0};
+      const sAgg = bySymbol[sym];
+      sAgg.trades++;
+      sAgg.net += netRes;
+      if(netRes>0) sAgg.wins++;
+      else if(netRes<0) sAgg.losses++;
+      if(riskPts>0){
+        sAgg.sumR += rMult;
+        sAgg.countR++;
+      }
+
+      const sess = t.session_tag || 'OTHER';
+      if(!bySession[sess]) bySession[sess] = {trades:0,wins:0,losses:0,net:0,sumR:0,countR:0};
+      const sessAgg = bySession[sess];
+      sessAgg.trades++;
+      sessAgg.net += netRes;
+      if(netRes>0) sessAgg.wins++;
+      else if(netRes<0) sessAgg.losses++;
+      if(riskPts>0){
+        sessAgg.sumR += rMult;
+        sessAgg.countR++;
+      }
+
+      const dow = t.day_of_week || 'UNK';
+      if(!byDOW[dow]) byDOW[dow] = {trades:0,wins:0,losses:0,net:0,sumR:0,countR:0};
+      const dAgg = byDOW[dow];
+      dAgg.trades++;
+      dAgg.net += netRes;
+      if(netRes>0) dAgg.wins++;
+      else if(netRes<0) dAgg.losses++;
+      if(riskPts>0){
+        dAgg.sumR += rMult;
+        dAgg.countR++;
+      }
+
+      runningEq += netRes;
+      eqPoints.push(runningEq);
+    }
+
+    const winrate = total ? (wins / total * 100) : 0;
+    const avgR    = countR ? (sumR / countR) : 0;
+    if(countR === 0){ bestR = 0; worstR = 0; }
+
+    // ---------- Local advice lines (we'll show these only after AI) ----------
+    const adviceLines = [];
+
+    if(total < 20){
+      adviceLines.push(`You only have ${total} closed trades in this log. Treat this as early exploration rather than a finished system verdict.`);
+    }else if(total < 50){
+      adviceLines.push(`With ${total} closed trades you are starting to see structure, but more data will make the stats more reliable.`);
+    }else{
+      adviceLines.push(`You have ${total} closed trades here, which is enough to start trusting the patterns you see.`);
+    }
+
+    if(winrate < 40){
+      adviceLines.push(`Winrate is ${winrate.toFixed(1)}%. Focus on cutting costs on losing trades and checking that entries truly align with your playbook.`);
+    }else if(winrate <= 60){
+      adviceLines.push(`Winrate sits around ${winrate.toFixed(1)}%. This is a healthy middle ground if your average R on winners is strong enough.`);
+    }else{
+      adviceLines.push(`Winrate is high at ${winrate.toFixed(1)}%. Protect this by keeping risk per trade steady and avoiding over-sizing.`);
+    }
+
+    if(countR === 0){
+      adviceLines.push(`No trades in this file have a valid initial R defined. Make sure your SL is set so R-multiple quality can be tracked.`);
+    }else if(avgR < 0.7){
+      adviceLines.push(`Average R on SL-defined trades is ${avgR.toFixed(2)}R. This suggests winners are not running far enough relative to initial risk.`);
+    }else if(avgR > 1.5){
+      adviceLines.push(`Average R is ${avgR.toFixed(2)}R. That is strong; your best upgrade is usually to increase quality, not size.`);
+    }else{
+      adviceLines.push(`Average R is ${avgR.toFixed(2)}R. There is room to push a little more distance on winners without changing your risk per trade.`);
+    }
+
+    const symKeys = Object.keys(bySymbol);
+    if(symKeys.length){
+      const bestSym = symKeys.slice().sort((a,b) => bySymbol[b].net - bySymbol[a].net)[0];
+      const worstSym = symKeys.slice().sort((a,b) => bySymbol[a].net - bySymbol[b].net)[0];
+
+      const bAgg = bySymbol[bestSym];
+      adviceLines.push(`Best symbol in this sample is ${bestSym} with ${bAgg.trades} trade(s) and net ${bAgg.net.toFixed(2)}. Consider documenting exactly how you trade this symbol and making it your primary focus.`);
+
+      if(worstSym !== bestSym){
+        const wAgg = bySymbol[worstSym];
+        adviceLines.push(`Weakest symbol is ${worstSym} with net ${wAgg.net.toFixed(2)} over ${wAgg.trades} trade(s). Either tighten your rules there or pause trading it until you have a clear edge.`);
+      }
+    }
+
+    const sessKeys = Object.keys(bySession);
+    if(sessKeys.length > 1){
+      const bestSess = sessKeys.slice().sort((a,b) => bySession[b].net - bySession[a].net)[0];
+      const worstSess = sessKeys.slice().sort((a,b) => bySession[a].net - bySession[b].net)[0];
+      adviceLines.push(`Session behaviour is uneven: ${bestSess} leads on net results, while ${worstSess} lags. You may want to size down or be more selective in the weaker session.`);
+    }
+
+    // ---------- Build HTML ----------
+    let html = '';
+
+    // 1) Preview summary (always visible)
+    html += '<div class="results-section">';
+    html += '<h2>Preview summary</h2>';
+    html += '<ul>';
+    html += `<li><strong>Total closed trades:</strong> ${total}</li>`;
+    html += `<li><strong>Wins / Losses:</strong> ${wins} / ${losses}</li>`;
+    html += `<li><strong>Winrate:</strong> ${winrate.toFixed(1)}%</li>`;
+    html += `<li><strong>Net result (account currency):</strong> ${net.toFixed(2)}</li>`;
+    html += `<li><strong>Avg R (trades with SL):</strong> ${avgR.toFixed(2)}</li>`;
+    html += `<li><strong>Best R / Worst R:</strong> ${bestR.toFixed(2)} / ${worstR.toFixed(2)}</li>`;
+    html += '</ul>';
+    html += '<p class="muted">This is a quick preview from your .alog file. The AI report will turn this into a written review plus deeper breakdowns.</p>';
+    html += '</div>';
+
+    // 2) Performance by symbol (still visible in preview)
+    html += '<div class="results-section">';
+    html += '<h2>Performance by symbol</h2>';
+    html += '<table><thead><tr>';
+    html += '<th>Symbol</th><th class="text-right">Trades</th><th class="text-right">Winrate</th><th class="text-right">Net</th><th class="text-right">Avg R</th>';
+    html += '</tr></thead><tbody>';
+
+    const symKeys2 = Object.keys(bySymbol).sort();
+    for(const sym of symKeys2){
+      const a = bySymbol[sym];
+      const wr = a.trades ? (a.wins / a.trades * 100) : 0;
+      const avgR_sym = a.countR ? (a.sumR / a.countR) : 0;
+      html += `<tr><td>${sym}</td><td class="text-right">${a.trades}</td><td class="text-right">${wr.toFixed(1)}%</td><td class="text-right">${a.net.toFixed(2)}</td><td class="text-right">${avgR_sym.toFixed(2)}</td></tr>`;
+    }
+    html += '</tbody></table>';
+    html += '</div>';
+
+    // 3) Advanced sections (hidden until AI advice is generated)
+    // Equity curve
+    html += '<div class="results-section advanced-after-ai" style="display:none;">';
+    html += '<h2>Equity curve</h2>';
+    html += '<div class="chart-wrap"><canvas id="equityCanvas" width="640" height="160"></canvas></div>';
+    html += '<p class="muted">Relative equity from your trade log. This is part of what the AI looks at when it builds your review.</p>';
+    html += '</div>';
+
+    // By session
+    html += '<div class="results-section advanced-after-ai" style="display:none;">';
+    html += '<h2>Performance by session</h2>';
+    html += '<table><thead><tr>';
+    html += '<th>Session</th><th class="text-right">Trades</th><th class="text-right">Winrate</th><th class="text-right">Net</th><th class="text-right">Avg R</th>';
+    html += '</tr></thead><tbody>';
+
+    const sessKeys2 = Object.keys(bySession).sort();
+    for(const s of sessKeys2){
+      const a = bySession[s];
+      const wr = a.trades ? (a.wins / a.trades * 100) : 0;
+      const avgR_s = a.countR ? (a.sumR / a.countR) : 0;
+      html += `<tr><td><span class="pill">${s}</span></td><td class="text-right">${a.trades}</td><td class="text-right">${wr.toFixed(1)}%</td><td class="text-right">${a.net.toFixed(2)}</td><td class="text-right">${avgR_s.toFixed(2)}</td></tr>`;
+    }
+    html += '</tbody></table>';
+    html += '</div>';
+
+    // By day-of-week
+    html += '<div class="results-section advanced-after-ai" style="display:none;">';
+    html += '<h2>Performance by day of week</h2>';
+    html += '<table><thead><tr>';
+    html += '<th>Day</th><th class="text-right">Trades</th><th class="text-right">Winrate</th><th class="text-right">Net</th><th class="text-right">Avg R</th>';
+    html += '</tr></thead><tbody>';
+
+    const dowOrder = ['MON','TUE','WED','THU','FRI','SAT','SUN','UNK'];
+    for(const dow of dowOrder){
+      if(!byDOW[dow]) continue;
+      const a = byDOW[dow];
+      const wr = a.trades ? (a.wins / a.trades * 100) : 0;
+      const avgR_d = a.countR ? (a.sumR / a.countR) : 0;
+      html += `<tr><td>${dow}</td><td class="text-right">${a.trades}</td><td class="text-right">${wr.toFixed(1)}%</td><td class="text-right">${a.net.toFixed(2)}</td><td class="text-right">${avgR_d.toFixed(2)}</td></tr>`;
+    }
+    html += '</tbody></table>';
+    html += '</div>';
+
+    // Local advice preview (also advanced)
+    html += '<div class="results-section advanced-after-ai" style="display:none;">';
+    html += '<h2>Stat-based notes</h2>';
+    html += '<ul>';
+    for(const line of adviceLines){
+      html += `<li>${line}</li>`;
+    }
+    html += '</ul>';
+    html += '</div>';
+
+    outEl.innerHTML = html;
+
+    // draw equity curve into the (currently hidden) canvas
+    drawEquity(eqPoints);
+
+    // Save summary + stats for the server-side full-report API
+    const previewSummaryText =
+      `Total trades: ${total}. Wins: ${wins}, losses: ${losses}. ` +
+      `Winrate: ${winrate.toFixed(1)}%. Net P/L: ${net.toFixed(2)}. ` +
+      `Avg R (with SL): ${avgR.toFixed(2)}. Best R: ${bestR.toFixed(2)}, worst R: ${worstR.toFixed(2)}.`;
+
+    window.alphalogPreview = {
+      summary: previewSummaryText,
+      stats: {
+        total,
+        wins,
+        losses,
+        winrate,
+        net,
+        avgR,
+        bestR,
+        worstR,
+        eqPoints,
+        bySymbol,
+        bySession,
+        byDOW
+      }
+    };
+  }
+
+  function drawEquity(points){
+    const canvas = document.getElementById('equityCanvas');
+    if(!canvas || !points.length) return;
+
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+
+    ctx.clearRect(0,0,w,h);
+
+    const minY = Math.min(...points, 0);
+    const maxY = Math.max(...points, 0);
+    const range = (maxY - minY) || 1;
+
+    ctx.fillStyle = '#05070c';
+    ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle = '#151b27';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, h/2);
+    ctx.lineTo(w, h/2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    const stepX = w / Math.max(points.length - 1, 1);
+    for(let i=0;i<points.length;i++){
+      const x = i * stepX;
+      const norm = (points[i] - minY) / range;
+      const y = h - norm * (h - 10) - 5;
+      if(i===0) ctx.moveTo(x,y);
+      else ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle = '#00d3a7';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+</script>
+
 
   <!-- AI advice (short preview) -->
   <script>
