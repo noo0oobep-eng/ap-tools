@@ -1,74 +1,84 @@
 // api/alphalog-full-report.js
+
 const OpenAI = require("openai");
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-module.exports = async (req, res) => {
+module.exports = async function handler(req, res) {
+  // --- CORS headers (important) ---
+  const allowedOrigin = "https://aptradingtools.com"; // use "*" temporarily if needed
+
+  res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Handle preflight
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
+
+  // Only allow POST for actual work
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    res.status(405).json({ error: "Method not allowed" });
+    return;
   }
 
   try {
-    const { stats } = req.body;
+    const { summary, stats } = req.body || {};
 
-    if (!stats) {
-      return res.status(400).json({ error: "Missing stats in request body" });
+    if (!summary || !stats) {
+      res.status(400).json({ error: "Missing summary or stats" });
+      return;
     }
 
-    // Build the prompt from the stats we already calculated in the browser
+    // Build prompt from the summary + stats we already compute in the browser
     const prompt = `
-You are a professional trading performance coach.
+You are a trading performance coach. The user has uploaded a short trade log.
+Here is a compact stats snapshot and bullet summary:
 
-You will receive summary stats from a single trading log.
-Write a detailed, plain-English diagnostic report for the trader.
-
-Focus on:
-- Overall verdict (but remind them sample size may be small)
-- Strengths to keep doing
-- Problems / leaks to fix
-- Concrete next-step action plan
-
-Keep it practical, not fluffy.
-
-Here are the stats (JSON):
+STATS:
 ${JSON.stringify(stats, null, 2)}
-`;
+
+SUMMARY:
+${summary}
+
+Write a structured, plain-English diagnostic report with:
+1. Overall assessment (1 short paragraph)
+2. Key strengths (3–6 bullet points)
+3. Key issues / risks (3–6 bullet points)
+4. Concrete next-step plan (3–8 clear action bullets)
+Keep language clear, specific, and practical. Do not repeat the raw numbers.
+    `.trim();
 
     const aiResponse = await client.responses.create({
-      model: "gpt-4.1-mini",           // <- use this model
+      model: "gpt-4.1-mini",
       input: prompt,
-      max_output_tokens: 900,          // enough for a detailed report
-      temperature: 0.6,
     });
 
-    // New Responses API: first output item, first content block, text
-    const aiText =
-      aiResponse.output[0].content[0].text ||
-      "AI generated an empty response.";
+    // Extract text from the new Responses API shape
+    let reportText = "";
 
-    return res.status(200).json({ advice: aiText });
-  } catch (err) {
-    console.error("alphalog-full-report error:", err);
-
-    // Try to surface useful info to the page
-    const status = err.status || 500;
-
-    // Special message for quota/billing issues
-    if (err.code === "insufficient_quota") {
-      return res.status(503).json({
-        error:
-          "AI quota / billing issue on the OpenAI account (insufficient_quota). The AP server is fine; please check OpenAI billing or wait a bit and try again.",
-      });
+    try {
+      const firstOutput = aiResponse.output?.[0];
+      const firstContent = firstOutput?.content?.[0];
+      // openai-node 4.x: firstContent.text is an object with .value
+      reportText =
+        firstContent?.text?.value ||
+        firstContent?.text ||
+        JSON.stringify(aiResponse);
+    } catch (e) {
+      reportText = "Unable to read AI response payload.";
     }
 
-    return res.status(status).json({
-      error:
-        "AI server error: " +
-        (err?.error?.message || err.message || "Unknown error"),
-    });
+    res.status(200).json({ report: reportText });
+  } catch (err) {
+    console.error("alphalog-full-report error", err);
+    res.status(500).json({ error: "Server error" });
   }
 };
+
 
 
