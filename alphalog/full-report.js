@@ -2,11 +2,9 @@
 (function () {
   const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-full-report";
 
-  // Mount the "Full AI report" section at the bottom of the .wrap card
   const wrap = document.querySelector(".wrap");
   if (!wrap) return;
 
-  // Create the section only once
   let section = document.getElementById("alphalog-full-report-section");
   if (!section) {
     section = document.createElement("div");
@@ -27,7 +25,6 @@
       <pre id="alphalog-full-report-output"
            style="margin-top:10px; font-size:0.9rem; white-space:pre-wrap;"></pre>
     `;
-    // Insert before the final "Back to AP Trading Tools" note if possible
     const backLink = wrap.querySelector('a[href="/"]');
     if (backLink && backLink.parentElement === wrap) {
       wrap.insertBefore(section, backLink);
@@ -43,12 +40,9 @@
   if (!btn || !statusEl || !outputEl) return;
 
   btn.addEventListener("click", async function () {
-    // This must be set by the preview script (alphalog index page)
     const preview = window.alphalogPreview || {};
     const summary = preview.summary;
     const stats = preview.stats;
-
-    console.log("alphalog-full-report click - preview object:", preview);
 
     if (!summary || !stats) {
       statusEl.textContent =
@@ -64,30 +58,21 @@
     outputEl.textContent = "";
 
     try {
-      const payload = { summary, stats };
-      console.log("alphalog-full-report sending payload:", payload);
-
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ summary, stats }),
       });
 
-      let data;
-      try {
-        data = await res.json();
-      } catch (e) {
-        console.error("alphalog-full-report: could not parse JSON response", e);
-        throw new Error("Response was not valid JSON");
-      }
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        console.error("alphalog-full-report: backend error payload:", data);
-        throw new Error(data.error || "Request failed");
+        const msg = (data && data.error) || `HTTP ${res.status}`;
+        throw new Error(msg);
       }
 
       if (!data.advice || !data.advice.trim()) {
-        statusEl.textContent = "No advice text was generated.";
+        statusEl.textContent = "(No full report text returned.)";
         outputEl.textContent = "";
         return;
       }
@@ -95,7 +80,6 @@
       statusEl.textContent = "";
       outputEl.textContent = data.advice.trim();
     } catch (err) {
-      console.error("alphalog-full-report front-end error:", err);
       statusEl.textContent =
         "Error: " + (err && err.message ? err.message : "Failed to fetch.");
       outputEl.textContent = "";
@@ -105,6 +89,7 @@
     }
   });
 })();
+
 
 
 
