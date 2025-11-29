@@ -156,21 +156,45 @@
       <button id="analyse-btn" type="submit">Analyse (preview)</button>
       <div id="results" class="results"></div>
     </form>
-  <!-- AI advice card -->
-  <div id="ai-advice-card" class="card" style="display:none; margin-top:18px;">
-    <h2>AI advice (preview)</h2>
-    <p class="note" id="ai-advice-note" style="margin-top:4px;">
-      After running the preview analysis, you can ask the AI for a short written
-      review and concrete next steps based on your stats.
-    </p>
 
-    <button id="ai-advice-btn" type="button" style="margin-top:12px;">
-      Generate AI advice
-    </button>
+    <!-- AI advice card -->
+    <div id="ai-advice-card" class="card" style="display:none; margin-top:18px;">
+      <h2>AI advice (preview)</h2>
+      <p class="note" id="ai-advice-note" style="margin-top:4px;">
+        After running the preview analysis, you can ask the AI for a short written
+        review and concrete next steps based on your stats.
+      </p>
 
-    <div id="ai-advice-output"
-         style="margin-top:12px; font-size:0.9em; white-space:pre-wrap;"></div>
-  </div>
+      <button id="ai-advice-btn" type="button" style="margin-top:12px;">
+        Generate AI advice
+      </button>
+
+      <div id="ai-advice-output"
+           style="margin-top:12px; font-size:0.9em; white-space:pre-wrap;"></div>
+    </div>
+
+    <!-- Full AI report card (paid users) -->
+    <div id="full-report-card"
+         class="card"
+         style="display:none; margin-top:18px; padding-top:10px; border-top:1px solid var(--border);">
+      <h2>Full AI report (for paid users)</h2>
+      <p class="note" style="margin-top:4px;">
+        After running the preview above, click the button to generate a longer AI-written
+        report (strengths, issues, and an action plan). This uses the stats already
+        shown on this page.
+      </p>
+
+      <button id="full-report-btn" type="button" style="margin-top:12px;">
+        Generate full AI report
+      </button>
+
+      <div id="full-report-status"
+           class="note"
+           style="margin-top:8px;"></div>
+
+      <div id="full-report-output"
+           style="margin-top:12px; font-size:0.9em; white-space:pre-wrap;"></div>
+    </div>
 
     <p class="note">
       Basic on-screen stats will be free. The <strong>full PDF diagnostic report</strong> (equity curve,
@@ -183,6 +207,7 @@
     </p>
   </div>
 
+  <!-- Main preview / stats script -->
   <script>
     const form   = document.getElementById('alog-form');
     const fileEl = document.getElementById('alog-file');
@@ -401,6 +426,32 @@
         adviceLines.push(`Session behaviour is uneven: ${bestSess} leads on net results, while ${worstSess} lags. You may want to size down or be more selective in the weaker session.`);
       }
 
+      // ---------- Store summary/stats for full report ----------
+      window.alPreviewSummary = [
+        `Total closed trades: ${total}`,
+        `Wins: ${wins}, Losses: ${losses}`,
+        `Winrate: ${winrate.toFixed(1)}%`,
+        `Net result (account currency): ${net.toFixed(2)}`,
+        `Avg R (trades with SL): ${avgR.toFixed(2)}`,
+        `Best R / Worst R: ${bestR.toFixed(2)} / ${worstR.toFixed(2)}`
+      ].join('\n');
+
+      window.alBasicStats = {
+        totalTrades: total,
+        wins,
+        losses,
+        winrate,
+        net,
+        avgR,
+        bestR,
+        worstR,
+        bySymbol,
+        bySession,
+        byDOW,
+      };
+
+      window.alAdvicePreviewText = adviceLines.join('\n');
+
       // ---------- Build HTML ----------
       let html = '';
 
@@ -488,6 +539,16 @@
 
       outEl.innerHTML = html;
 
+      // show / reset full report card
+      const fullCard   = document.getElementById('full-report-card');
+      const fullStatus = document.getElementById('full-report-status');
+      const fullOut    = document.getElementById('full-report-output');
+      if (fullCard) {
+        fullCard.style.display = "block";
+        if (fullStatus) fullStatus.textContent = "";
+        if (fullOut) fullOut.textContent = "";
+      }
+
       // draw equity curve
       drawEquity(eqPoints);
     }
@@ -530,81 +591,149 @@
       ctx.stroke();
     }
   </script>
-<script>
-(function () {
-  const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-advice";
 
-  const form = document.querySelector("form");
-  const adviceCard = document.getElementById("ai-advice-card");
-  const adviceBtn = document.getElementById("ai-advice-btn");
-  const adviceOut = document.getElementById("ai-advice-output");
+  <!-- AI advice (short preview) -->
+  <script>
+  (function () {
+    const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-advice";
 
-  if (!form || !adviceBtn || !adviceCard) return;
+    const form = document.querySelector("form");
+    const adviceCard = document.getElementById("ai-advice-card");
+    const adviceBtn = document.getElementById("ai-advice-btn");
+    const adviceOut = document.getElementById("ai-advice-output");
 
-  let latestSummaryText = "";
+    if (!form || !adviceBtn || !adviceCard) return;
 
-  // After the existing analyser runs, grab the preview block text
-  form.addEventListener("submit", function () {
-    // Let your existing handler finish rendering first
-    setTimeout(() => {
-      // Find the section whose heading contains "Preview summary"
-      const previewHeading = Array.from(
-        document.querySelectorAll("h2, h3")
-      ).find((h) =>
-        h.textContent.toLowerCase().includes("preview summary")
-      );
+    let latestSummaryText = "";
 
-      const previewSection = previewHeading ? previewHeading.parentElement : null;
+    // After the existing analyser runs, grab the preview block text
+    form.addEventListener("submit", function () {
+      // Let your existing handler finish rendering first
+      setTimeout(() => {
+        // Find the section whose heading contains "Preview summary"
+        const previewHeading = Array.from(
+          document.querySelectorAll("h2, h3")
+        ).find((h) =>
+          h.textContent.toLowerCase().includes("preview summary")
+        );
 
-      if (previewSection) {
-        latestSummaryText = previewSection.innerText.trim();
-        adviceCard.style.display = "block";
-        adviceOut.textContent = "";
-      } else {
-        latestSummaryText = "";
-        adviceCard.style.display = "none";
-      }
-    }, 0);
-  });
+        const previewSection = previewHeading ? previewHeading.parentElement : null;
 
-  adviceBtn.addEventListener("click", async function () {
-    if (!latestSummaryText) {
-      adviceOut.textContent =
-        "Run the preview analysis first, then click this button again.";
-      return;
-    }
+        if (previewSection) {
+          latestSummaryText = previewSection.innerText.trim();
+          adviceCard.style.display = "block";
+          adviceOut.textContent = "";
+        } else {
+          latestSummaryText = "";
+          adviceCard.style.display = "none";
+        }
+      }, 0);
+    });
 
-    adviceBtn.disabled = true;
-    const originalLabel = adviceBtn.textContent;
-    adviceBtn.textContent = "Generating advice…";
-    adviceOut.textContent = "Talking to the AI…";
-
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ summary: latestSummaryText }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Request failed");
+    adviceBtn.addEventListener("click", async function () {
+      if (!latestSummaryText) {
+        adviceOut.textContent =
+          "Run the preview analysis first, then click this button again.";
+        return;
       }
 
-      adviceOut.textContent = data.advice || "(No advice text returned.)";
-    } catch (err) {
-      adviceOut.textContent =
-        "Could not get advice: " + (err.message || String(err));
-    } finally {
-      adviceBtn.disabled = false;
-      adviceBtn.textContent = originalLabel;
-    }
-  });
-})();
-</script> 
-  <script src="full-report.js"></script>
+      adviceBtn.disabled = true;
+      const originalLabel = adviceBtn.textContent;
+      adviceBtn.textContent = "Generating advice…";
+      adviceOut.textContent = "Talking to the AI…";
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ summary: latestSummaryText }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Request failed");
+        }
+
+        adviceOut.textContent = data.advice || "(No advice text returned.)";
+      } catch (err) {
+        adviceOut.textContent =
+          "Could not get advice: " + (err.message || String(err));
+      } finally {
+        adviceBtn.disabled = false;
+        adviceBtn.textContent = originalLabel;
+      }
+    });
+  })();
+  </script>
+
+  <!-- Full AI report (paid) -->
+  <script>
+  (function () {
+    const API_URL_FULL = "https://ap-alphalog-api.vercel.app/api/alphalog-full-report";
+
+    const btn      = document.getElementById("full-report-btn");
+    const statusEl = document.getElementById("full-report-status");
+    const outEl    = document.getElementById("full-report-output");
+
+    if (!btn) return;
+
+    btn.addEventListener("click", async function () {
+      if (!window.alPreviewSummary || !window.alBasicStats) {
+        if (statusEl) {
+          statusEl.textContent =
+            "Missing summary or stats – run the preview analysis first.";
+        }
+        return;
+      }
+
+      btn.disabled = true;
+      const originalLabel = btn.textContent;
+      btn.textContent = "Generating full report…";
+      if (statusEl) statusEl.textContent = "Contacting AI backend…";
+      if (outEl) outEl.textContent = "";
+
+      try {
+        const res = await fetch(API_URL_FULL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            summaryText: window.alPreviewSummary,
+            stats: window.alBasicStats,
+            advicePreview: window.alAdvicePreviewText || ""
+          }),
+        });
+
+        let data = {};
+        try {
+          data = await res.json();
+        } catch (_) {
+          data = {};
+        }
+
+        if (!res.ok) {
+          throw new Error(data.error || ("HTTP " + res.status));
+        }
+
+        if (outEl) {
+          outEl.textContent =
+            data.fullReport || "(No full report text returned.)";
+        }
+        if (statusEl) statusEl.textContent = "";
+      } catch (err) {
+        if (statusEl) {
+          statusEl.textContent =
+            "Error: " + (err.message || String(err));
+        }
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalLabel;
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
+
 
 
 
