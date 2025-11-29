@@ -538,6 +538,16 @@
       }
     };
   }
+    // Make preview summary available to the AI advice script
+    window.alphalogLatestSummaryText = previewSummaryText;
+
+    // Ensure the AI advice card is visible as soon as preview is ready
+    const adviceCard = document.getElementById("ai-advice-card");
+    const adviceOut  = document.getElementById("ai-advice-output");
+    if (adviceCard) {
+      adviceCard.style.display = "block";
+      if (adviceOut) adviceOut.textContent = "";
+    }
 
   function drawEquity(points){
     const canvas = document.getElementById('equityCanvas');
