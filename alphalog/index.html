@@ -156,28 +156,27 @@
       <button id="analyse-btn" type="submit">Analyse (preview)</button>
       <div id="results" class="results"></div>
     </form>
-    
- <!-- AI advice card -->
+
+    <!-- AI analysis & advice card -->
     <div id="ai-advice-card" class="card" style="display:none; margin-top:18px;">
-      <h2></h2>
+      <h2>AI analysis &amp; advice</h2>
       <p class="note" id="ai-advice-note" style="margin-top:4px;">
-        
+        After running the preview analysis, click the button below for a written review
+        and concrete next steps based on your stats.
       </p>
-      
+
       <button id="ai-advice-btn" type="button" style="margin-top:12px;">
-        Generate AI Analysis & Advice
+        Generate AI analysis &amp; advice
       </button>
 
-        <div id="ai-advice-output"
-     style="margin-top:12px; font-size:0.9em; white-space:pre-wrap;"></div>
-
-<button id="download-pdf-btn"
-        type="button"
-        style="margin-top:12px; display:none;">
-  Download full report (PDF)
-</button>
-
+      <div id="ai-advice-output"
            style="margin-top:12px; font-size:0.9em; white-space:pre-wrap;"></div>
+
+      <button id="download-pdf-btn"
+              type="button"
+              style="margin-top:12px; display:none;">
+        Download full report (PDF)
+      </button>
     </div>
 
     <p class="note">
@@ -354,7 +353,7 @@
       const avgR    = countR ? (sumR / countR) : 0;
       if (countR === 0){ bestR = 0; worstR = 0; }
 
-      // ---------- Local advice lines (used in advanced section) ----------
+      // ---------- Local advice lines (advanced section) ----------
       const adviceLines = [];
 
       if (total < 20){
@@ -557,7 +556,7 @@
     }
   </script>
 
-  <!-- AI advice (short preview) -->
+  <!-- AI advice + PDF -->
   <script>
     (function () {
       const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-advice";
@@ -565,15 +564,18 @@
       const adviceCard = document.getElementById("ai-advice-card");
       const adviceBtn  = document.getElementById("ai-advice-btn");
       const adviceOut  = document.getElementById("ai-advice-output");
-      const fullCard   = document.getElementById("full-report-card");
+      const pdfBtn     = document.getElementById("download-pdf-btn");
 
       if (!adviceCard || !adviceBtn || !adviceOut) return;
+
+      // store last AI advice text for PDF
+      window.alphalogLastAdvice = "";
 
       // Called from renderStats when preview is ready
       window.onAlphalogPreviewReady = function () {
         adviceCard.style.display = "block";
         adviceOut.textContent = "";
-        if (fullCard) fullCard.style.display = "block";
+        if (pdfBtn) pdfBtn.style.display = "none";
       };
 
       adviceBtn.addEventListener("click", async function () {
@@ -605,11 +607,17 @@
 
           const adviceText = data.advice || "(No advice text returned.)";
           adviceOut.textContent = adviceText;
+          window.alphalogLastAdvice = adviceText;
 
           // Reveal advanced sections
           document.querySelectorAll(".advanced-after-ai").forEach((el) => {
             el.style.display = "";
           });
+
+          // Show PDF download button
+          if (pdfBtn) {
+            pdfBtn.style.display = "inline-block";
+          }
         } catch (err) {
           adviceOut.textContent =
             "Could not get advice: " + (err.message || String(err));
@@ -618,10 +626,87 @@
           adviceBtn.textContent = originalLabel;
         }
       });
+
+      // PDF generation
+      if (pdfBtn) {
+        pdfBtn.addEventListener("click", () => {
+          const preview = window.alphalogPreviewData || {};
+          const stats   = preview.stats || {};
+          const advice  = window.alphalogLastAdvice || "";
+
+          if (!window.jspdf || !window.jspdf.jsPDF) {
+            alert("PDF library not loaded.");
+            return;
+          }
+
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({ unit: "pt", format: "a4" });
+
+          let y = 40;
+
+          doc.setFontSize(16);
+          doc.text("AP AlphaLog AI – Trade Performance Report", 40, y);
+          y += 26;
+
+          doc.setFontSize(11);
+          const linesStats = [
+            `Total trades: ${stats.total ?? ""}`,
+            `Wins / Losses: ${stats.wins ?? ""} / ${stats.losses ?? ""}`,
+            `Winrate: ${
+              stats.winrate != null ? stats.winrate.toFixed(1) + "%" : ""
+            }`,
+            `Net P/L (account currency): ${
+              stats.net != null ? stats.net.toFixed(2) : ""
+            }`,
+            `Avg R (trades with SL): ${
+              stats.avgR != null ? stats.avgR.toFixed(2) : ""
+            }`,
+            `Best R / Worst R: ${
+              stats.bestR != null ? stats.bestR.toFixed(2) : ""
+            } / ${
+              stats.worstR != null ? stats.worstR.toFixed(2) : ""
+            }`,
+          ];
+
+          linesStats.forEach((line) => {
+            doc.text(line, 40, y);
+            y += 14;
+          });
+
+          // AI advice text
+          y += 20;
+          doc.setFontSize(13);
+          doc.text("AI analysis & action plan", 40, y);
+          y += 18;
+          doc.setFontSize(11);
+
+          const wrappedAdvice = doc.splitTextToSize(advice, 500);
+          wrappedAdvice.forEach((line) => {
+            if (y > 780) {
+              doc.addPage();
+              y = 40;
+            }
+            doc.text(line, 40, y);
+            y += 14;
+          });
+
+          // Equity curve page
+          const canvas = document.getElementById("equityCanvas");
+          if (canvas) {
+            const imgData = canvas.toDataURL("image/png");
+            doc.addPage();
+            doc.setFontSize(13);
+            doc.text("Equity curve (relative P/L)", 40, 40);
+            doc.addImage(imgData, "PNG", 40, 60, 500, 220);
+          }
+
+          doc.save("ap-alphalog-report.pdf");
+        });
+      }
     })();
   </script>
 
-  <!-- Full AI report (paid) -->
+  <!-- (Optional) Full AI report (paid) script left as-is; does nothing without a full-report card -->
   <script>
     (function () {
       const API_URL_FULL = "https://ap-alphalog-api.vercel.app/api/alphalog-full-report";
@@ -670,7 +755,6 @@
           }
 
           if (outEl) {
-            // backend currently returns { advice: "..."}; fall back to fullReport if you change it later
             outEl.textContent =
               (data.advice || data.fullReport || "(No full report text returned.)").trim();
           }
@@ -687,12 +771,8 @@
       });
     })();
   </script>
+
+  <!-- jsPDF for PDF generation -->
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </body>
 </html>
-
-
-
-
-
-
