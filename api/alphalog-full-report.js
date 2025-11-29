@@ -6,7 +6,7 @@ const client = new OpenAI({
 });
 
 module.exports = async (req, res) => {
-  // --- CORS so the browser can call this from aptradingtools.com ---
+  // --- CORS headers so the browser can call this from aptradingtools.com ---
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -21,64 +21,29 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // ---- Make sure we actually have a parsed JSON body ----
-    let body = req.body;
+    const { summary, stats } = req.body || {};
 
-    const isEmptyObject =
-      body &&
-      typeof body === "object" &&
-      !Array.isArray(body) &&
-      !Object.keys(body).length;
-
-    if (!body || isEmptyObject) {
-      // Read raw request stream and parse it ourselves
-      let raw = "";
-      await new Promise((resolve, reject) => {
-        req.on("data", (chunk) => {
-          raw += chunk;
-        });
-        req.on("end", resolve);
-        req.on("error", reject);
-      });
-
-      if (raw) {
-        try {
-          body = JSON.parse(raw);
-        } catch (e) {
-          console.error("alphalog-full-report: could not parse raw JSON body:", raw, e);
-          return res.status(400).json({ error: "Request body was not valid JSON" });
-        }
-      }
+    if (!summary && !stats) {
+      return res
+        .status(400)
+        .json({ error: "Missing summary and stats in request body." });
     }
 
-    if (typeof body === "string") {
-      try {
-        body = JSON.parse(body);
-      } catch (e) {
-        console.error("alphalog-full-report: body was string but not JSON:", body, e);
-        return res.status(400).json({ error: "Request body was not valid JSON" });
-      }
+    if (!summary || typeof summary !== "string" || !summary.trim()) {
+      return res.status(400).json({ error: "Missing summary text." });
     }
 
-    let { summary, stats } = body || {};
-
-    // We *require* stats, but we do NOT require summary anymore
-    if (!stats) {
-      return res.status(400).json({ error: "Missing stats" });
+    if (!stats || typeof stats !== "object") {
+      return res.status(400).json({ error: "Missing stats object." });
     }
 
-    const summaryForPrompt =
-      summary && String(summary).trim().length
-        ? String(summary)
-        : "No written preview summary was supplied. Use only the JSON stats below to understand the system.";
-
-    // ---- Build prompt from preview summary + stats ----
     const prompt = `
 You are a trading performance coach. The user has uploaded a trade log.
+
 You get two inputs:
 
 1) Preview summary text:
-${summaryForPrompt}
+${summary}
 
 2) JSON stats:
 ${JSON.stringify(stats, null, 2)}
@@ -96,38 +61,37 @@ Keep it concise but specific. Do not repeat raw numbers back; interpret them.
       input: prompt,
     });
 
-    // ---- Extract text from Responses API result ----
     let text = "";
 
-    if (
-      aiResponse.output &&
-      Array.isArray(aiResponse.output) &&
-      aiResponse.output[0] &&
-      aiResponse.output[0].content &&
-      Array.isArray(aiResponse.output[0].content) &&
-      aiResponse.output[0].content[0] &&
-      typeof aiResponse.output[0].content[0].text === "string"
-    ) {
-      text = aiResponse.output[0].content[0].text;
+    // Primary extraction path (Responses API typical shape)
+    try {
+      if (aiResponse.output && Array.isArray(aiResponse.output)) {
+        const first = aiResponse.output[0];
+        if (first && first.content && Array.isArray(first.content)) {
+          const firstContent = first.content[0];
+          if (firstContent && typeof firstContent.text === "string") {
+            text = firstContent.text;
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Error extracting text from aiResponse.output", e);
     }
 
-    if (!text && typeof aiResponse.output_text === "string") {
+    // Possible alternate shapes
+    if (!text && aiResponse.output_text) {
       text = aiResponse.output_text;
     }
-
-    if (
-      !text &&
-      aiResponse.content &&
-      Array.isArray(aiResponse.content) &&
-      aiResponse.content[0] &&
-      typeof aiResponse.content[0].text === "string"
-    ) {
-      text = aiResponse.content[0].text;
+    if (!text && aiResponse.content && Array.isArray(aiResponse.content)) {
+      const c0 = aiResponse.content[0];
+      if (c0 && typeof c0.text === "string") {
+        text = c0.text;
+      }
     }
 
+    // Last resort: dump the whole response JSON so we never return empty
     if (!text || !text.trim()) {
-      console.error("alphalog-full-report: AI response was empty or unparseable", aiResponse);
-      return res.status(500).json({ error: "AI response was empty", advice: "" });
+      text = "Raw model response:\n\n" + JSON.stringify(aiResponse, null, 2);
     }
 
     return res.status(200).json({ advice: text.trim() });
@@ -137,6 +101,7 @@ Keep it concise but specific. Do not repeat raw numbers back; interpret them.
     return res.status(500).json({ error: "AI backend error: " + msg });
   }
 };
+
 
 
 
