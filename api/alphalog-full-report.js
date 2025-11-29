@@ -6,75 +6,106 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-module.exports = async (req, res) => {
+// Only allow your site to call this
+const ALLOWED_ORIGIN = "https://aptradingtools.com";
+
+module.exports = async function handler(req, res) {
+  // --- CORS headers (needed for browser -> Vercel) ---
+  res.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Max-Age", "86400");
+
+  // Preflight request
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
+
+  // Only POST is allowed
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    res.status(405).json({ error: "Method not allowed" });
+    return;
   }
 
   try {
-    // Try to parse any JSON body we get
-    let parsed = {};
-    try {
-      parsed = req.body ? JSON.parse(req.body) : {};
-    } catch (e) {
-      parsed = {};
+    const payload = req.body || {};
+
+    // Be tolerant about field names
+    const summaryText =
+      payload.summaryText || payload.summary || payload.previewSummary || "";
+    const stats =
+      payload.stats || payload.basicStats || payload.metrics || null;
+    const advicePreview = payload.advicePreview || payload.previewAdvice || "";
+
+    if (!summaryText) {
+      res.status(400).json({ error: "Missing summary text" });
+      return;
     }
 
-    const summary = parsed.summary || "";
-    const stats = parsed.stats || null;
-
-    // Build a safe prompt even if summary / stats are missing
-    const safeSummary =
-      summary ||
-      "No structured performance summary was provided. Give a general but concrete trading performance review and improvement plan.";
-
-    const safeStatsText = stats
-      ? JSON.stringify(stats, null, 2)
-      : "No numeric stats object was provided; base your advice only on the textual summary.";
-
-    const prompt = `
-You are AP AlphaLog AI, a trading performance coach.
-
-Write a clear, structured report for a retail trader based on the information below.
-Focus on:
-- strengths
-- weaknesses / issues
-- concrete next steps and risk management advice
-- ideas for how to turn this into an ongoing playbook.
-
-Textual summary:
-${safeSummary}
-
-Raw stats (if any):
-${safeStatsText}
-
-Write the report in plain English, using short sections and bullet points where helpful.
-`;
+    const prompt = buildPrompt(summaryText, stats, advicePreview);
 
     const aiResponse = await client.responses.create({
-      model: "gpt-4.1-mini",
+      model: "gpt-5-mini", // from your models screen
       input: prompt,
-      max_output_tokens: 900,
     });
 
-    // Extract plain text from the response
-    const text =
-      aiResponse.output
-        ?.flatMap((item) =>
-          item.content?.map((c) => (c.text && c.text.value) || "").filter(Boolean)
-        )
-        .join("\n\n") || "No report text returned.";
+    // Extract plain text from the Responses API
+    let fullText = "";
+    if (aiResponse.output && aiResponse.output[0] && aiResponse.output[0].content) {
+      fullText = aiResponse.output[0].content
+        .map((part) => (part.text && part.text.value) || "")
+        .join("")
+        .trim();
+    }
 
-    return res.status(200).json({ report: text });
+    if (!fullText) {
+      fullText = "No advice text was generated.";
+    }
+
+    res.status(200).json({ fullReport: fullText });
   } catch (err) {
     console.error("alphalog-full-report error:", err);
-    const msg =
-      (err && err.error && err.error.message) ||
-      err.message ||
-      "Unknown server error";
-    return res.status(500).json({ error: msg });
+    const statusCode = err.status || 500;
+    res.status(statusCode).json({
+      error:
+        "AI backend error: " +
+        (err.message || "Unexpected error (check Vercel logs for details)."),
+    });
   }
 };
+
+function buildPrompt(summaryText, stats, advicePreview) {
+  return `
+You are an experienced trading performance coach.
+
+The user has uploaded a trading log from their MT5 EA.
+Below is the preview summary and basic stats from their tool.
+
+SHORT SUMMARY FROM TOOL:
+${summaryText}
+
+RAW STATS (JSON, may be null):
+${stats ? JSON.stringify(stats, null, 2) : "none provided"}
+
+BASIC ADVICE PREVIEW THAT THE USER ALREADY SAW:
+${advicePreview || "none"}
+
+TASK:
+Write a detailed but concise performance report (around 600–900 words) with the following sections:
+
+1. Headline verdict (one short sentence).
+2. Strengths (bullet list).
+3. Main issues (bullet list).
+4. Action plan for the next 20–30 trades (numbered steps, very concrete).
+5. Risk and psychology notes (short paragraph).
+
+Use friendly but direct language.
+Do NOT repeat large tables or raw numbers; just refer to key values where it helps.
+Do NOT mention that you are an AI model.
+`;
+}
+
 
 
 
