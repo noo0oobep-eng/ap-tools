@@ -1,8 +1,8 @@
-   // full-report.js
+// alphalog/full-report.js
 (function () {
   const API_URL = "https://ap-alphalog-api.vercel.app/api/alphalog-full-report";
 
-  // We mount the "Full AI report" section at the bottom of the .wrap card
+  // Mount the "Full AI report" section at the bottom of the .wrap card
   const wrap = document.querySelector(".wrap");
   if (!wrap) return;
 
@@ -42,12 +42,40 @@
 
   if (!btn || !statusEl || !outputEl) return;
 
-  btn.addEventListener("click", async function () {
-    const preview = window.alphalogPreview || {};
-    const summary = preview.summary;
-    const stats = preview.stats;
+  // Helper: grab the preview "summary" block and turn it into summary + stats
+  function getPreviewSummaryAndStats() {
+    // Find the section whose heading contains "Preview summary"
+    const heading = Array.from(document.querySelectorAll("h2, h3")).find((h) =>
+      h.textContent.toLowerCase().includes("preview summary")
+    );
+    if (!heading) {
+      return { summary: "", stats: null };
+    }
 
-    if (!summary || !stats) {
+    const section =
+      heading.closest(".results-section") || heading.parentElement || heading;
+
+    const summaryText = section.innerText.trim();
+    if (!summaryText) {
+      return { summary: "", stats: null };
+    }
+
+    // Build a very simple stats object from the bullet list
+    const bulletTexts = Array.from(section.querySelectorAll("li")).map((li) =>
+      li.innerText.trim()
+    );
+
+    const stats = {
+      bullets: bulletTexts,
+    };
+
+    return { summary: summaryText, stats };
+  }
+
+  btn.addEventListener("click", async function () {
+    const { summary, stats } = getPreviewSummaryAndStats();
+
+    if (!summary || stats == null) {
       statusEl.textContent =
         "Run the preview analysis above first, then click this button again.";
       outputEl.textContent = "";
@@ -64,10 +92,10 @@
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ summary, stats })
+        body: JSON.stringify({ summary, stats }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         throw new Error(data.error || "Request failed");
@@ -91,4 +119,5 @@
     }
   });
 })();
+
 
